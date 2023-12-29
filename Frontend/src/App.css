@@ -1,0 +1,16 @@
+:root {
+  --main-color: #37b24d;
+}
+
+#root {
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  min-width: 320px;
+  min-height: 100vh;
+  text-align: center;
+}
