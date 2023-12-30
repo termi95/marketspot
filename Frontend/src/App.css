@@ -1,5 +1,5 @@
 :root {
-  --main-color: #37b24d;
+  --main-color: #131921;
 }
 
 #root {
@@ -13,4 +13,8 @@ body {
   min-width: 320px;
   min-height: 100vh;
   text-align: center;
+}
+
+.text-white {
+  color: white;
 }

@@ -19,7 +19,7 @@ function UserAccountDropDown() {
           withinPortal
         >
           <Menu.Target>
-            <Button>
+            <Button radius="xs" variant="outline" color="White">
               <Group gap="xs">
                 <IconUserCircle />
                 <Text>Your account</Text>

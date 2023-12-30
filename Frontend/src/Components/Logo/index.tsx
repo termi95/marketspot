@@ -7,7 +7,7 @@ function Logo() {
       <Group>
         <img src={logo} alt="Market spot logo" className={styles.logo} />
         <span>
-          <h1>Market Spot</h1>
+          <h1 className="text-white">Market Spot</h1>
         </span>
       </Group>
     </>
