@@ -2,8 +2,7 @@ import { Group } from "@mantine/core";
 import Logo from "../Logo";
 import SearchBar from "../SearchBar";
 import styles from "./navbar.module.css";
-import SignInButton from "../SignInButton";
-import UserAccountDropDown from "../UserAccountDropDown";
+import SignInOrLoggedIn from "../SignInOrLoggedIn";
 
 function Navbar() {
   return (
@@ -11,8 +10,7 @@ function Navbar() {
       <Group>
         <Logo />
         <SearchBar />
-        <SignInButton/>
-        <UserAccountDropDown/>
+        <SignInOrLoggedIn />
       </Group>
     </nav>
   );

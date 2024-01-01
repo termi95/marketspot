@@ -37,6 +37,7 @@ function SearchBar() {
           radius="xs"
           variant="outline"
           color="White"
+          w="100px"
         >
           Search
         </Button>

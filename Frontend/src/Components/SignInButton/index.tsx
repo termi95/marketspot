@@ -4,7 +4,7 @@ import { rem, Text, Space } from "@mantine/core";
 
 function SignInButton() {
   return (
-    <Container m="10">
+    <Container mr="15px">
       <Button radius="xs" variant="outline" color="White">
         <Text size="md">Sign in</Text>
         <Space w="xs" />

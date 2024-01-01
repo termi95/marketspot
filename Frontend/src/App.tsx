@@ -1,9 +1,25 @@
-import '@mantine/core/styles.css';
-import './App.css'
-import { Route, Routes } from "react-router-dom"
-import MainPage from './View/MainPage';
+import "@mantine/core/styles.css";
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import MainPage from "./View/MainPage";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setIsMobile } from "./State/User/userSlice";
 
 function App() {
+  const dispatch = useDispatch();
+  function isMobile() {
+    if (window.screen.width <= 1280) {
+      dispatch(setIsMobile(true));
+    }
+  }
+  useEffect(() => {
+    isMobile();
+    return () => {
+      isMobile();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -11,7 +27,7 @@ function App() {
         <Route path="/" element={<MainPage />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
