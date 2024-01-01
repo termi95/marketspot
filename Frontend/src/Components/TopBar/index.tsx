@@ -3,11 +3,14 @@ import Logo from "../Logo";
 import SearchBar from "../SearchBar";
 import styles from "./navbar.module.css";
 import SignInOrLoggedIn from "../SignInOrLoggedIn";
+import { RootState } from "../../State/store";
+import { useSelector } from "react-redux";
 
-function Navbar() {
+function TopBar() {  
+  const { isMobile } = useSelector((state: RootState) => state.user);
   return (
     <nav className={`${styles.navigation_bar}`}>
-      <Group>
+      <Group gap="xs" grow preventGrowOverflow={!isMobile}>
         <Logo />
         <SearchBar />
         <SignInOrLoggedIn />
@@ -16,4 +19,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default TopBar;

@@ -1,10 +1,16 @@
 import { Button, Container } from "@mantine/core";
 import { IconLogin2 } from "@tabler/icons-react";
 import { rem, Text, Space } from "@mantine/core";
+import { RootState } from "../../State/store";
+import { useSelector } from "react-redux";
 
 function SignInButton() {
+  const { isMobile } = useSelector((state: RootState) => state.user);
   return (
-    <Container mr="15px">
+    <Container
+      mr={isMobile ? "auto" : "15px"}
+      ml={isMobile ? "auto" : "15px"}
+    >
       <Button radius="xs" variant="outline" color="White">
         <Text size="md">Sign in</Text>
         <Space w="xs" />

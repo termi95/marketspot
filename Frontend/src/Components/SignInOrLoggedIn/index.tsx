@@ -6,7 +6,7 @@ import { Box } from "@mantine/core";
 
 function SignInOrLoggedIn() {
   const { isLogin, isMobile } = useSelector((state: RootState) => state.user);
-  if (isMobile) return <Box />;
+  if (isMobile) return <Box p="5px"/>;
   return isLogin ? <UserAccountDropDown /> : <SignInButton />;
 }
 
