@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Input, Button, Container, Flex } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { rem } from "@mantine/core";
-import styles from "./searchBar.module.css";
 function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -17,7 +16,7 @@ function SearchBar() {
   };
 
   return (
-    <Container className={`${styles.search_bar_container}`}>
+    <Container mr={"5%"} ml={"5%"} w={"100%"}>
       <Flex>
         <Input
           placeholder="Search"
@@ -30,7 +29,7 @@ function SearchBar() {
           value={searchQuery}
           onChange={handleSearchInputChange}
           radius="xs"
-          className={`${styles.search_bar}`}
+          w={"100%"}
         />
         <Button
           onClick={handleSearchClick}
