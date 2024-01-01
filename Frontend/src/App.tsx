@@ -5,6 +5,8 @@ import MainPage from "./View/MainPage";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setIsMobile } from "./State/User/userSlice";
+import LoginView from "./View/Login";
+import ForgetPasswordView from "./View/ForgetPassword";
 
 function App() {
   const dispatch = useDispatch();
@@ -25,6 +27,8 @@ function App() {
     <>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/login" element={<LoginView />} />
+        <Route path="/forget-password" element={<ForgetPasswordView />} />
       </Routes>
     </>
   );

@@ -1,0 +1,21 @@
+.tab {
+  border-bottom: 1px;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-color: gray;
+  border-style: solid;
+}
+
+.activeTab {
+    border-bottom: 3px;
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+    border-color: gray;
+    border-style: solid;
+}
+
+.activeTabBorder {
+    margin-bottom: -1px;
+}
