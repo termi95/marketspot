@@ -2,7 +2,7 @@ import { Container, Stack } from "@mantine/core";
 import BottomBar from "../../Components/BottomBar";
 import TopBar from "../../Components/TopBar";
 
-function MainPage() {
+function MainView() {
   return (
     <>
       <Stack
@@ -27,4 +27,4 @@ function MainPage() {
   );
 }
 
-export default MainPage;
+export default MainView;

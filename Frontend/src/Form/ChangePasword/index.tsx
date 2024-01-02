@@ -1,18 +1,15 @@
-import {
-  Button,
-  Input,
-  PasswordInput,
-  Popover,
-  Progress,
-  Stack,
-  TextInput,
-} from "@mantine/core";
+import { Button, PasswordInput, Popover, Progress, Stack } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
-import PasswordRequirement from "../../Components/PasswordRequirement";
-import { getStrength, requirements } from "../../Helpers/Password";
 import { useState } from "react";
+import { requirements, getStrength } from "../../Helpers/Password";
+import PasswordRequirement from "../../Components/PasswordRequirement";
 
-function RegisterForm() {
+interface Props {
+  id: string | undefined;
+}
+
+function ChangePasword({ id }: Props) {
+  console.log(id);
   const { hovered, ref } = useHover<HTMLButtonElement>();
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [value, setValue] = useState("");
@@ -28,15 +25,6 @@ function RegisterForm() {
   const color = strength === 100 ? "teal" : strength > 50 ? "yellow" : "red";
   return (
     <Stack w={"90%"} m={"auto"} pt={"15px"} pb={"25px"}>
-      <Input.Wrapper label="First name" style={{ textAlign: "start" }} required>
-        <TextInput placeholder="First name"></TextInput>
-      </Input.Wrapper>
-      <Input.Wrapper label="Last name" style={{ textAlign: "start" }}>
-        <TextInput placeholder="Last name"></TextInput>
-      </Input.Wrapper>
-      <Input.Wrapper label="E-mail" style={{ textAlign: "start" }} required>
-        <TextInput placeholder="Your email"></TextInput>
-      </Input.Wrapper>
       <Popover
         opened={popoverOpened}
         position="bottom"
@@ -79,4 +67,4 @@ function RegisterForm() {
   );
 }
 
-export default RegisterForm;
+export default ChangePasword;

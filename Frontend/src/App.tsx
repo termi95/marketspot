@@ -1,12 +1,13 @@
 import "@mantine/core/styles.css";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import MainPage from "./View/MainPage";
+import MainView from "./View/Main";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setIsMobile } from "./State/User/userSlice";
 import LoginView from "./View/Login";
 import ForgetPasswordView from "./View/ForgetPassword";
+import ChangePasswordView from "./View/ChangePasswordView";
 
 function App() {
   const dispatch = useDispatch();
@@ -24,13 +25,12 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/login" element={<LoginView />} />
-        <Route path="/forget-password" element={<ForgetPasswordView />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<MainView />} />
+      <Route path="/login" element={<LoginView />} />
+      <Route path="/forget-password" element={<ForgetPasswordView />} />
+      <Route path="/change-password/:id" element={<ChangePasswordView />} />
+    </Routes>
   );
 }
 
