@@ -14,15 +14,15 @@ function LoginView() {
       bg={"var(--main-color)"}
       w={"100vw"}
       maw={"100vw"}
-      h={"100vh"}
+      mih={"100vh"}
       m={"0px"}
     >
-      <Center h={"100%"}>
+      <Center mih={"100vh"} pt={"20px"}>
         <Box
           bg={"white"}
           style={{ borderRadius: "3%" }}
           w={isMobile ? "100%" : "25%"}
-          h={"80%"}
+          pb={isMobile ? "15%" : "5%"}
         >
           <Text fw={700} p={"10px"} size="xl" pb={"10%"} pt={"5%"}>
             Market Spot

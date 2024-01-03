@@ -8,12 +8,11 @@ function MainView() {
       <Stack
         justify="space-between"
         w="100vw"
-        h="100vh"
         style={{ gap: "unset" }}
       >
         <TopBar />
         <Container
-          h="100%"
+          h="100vh"
           w="95vw"
           p={0}
           bg={"var(--background-color)"}

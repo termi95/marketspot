@@ -51,7 +51,7 @@ function ChangePasword({ id }: Props) {
           <Progress color={color} value={strength} size={5} mb="xs" />
           <PasswordRequirement
             label="Includes at least 8 characters"
-            meets={value.length > 5}
+            meets={value.length > 7}
           />
           {checks}
         </Popover.Dropdown>
