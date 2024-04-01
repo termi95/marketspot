@@ -1,31 +1,30 @@
 using backend.Model.User;
 using backend.Services;
+using Marketspot.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
 {
     [Route("api/[controller]")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
     [ApiController]
-    public class UserController : Controller
+    public class UserController(UserService userService) : Controller
     {
-        private readonly IUserService _userService;
+        private readonly UserService _userService = userService;
 
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
-
-        [HttpPost, Route("login")]
+        [HttpPost, Route("login"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public ActionResult Post([FromBody] LoginUserDto user)
         {
             return Ok(_userService.Login(user));
         }
 
-        [HttpPost, Route("register")]
-        public ActionResult Post([FromBody] RegisterUserDto user)
+        [HttpPost, Route("register"), ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
+        public async Task<ActionResult> Post([FromBody] RegisterUserDto user)
         {
-            _userService.Register(user);
-            return Ok();
+            var response = await _userService.Register(user);
+            return StatusCode((int)response.StatusCode, response);
         }
     }
 }
