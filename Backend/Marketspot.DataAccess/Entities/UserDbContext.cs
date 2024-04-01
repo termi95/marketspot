@@ -2,9 +2,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Entities
 {
-    public class UserDbContext : DbContext
+    public class UserDbContext(DbContextOptions options) : DbContext(options)
     {
-        public UserDbContext(DbContextOptions options) : base(options) { }
         public DbSet<User> Users { get; set; }
     }
 }

@@ -8,10 +8,10 @@ namespace backend.Entities
     public class User
     {
         [Key]
-        public int Id { get; set; }
-        [NotNull]
+        public Guid Id { get; set; }
+        [NotNull, MaxLength(128)]
         public string Name { get; set; }
-        [AllowNull]
+        [AllowNull, MaxLength(128)]
         public string Surname { get; set; }
         [MaxLength(128), NotNull]
         public string Email { get; set; }

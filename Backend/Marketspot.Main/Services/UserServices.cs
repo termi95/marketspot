@@ -1,9 +1,10 @@
 using AutoMapper;
 using backend.Entities;
-using backend.Exceptions;
 using backend.Model.User;
 using Marketspot.Model;
+using Marketspot.Validator.Validator;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -21,11 +22,23 @@ namespace backend.Services
         public async Task<ApiResponse> Register(RegisterUserDto dto)
         {
             var response = new ApiResponse();
+            var registerValidator = new RegisterUserValidator();
+            var validation = await registerValidator.ValidateAsync(dto);
+            if (!validation.IsValid)
+            {
+                response.ErrorsMessages.AddRange(validation.Errors.Select(x => x.ErrorMessage));
+                return response;
+            }
+
+            bool isEmailTaken = await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == dto.Email) is not null;
+            if (isEmailTaken)
+            {
+                response.ErrorsMessages.Add($"Email \"{dto.Email}\" is taken.");
+                return response;
+            }
+
             var user = _mapper.Map<User>(dto);
-
-            var hashedPassword = _passwordHasher.HashPassword(user, dto.Password);
-
-            user.Password = hashedPassword;
+            user.Password = _passwordHasher.HashPassword(user, dto.Password);
 
             await _context.Users.AddAsync(user);
             try
@@ -44,11 +57,11 @@ namespace backend.Services
 
         public string Login(LoginUserDto dto)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == dto.Email) ?? throw new BadRequestException("User or password are incorrect.");
-            if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
-            {
-                throw new BadRequestException("User or password are incorrect.");
-            }
+            var user = _context.Users.FirstOrDefault(u => u.Email == dto.Email);
+            //if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
+            //{
+            //    throw new BadRequestException("User or password are incorrect.");
+            //}
 
             var claims = new List<Claim>()
             {

@@ -2,9 +2,12 @@ using backend;
 using backend.Entities;
 using backend.Services;
 using Backend;
+using FluentValidation;
+using Marketspot.Validator.Validator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +32,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 // Add services to the container.
-
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<UserService>();
