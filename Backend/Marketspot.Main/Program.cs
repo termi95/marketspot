@@ -2,12 +2,10 @@ using backend;
 using backend.Entities;
 using backend.Services;
 using Backend;
-using FluentValidation;
-using Marketspot.Validator.Validator;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,7 +28,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = authenticationSettings.JwtIssuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey!)),
     };
-});
+}).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+        options => builder.Configuration.Bind("CookieSettings", options));
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -40,7 +39,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddCors(options => options.AddPolicy("FrontEndClient", builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://127.0.0.1:5173")));
+builder.Services.AddCors(options => options.AddPolicy("FrontEndClient", builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins(["https://127.0.0.1:5173", "http://127.0.0.1:5173", "http://localhost:5173", "https://localhost:5173"])));
 
 var app = builder.Build();
 

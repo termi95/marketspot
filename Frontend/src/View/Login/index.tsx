@@ -58,7 +58,7 @@ function LoginView() {
               />
             </Box>
           </Group>
-          {isLoginTabActive ? <LoginForm /> : <RegisterForm />}
+          {isLoginTabActive ? <LoginForm /> : <RegisterForm toggleForm={setIsLoginTabActive}/>}
         </Box>
       </Center>
     </Container>

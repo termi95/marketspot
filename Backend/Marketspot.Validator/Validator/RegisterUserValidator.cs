@@ -8,15 +8,19 @@ namespace Marketspot.Validator.Validator
         public RegisterUserValidator()
         {
             RuleFor(x => x.Email)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .MaximumLength(128)
                 .EmailAddress();
             RuleFor(x => x.Name)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .MaximumLength(128);
             RuleFor(x => x.Surname)
+                .Cascade(CascadeMode.Stop)
                 .MaximumLength(128);
             RuleFor(x => x.Password)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .MinimumLength(8)
                 .Matches("[A-Z]").WithMessage("'{PropertyName}' must contain one or more capital letters.")
