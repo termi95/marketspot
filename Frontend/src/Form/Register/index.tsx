@@ -20,7 +20,9 @@ interface Props {
 }
 
 function RegisterForm({ toggleForm }: Props) {
-  const { Register, RegisterOnEnter } = UseRegisterForm();
+  const { Register, RegisterOnEnter } = UseRegisterForm({
+    toggleForm,
+  });
   const { hovered, ref } = useHover<HTMLButtonElement>();
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [password, setPassword] = useState("");

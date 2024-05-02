@@ -27,7 +27,7 @@ export function Api() {
     }
     const respone = await fetch(url.toString(), requestConfig);
 
-    const apiResponse = await respone.json() as unknown as ApiResponse;
+    const apiResponse = (await respone.json()) as unknown as ApiResponse;
     return apiResponse;
   }
 
@@ -35,15 +35,51 @@ export function Api() {
     localStorage.setItem("Token", token);
   }
 
+  function RemoveToken() {
+    localStorage.removeItem("Token");
+  }
+
   function GetToken() {
     try {
-      localStorage.getItem("Token");
+      return localStorage.getItem("Token");
     } catch (error) {
       return "";
     }
   }
+  function getExpiredDateOfToken(): number | undefined {
+    const token: string | null = GetToken();
+    if (token) {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join("")
+      );
+      const { exp } = JSON.parse(jsonPayload);
+      const expired = exp * 1000;
+      return expired;
+    }
+  }
+
+  function isTokenExpired() {
+    const expired = getExpiredDateOfToken();
+    if (expired) {
+      
+      console.log(!(Date.now() >= expired));
+      return Date.now() >= expired;
+    }
+    RemoveToken();
+    return false;
+  }
+
   return {
     Request,
     SaveToken,
+    RemoveToken,
+    isTokenExpired,
   };
 }

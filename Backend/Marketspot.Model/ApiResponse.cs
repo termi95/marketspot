@@ -8,7 +8,6 @@ namespace Marketspot.Model
         private HttpStatusCode _StatusCode = HttpStatusCode.BadRequest;
         public bool IsSuccess { get { return _IsSuccess; } set { _IsSuccess = value; } }
         public Object Result { get; set; } = null;
-        //public HttpStatusCode StatusCode { get { return _StatusCode; } set { _StatusCode = value; _IsSuccess = Enumerable.Range(200, 299).Contains((int)value); } }
         public List<string> ErrorsMessages { get; set; } = [];
 
         public void SetStatusCode(HttpStatusCode code)

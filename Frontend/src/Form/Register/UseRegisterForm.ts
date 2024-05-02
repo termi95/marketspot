@@ -7,7 +7,10 @@ import "@mantine/notifications/styles.css";
 
 const endPoint = "User/register";
 
-export function UseRegisterForm() {
+interface Props {
+  toggleForm: (flag: boolean) => void;
+}
+export function UseRegisterForm({ toggleForm }: Props) {
   const { Request } = Api();
   const { UpdateToSuccess, Loading, ErrorOrSucces } = Notification();
 
@@ -20,6 +23,7 @@ export function UseRegisterForm() {
       const respone = await Request(ReqType.POST, endPoint, user);
       if (respone.isSuccess) {
         UpdateToSuccess(toastId, responeMessage);
+        toggleForm(true)
         return true;
       }
       responeMessage = respone.errorsMessages.join("\r\n");
