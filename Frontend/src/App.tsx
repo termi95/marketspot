@@ -21,6 +21,8 @@ function App() {
   function isLogin() {
     if (!isTokenExpired()) {
       dispatch(setIsLogin(true));
+    } else {
+      dispatch(setIsLogin(false));
     }
   }
   useEffect(() => {

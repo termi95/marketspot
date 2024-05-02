@@ -68,12 +68,10 @@ export function Api() {
   function isTokenExpired() {
     const expired = getExpiredDateOfToken();
     if (expired) {
-      
-      console.log(!(Date.now() >= expired));
       return Date.now() >= expired;
     }
     RemoveToken();
-    return false;
+    return true;
   }
 
   return {

@@ -1,14 +1,16 @@
 import { Button, Container, Group, Menu, Text, rem } from "@mantine/core";
 import {
-  IconCalendar,
   IconChevronDown,
+  IconLogout,
   IconPackage,
   IconSquareCheck,
   IconUser,
   IconUserCircle,
 } from "@tabler/icons-react";
+import UseUserAccountDropDown from "./useUserAccountDropDown";
 
 function UserAccountDropDown() {
+  const { LogOut } = UseUserAccountDropDown();
   return (
     <Container mr="15px">
       <Menu
@@ -34,11 +36,6 @@ function UserAccountDropDown() {
                 stroke={1.5}
               />
             }
-            rightSection={
-              <Text size="xs" tt="uppercase" fw={700} c="dimmed">
-                Ctrl + P
-              </Text>
-            }
           >
             Project
           </Menu.Item>
@@ -48,11 +45,6 @@ function UserAccountDropDown() {
                 style={{ width: rem(16), height: rem(16) }}
                 stroke={1.5}
               />
-            }
-            rightSection={
-              <Text size="xs" tt="uppercase" fw={700} c="dimmed">
-                Ctrl + T
-              </Text>
             }
           >
             Task
@@ -64,28 +56,19 @@ function UserAccountDropDown() {
                 stroke={1.5}
               />
             }
-            rightSection={
-              <Text size="xs" tt="uppercase" fw={700} c="dimmed">
-                Ctrl + U
-              </Text>
-            }
           >
             Team
           </Menu.Item>
           <Menu.Item
             leftSection={
-              <IconCalendar
+              <IconLogout
                 style={{ width: rem(16), height: rem(16) }}
                 stroke={1.5}
               />
             }
-            rightSection={
-              <Text size="xs" tt="uppercase" fw={700} c="dimmed">
-                Ctrl + E
-              </Text>
-            }
+            onClick={LogOut}
           >
-            Event
+            Logout
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
