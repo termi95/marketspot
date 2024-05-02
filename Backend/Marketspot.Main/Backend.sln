@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketspot.Model", "..\Mark
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketspot.DataAccess", "..\Marketspot.DataAccess\Marketspot.DataAccess.csproj", "{58742928-16FE-4030-A2D5-E4800B2089CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketspot.Validator", "..\Marketspot.Validator\Marketspot.Validator.csproj", "{B7786D70-989B-4781-B7C5-EAF4D71E96B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Marketspot.Validator", "..\Marketspot.Validator\Marketspot.Validator.csproj", "{B7786D70-989B-4781-B7C5-EAF4D71E96B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Marketspot.EmailSender", "..\Marketspot.EmailSender\Marketspot.EmailSender.csproj", "{69EA772D-8CC9-4737-A647-7B599B37DFB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{B7786D70-989B-4781-B7C5-EAF4D71E96B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7786D70-989B-4781-B7C5-EAF4D71E96B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7786D70-989B-4781-B7C5-EAF4D71E96B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69EA772D-8CC9-4737-A647-7B599B37DFB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69EA772D-8CC9-4737-A647-7B599B37DFB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69EA772D-8CC9-4737-A647-7B599B37DFB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69EA772D-8CC9-4737-A647-7B599B37DFB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

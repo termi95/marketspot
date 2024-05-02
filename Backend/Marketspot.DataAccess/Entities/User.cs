@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace backend.Entities
 {
-    [Index(nameof(Email))]
+    [Index(nameof(Email), IsUnique = true)]
     public class User
     {
         [Key]
@@ -17,6 +17,10 @@ namespace backend.Entities
         public string Email { get; set; }
         [NotNull]
         public string Password { get; set; }
+        [AllowNull]
+        public Guid PasswordChangeToken { get; set; }
+        [AllowNull]
+        public DateTime PasswordAllowTimeToChange { get; set; }
 
     }
 }

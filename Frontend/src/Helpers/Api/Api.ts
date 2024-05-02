@@ -15,6 +15,7 @@ export function Api() {
       mode: "cors",
       headers: new Headers({
         Accept: "application/json",
+        credentials: "same-origin",
         "content-type": "application/json; charset=UTF-8",
         Authorization: `Bearer ${GetToken()}`,
       }),

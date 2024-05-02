@@ -83,6 +83,7 @@ function RegisterForm({ toggleForm }: Props) {
           error={!valid}
           placeholder="Your email"
           label="E-mail"
+          required
           leftSection={<IconAt style={{ width: rem(18), height: rem(18) }} />}
           onChange={(event) => setEmail(event.currentTarget.value)}
         />

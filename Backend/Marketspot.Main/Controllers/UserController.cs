@@ -1,6 +1,7 @@
 using backend.Model.User;
 using backend.Services;
 using Marketspot.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -13,16 +14,31 @@ namespace backend.Controllers
         readonly UserService _userService = userService;
 
         [HttpPost, Route("login"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public ActionResult Post([FromBody] LoginUserDto user)
+        public async Task<ActionResult> Login([FromBody] LoginUserDto user)
         {
-            return Ok(_userService.Login(user));
+            var response = await _userService.Login(user);
+            return StatusCode(response.GetStatusCode(), response);
         }
 
         [HttpPost, Route("register"), ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
-        public async Task<ActionResult> Post([FromBody] RegisterUserDto user)
+        public async Task<ActionResult> Register([FromBody] RegisterUserDto user)
         {
             var response = await _userService.Register(user);
-            return StatusCode((int)response.StatusCode, response);
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
+        [HttpPost, Route("change-password-request"), ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
+        public async Task<ActionResult> ChangePasswordRequest([FromBody] ChangePasswordRequestDto email)
+        {
+            var response = await _userService.ChangePasswordRequest(email);
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
+        [HttpPost, Route("change-password"), ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
+        public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            var response = await _userService.ChangePassword(dto);
+            return StatusCode(response.GetStatusCode(), response);
         }
     }
 }

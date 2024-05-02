@@ -17,8 +17,11 @@ const userSlice = createSlice({
     setIsMobile: (state, actions: PayloadAction<boolean>) => {
       state.isMobile = actions.payload;
     },
+    setIsLogin: (state, actions: PayloadAction<boolean>) => {
+      state.isLogin = actions.payload;
+    },
   },
 });
 
-export const { setIsMobile } = userSlice.actions;
+export const { setIsMobile, setIsLogin } = userSlice.actions;
 export default userSlice.reducer;
