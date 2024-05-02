@@ -5,6 +5,7 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <InvariantGlobalization>true</InvariantGlobalization>
+	<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,12 @@
     <ProjectReference Include="..\Marketspot.EmailSender\Marketspot.EmailSender.csproj" />
     <ProjectReference Include="..\Marketspot.Model\Marketspot.Model.csproj" />
     <ProjectReference Include="..\Marketspot.Validator\Marketspot.Validator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettingsexample.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
