@@ -1,28 +1,22 @@
 import { Button, PasswordInput, Popover, Progress, Stack } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { useState } from "react";
-import { requirements, getStrength } from "../../Helpers/Password";
+import { getStrength } from "../../Helpers/Password";
 import PasswordRequirement from "../../Components/PasswordRequirement";
 import { UseChangePassword } from "./UseChangePassword";
+import { PasswordReqChecker } from "../../Components/PasswordReqChecker";
 
 interface Props {
   id: string | undefined;
 }
 
 function ChangePasword({ id }: Props) {
-  console.log(id);
   const _PasswordChangeToken: string = id === undefined ? "" : id!;
   const { hovered, ref } = useHover<HTMLButtonElement>();
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [value, setValue] = useState("");
   const { ChangePassword, ChangePasswordOnEnter } = UseChangePassword();
-  const checks = requirements().map((requirement, index) => (
-    <PasswordRequirement
-      key={index}
-      label={requirement.label}
-      meets={requirement.re.test(value)}
-    />
-  ));
+  const checks = PasswordReqChecker(value);
 
   const strength = getStrength(value);
   const color = strength === 100 ? "teal" : strength > 50 ? "yellow" : "red";

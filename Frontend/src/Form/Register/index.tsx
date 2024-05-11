@@ -9,11 +9,12 @@ import {
 } from "@mantine/core";
 import { useHover, useValidatedState } from "@mantine/hooks";
 import PasswordRequirement from "../../Components/PasswordRequirement";
-import { getStrength, requirements } from "../../Helpers/Password";
+import { getStrength } from "../../Helpers/Password";
 import { useState } from "react";
 import { UseRegisterForm } from "./UseRegisterForm";
 import { IUserRegister } from "../../Types/User";
 import { IconAt, IconLock, IconUser } from "@tabler/icons-react";
+import { PasswordReqChecker } from "../../Components/PasswordReqChecker";
 
 interface Props {
   toggleForm: (flag: boolean) => void;
@@ -30,16 +31,10 @@ function RegisterForm({ toggleForm }: Props) {
   const [surname, setSurname] = useState("");
   const [{ value, valid }, setEmail] = useValidatedState(
     "",
-    (val) => /^\S+@\S+$/.test(val),
+    (val) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val),
     true
   );
-  const checks = requirements().map((requirement, index) => (
-    <PasswordRequirement
-      key={index}
-      label={requirement.label}
-      meets={requirement.re.test(password)}
-    />
-  ));
+  const checks = PasswordReqChecker(password);
 
   const strength = getStrength(password);
   const color = strength === 100 ? "teal" : strength > 50 ? "yellow" : "red";

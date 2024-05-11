@@ -14,10 +14,17 @@ namespace Backend.Controllers
 
         readonly CategoryServices _categoryServices = categoryServices;
 
-        [HttpPost, Route("login"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Login([FromBody] LoginUserDto user)
+        [HttpPost, Route("AddCategory"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> AddCategory([FromBody] LoginUserDto user)
         {
-            var response = await _categoryServices.Login(user);
+            var response = await _categoryServices.AddCategory();
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
+        [HttpPost, Route("GetCategoryByParentId"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetCategoryByParentId([FromBody] LoginUserDto user)
+        {
+            var response = await _categoryServices.GetCategoryByParentId(user);
             return StatusCode(response.GetStatusCode(), response);
         }
     }
