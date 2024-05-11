@@ -1,14 +1,16 @@
-import { Group } from "@mantine/core";
+import { Box, Group, Image, Text } from "@mantine/core";
 import logo from "../../assets/logo.svg";
 import styles from "./logo.module.css";
 function Logo() {
   return (
     <>
       <Group>
-        <img src={logo} alt="Market spot logo" className={styles.logo} />
-        <span>
-          <h1 className="text-white">Market Spot</h1>
-        </span>
+        <Image src={logo} alt="Market spot logo" className={styles.logo} />
+        <Box>
+          <Text size="xl" fw={900} className="text-white">
+            Market Spot
+          </Text>
+        </Box>
       </Group>
     </>
   );

@@ -3,7 +3,6 @@ import { useHover } from "@mantine/hooks";
 import { IconAt, IconLock } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { UseLoginForm } from "./UseLoginForm";
-import { IUserLogin } from "../../Types/User";
 
 function LoginForm() {
   const { hovered, ref } = useHover<HTMLButtonElement>();
@@ -12,13 +11,7 @@ function LoginForm() {
   return (
     <form
       onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
-        await LoginOnEnter(
-          {
-            Password: password,
-            Email: email,
-          } as IUserLogin,
-          e
-        );
+        await LoginOnEnter({ Password: password, Email: email }, e);
       }}
     >
       <Stack w={"90%"} m={"auto"} pt={"15px"} pb={"25px"}>
@@ -52,10 +45,7 @@ function LoginForm() {
           variant={hovered ? "outline" : "filled"}
           ref={ref}
           onClick={async () => {
-            await Login({
-              Password: password,
-              Email: email,
-            } as IUserLogin);
+            await Login({ Password: password, Email: email });
           }}
         >
           Submit

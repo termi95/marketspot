@@ -1,7 +1,6 @@
 using backend.Model.User;
 using backend.Services;
 using Marketspot.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -27,14 +26,14 @@ namespace backend.Controllers
             return StatusCode(response.GetStatusCode(), response);
         }
 
-        [HttpPost, Route("change-password-request"), ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
+        [HttpPost, Route("change-password-request"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> ChangePasswordRequest([FromBody] ChangePasswordRequestDto email)
         {
             var response = await _userService.ChangePasswordRequest(email);
             return StatusCode(response.GetStatusCode(), response);
         }
 
-        [HttpPost, Route("change-password"), ProducesResponseType<ApiResponse>(StatusCodes.Status201Created)]
+        [HttpPost, Route("change-password"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
         {
             var response = await _userService.ChangePassword(dto);

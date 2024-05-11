@@ -1,14 +1,25 @@
-export interface IUserRegister {    
-    Name: string;
-    Surname: string;
-    Email: string;
-    Password: string;
+export interface IUserRegister {
+  Name: string;
+  Surname: string;
+  Email: string;
+  Password: string;
 }
 
 export interface IUserLogin {
-    Email: string;
-    Password: string;
+  Email: string;
+  Password: string;
 }
+
 export interface IUserChangePasswordRequest {
-    Email: string;
+  Email: string;
+}
+
+export interface IUserChangePassword {
+  Password: string;
+  PasswordChangeToken: string;
+}
+
+export enum UserRole {
+  User = 0,
+  Admin = 1,
 }

@@ -47,15 +47,7 @@ function RegisterForm({ toggleForm }: Props) {
     <form
       onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
         if (
-          await RegisterOnEnter(
-            {
-              Password: password,
-              Email: value,
-              Name: name,
-              Surname: surname,
-            } as IUserRegister,
-            e
-          )
+          await RegisterOnEnter({Password: password,Email: value,Name: name,Surname: surname,},e)
         ) {
           toggleForm(true);
         }

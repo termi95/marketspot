@@ -2,7 +2,6 @@ import { Button, Stack, TextInput, rem } from "@mantine/core";
 import { useHover } from "@mantine/hooks";
 import { UseForgetForm } from "./UseForgetForm";
 import { IconAt } from "@tabler/icons-react";
-import { IUserChangePasswordRequest } from "../../Types/User";
 
 function ForgetPasswordForm() {
   const { hovered, ref } = useHover<HTMLButtonElement>();
@@ -10,12 +9,7 @@ function ForgetPasswordForm() {
   return (
     <form
       onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
-        await SendRequestOnEnter(
-          {
-            Email: email,
-          } as IUserChangePasswordRequest,
-          e
-        );
+        await SendRequestOnEnter({ Email: email }, e);
       }}
     >
       <Stack w={"90%"} m={"auto"} pt={"15px"} pb={"25px"}>
@@ -33,9 +27,7 @@ function ForgetPasswordForm() {
           variant={hovered ? "outline" : "filled"}
           ref={ref}
           onClick={async () => {
-            await SendRequest({
-              Email: email,
-            } as IUserChangePasswordRequest);
+            await SendRequest({Email: email,});
           }}
         >
           Submit

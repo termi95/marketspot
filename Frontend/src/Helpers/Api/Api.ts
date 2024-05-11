@@ -1,8 +1,13 @@
 import { ApiResponse } from "../../Types/ApiResponse";
 import { ReqType } from "../../Types/Configuration";
+import { INotyfication } from "../../Types/Notyfication";
+import { UserRole } from "../../Types/User";
 import { config } from "../../configuration";
+import { Notification } from "../Notification/Notification";
+import { v4 as uuidv4 } from "uuid";
 
 export function Api() {
+  const { Loading, ErrorOrSucces } = Notification();
   const _baseUrl = config.url;
   async function Request(
     method: string,
@@ -65,7 +70,7 @@ export function Api() {
     }
   }
 
-  function isTokenExpired() {
+  function isTokenExpired(): boolean {
     const expired = getExpiredDateOfToken();
     if (expired) {
       return Date.now() >= expired;
@@ -73,11 +78,51 @@ export function Api() {
     RemoveToken();
     return true;
   }
+  async function PostRequest<T>(
+    { Title, Message, SuccessMessage }: INotyfication,
+    endpoint: string,
+    payload: object
+  ) {
+    const toastId = uuidv4();
+    let isError = false;
+    let responeMessage = SuccessMessage;
+    let result = undefined;
+    Loading(toastId, Title, Message);
+    try {
+      const respone = await Request(ReqType.POST, endpoint, payload);
+      if (!respone.isSuccess) {
+        responeMessage = respone.errorsMessages.join("\r\n");
+        isError = true;
+      } else {
+        result = <T>respone.result;
+      }
+    } catch (error) {
+      responeMessage = (error as Error).message;
+      isError = true;
+    } finally {
+      ErrorOrSucces(toastId, responeMessage, isError);
+    }
+    return { isError, result };
+  }
 
+  function GetUserRole() {
+    const token: string | null = GetToken();
+    if (token) {
+      const parts: string[] = token.split(".");
+      const payload = JSON.parse(atob(parts[1]));
+      const role: UserRole =
+      payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      return role !== undefined ? role : UserRole.User; 
+    } else {
+      return UserRole.User;
+    }
+  }
   return {
     Request,
     SaveToken,
     RemoveToken,
     isTokenExpired,
+    PostRequest,
+    GetUserRole,
   };
 }

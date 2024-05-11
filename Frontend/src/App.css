@@ -32,3 +32,15 @@ a:visited {
   color: #128797;
   text-decoration: none;
 }
+
+.pos-rel {
+  position: relative;
+}
+
+.pos-abs {
+  position: absolute;
+}
+
+.text-start {
+  text-align: start;
+}

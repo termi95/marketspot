@@ -1,47 +1,32 @@
 import { Api } from "../../Helpers/Api/Api";
-import { Notification } from "../../Helpers/Notification/Notification";
-import { ReqType } from "../../Types/Configuration";
 import { IUserRegister } from "../../Types/User";
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
+import { INotyfication } from "../../Types/Notyfication";
 
-const endPoint = "User/register";
+const Endpoint =  "User/register";
+const ForgetNotification : INotyfication={Title:"Register", Message:"Register is procesing.", SuccessMessage:"Registered successfully."}
 
 interface Props {
   toggleForm: (flag: boolean) => void;
 }
 export function UseRegisterForm({ toggleForm }: Props) {
-  const { Request } = Api();
-  const { UpdateToSuccess, Loading, ErrorOrSucces } = Notification();
+  const { PostRequest } = Api();
 
   async function Register(user: IUserRegister) {
-    const toastId = "Register";
-    let isError = false;
-    let responeMessage = "Registered successfully.";
-    Loading(toastId, "Register", "Register is procesing.");
-    try {
-      const respone = await Request(ReqType.POST, endPoint, user);
-      if (respone.isSuccess) {
-        UpdateToSuccess(toastId, responeMessage);
-        toggleForm(true)
-        return true;
-      }
-      responeMessage = respone.errorsMessages.join("\r\n");
-      isError = true;
-    } catch (error) {
-      responeMessage = (error as Error).message;
-      isError = true;
-    } finally {
-      ErrorOrSucces(toastId, responeMessage, isError);
+    const reqResult = await PostRequest<object>(ForgetNotification, Endpoint, user)
+    if (!reqResult.isError) {
+      toggleForm(true);
     }
-    return false;
   }
+  
   async function RegisterOnEnter(
     user: IUserRegister,
     e: React.KeyboardEvent<HTMLElement>
   ) {
     const { key } = e;
-    if (key === "Enter") {
+    if (key === "Enter") {        
+      e.preventDefault();
       return await Register(user);
     }
     return false;

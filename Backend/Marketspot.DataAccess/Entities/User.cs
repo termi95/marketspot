@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using static Marketspot.Model.User.UserEnum;
 
 namespace backend.Entities
 {
@@ -20,7 +21,10 @@ namespace backend.Entities
         [AllowNull]
         public Guid PasswordChangeToken { get; set; }
         [AllowNull]
-        public DateTime PasswordAllowTimeToChange { get; set; }
+        public DateTime PasswordAllowTimeToChange { get; set; } = DateTime.MinValue;
+
+        [NotNull]
+        public UserRoles Roles { get; set; } = UserRoles.User;
 
     }
 }

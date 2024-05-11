@@ -13,6 +13,7 @@ namespace Marketspot.Validator
                 string validatorName = dto.GetType().Name.Replace("Dto", "Validator");
                 Assembly assemblyValidator = Assembly.Load("Marketspot.Validator");
                 Type type = assemblyValidator.DefinedTypes.Where(x => x.Name == validatorName).First();
+                Console.WriteLine(type.Name);
                 object validator = Activator.CreateInstance(type);
 
                 MethodInfo method = validator.GetType().GetMethod("ValidateAsync", [dto.GetType(), typeof(CancellationToken)]);

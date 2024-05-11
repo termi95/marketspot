@@ -77,6 +77,7 @@ namespace backend.Services
             {
                 new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new(ClaimTypes.Name, user.Name.ToString()),
+                new(ClaimTypes.Role, Convert.ChangeType(user.Roles, user.Roles.GetTypeCode()).ToString()),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey!));
@@ -136,16 +137,22 @@ namespace backend.Services
             {
                 return response;
             }
+            User? user = null;
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.PasswordChangeToken.ToString() == dto.PasswordChangeToken && u.PasswordAllowTimeToChange > DateTime.Now);
-            if (user is null)
+            try
+            {
+                user = await _context.Users.FindAsync(dto.PasswordChangeToken);
+            }
+            catch{}
+
+            if (user is null || user.PasswordAllowTimeToChange > DateTime.Now)
             {
                 response.ErrorsMessages.Add("User not found or time to change password expire.");
                 return response;
             }
             user.Password = _passwordHasher.HashPassword(user, dto.Password);
+            user.PasswordAllowTimeToChange = DateTime.MinValue;
 
-            await _context.Users.AddAsync(user);
             try
             {
                 await _context.SaveChangesAsync();
