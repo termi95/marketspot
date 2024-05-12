@@ -7,7 +7,7 @@ import { Notification } from "../Notification/Notification";
 import { v4 as uuidv4 } from "uuid";
 
 export function Api() {
-  const { Loading, ErrorOrSucces } = Notification();
+  const { Loading, ErrorOrSucces, ShowError } = Notification();
   const _baseUrl = config.url;
   async function Request(
     method: string,
@@ -79,7 +79,7 @@ export function Api() {
     return true;
   }
   async function PostRequest<T>(
-    { Title, Message, SuccessMessage }: INotyfication,
+    { Title, Message, SuccessMessage, OnlyError = false }: INotyfication,
     endpoint: string,
     payload: object
   ) {
@@ -87,7 +87,9 @@ export function Api() {
     let isError = false;
     let responeMessage = SuccessMessage;
     let result = undefined;
-    Loading(toastId, Title, Message);
+    if (!OnlyError) {
+      Loading(toastId, Title, Message);      
+    }
     try {
       const respone = await Request(ReqType.POST, endpoint, payload);
       if (!respone.isSuccess) {
@@ -100,7 +102,12 @@ export function Api() {
       responeMessage = (error as Error).message;
       isError = true;
     } finally {
-      ErrorOrSucces(toastId, responeMessage, isError);
+      if (!OnlyError) {
+        ErrorOrSucces(toastId, responeMessage, isError);        
+      }
+      else {
+        ShowError("Error", responeMessage)
+      }
     }
     return { isError, result };
   }

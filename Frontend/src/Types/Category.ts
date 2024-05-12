@@ -1,12 +1,16 @@
 export interface ICategory {
-  Id: string;
-  ParentId: string;
-  Name: string;
+  id: string;
+  parentId: string;
+  name: string;
 }
 export interface IAddOrUpdateCategory {
-  ParentId: string;
-  Name: string;
+  parentId: string;
+  name: string;
 }
 export interface IDeleteCategory {
-  Id: string;
+  id: string;
+}
+
+export interface IGetCategory {
+  parentId: string;
 }

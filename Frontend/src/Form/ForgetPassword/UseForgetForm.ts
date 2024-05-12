@@ -9,6 +9,7 @@ const ForgetNotification: INotyfication = {
   Title: "Request",
   Message: "Request is procesing.",
   SuccessMessage: "Request was send successfully.",
+  OnlyError: false,
 };
 
 export function UseForgetForm() {

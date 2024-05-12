@@ -20,11 +20,14 @@ namespace Backend.Services
                 return response;
             }
 
-            if (await IsAuthorized(userId,response))
+            if (await IsAuthorized(userId, response))
             {
                 return response;
             }
-
+            if (string.IsNullOrEmpty(dto.ParentId))
+            {
+                dto.ParentId = Guid.Empty.ToString();
+            }
             Category category = _mapper.Map<Category>(dto);
             _context.Categories.Add(category);
             try
@@ -33,16 +36,41 @@ namespace Backend.Services
             }
             catch (Exception e)
             {
-                response.ErrorsMessages.Add(e.Message);
+
+                if (e.InnerException is not null && e.InnerException.Message.Contains("duplicate"))
+                {
+                    response.ErrorsMessages.Add($"Category or subcategory with name {dto.Name} already exist.");
+                }
+                else
+                {
+                    response.ErrorsMessages.Add(e.Message);
+                }
+                return response;
             }
             response.SetStatusCode(HttpStatusCode.Created);
             response.Result = category;
             return response;
         }
 
-        public ApiResponse GetCategoryByParentId()
+        public async Task<ApiResponse> GetCategoryByParentId(GetCategoryDto dto, string userId)
         {
             var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
+            if (await IsAuthorized(userId, response))
+            {
+                return response;
+            }
+
+            Guid parentId = string.IsNullOrEmpty(dto.ParentId) ? Guid.Empty : Guid.Parse(dto.ParentId);
+
+            var categories = _context.Categories.Where(x => x.ParentId == parentId).ToList();
+
+            response.SetStatusCode(HttpStatusCode.OK);
+            response.Result = categories;
             return response;
         }
 
@@ -54,7 +82,7 @@ namespace Backend.Services
         private async Task<bool> IsAuthorized(string userId, ApiResponse response)
         {
             var user = await GetUserById(userId);
-            bool isAuth = user is not null && user.Roles == UserEnum.UserRoles.Admin;
+            bool isAuth = user is not null && user.Roles != UserEnum.UserRoles.Admin;
             if (isAuth)
             {
                 response.SetStatusCode(HttpStatusCode.Unauthorized);

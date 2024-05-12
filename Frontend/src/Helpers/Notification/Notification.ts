@@ -68,7 +68,7 @@ export function Notification() {
       title: isError ? "Error" : "Success",
       withCloseButton: true,
       color: isError ?  "red" : "teal",
-      autoClose: isError ? false : 1000,
+      autoClose: isError ? false : 2000,
       loading: false,
     });
   }

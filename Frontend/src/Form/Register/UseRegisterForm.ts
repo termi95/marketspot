@@ -5,7 +5,7 @@ import "@mantine/notifications/styles.css";
 import { INotyfication } from "../../Types/Notyfication";
 
 const Endpoint =  "User/register";
-const ForgetNotification : INotyfication={Title:"Register", Message:"Register is procesing.", SuccessMessage:"Registered successfully."}
+const ForgetNotification : INotyfication={Title:"Register", Message:"Register is procesing.", SuccessMessage:"Registered successfully.", OnlyError: false}
 
 interface Props {
   toggleForm: (flag: boolean) => void;

@@ -1,8 +1,7 @@
 ﻿namespace Marketspot.Model.Category
 {
-    public class AddCategoryDto
+    public class GetCategoryDto
     {
         public string ParentId { get; set; }
-        public string Name { get; set; }
     }
 }

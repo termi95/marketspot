@@ -11,14 +11,15 @@ import MainPanel from "../../Components/MainPanel";
 import { UseAddingCategory } from "./UseAddingCategory";
 
 function AddingCategory() {
-  const {AddCategory,AddCategoryOnEnter, setNewCategoryName, categories, newCategory}= UseAddingCategory();
+  const {AddCategory,AddCategoryOnEnter, setNewCategoryName, categories, newCategory, parentId}= UseAddingCategory();
   function GetCategoryByParentId(parentId: string) {
     return categories
-      .filter((x) => x.ParentId === parentId)
+      .filter((x) => x.parentId === parentId)
       .map((x) => {
-        return [
+        console.log(x.parentId);
+        return ( 
           <Box
-            key={x.Id}
+            key={x.id}
             ml={rem(10)}
             p={rem(10)}
             bg={"white"}
@@ -28,12 +29,11 @@ function AddingCategory() {
               borderRadius: "var(--_input-radius)",
             }}
           >
-            {x.Name}
-          </Box>,
-        ];
+            {x.name}
+          </Box>);
       });
   }
-  const categoryGrid = GetCategoryByParentId("test");
+  const categoryGrid = GetCategoryByParentId(parentId);
 
   return (
     <MainPanel>
@@ -56,7 +56,7 @@ function AddingCategory() {
               await AddCategoryOnEnter({ ...newCategory }, e)
             }}
           >
-            <TextInput value={newCategory.Name} onChange={(event) => setNewCategoryName(event.currentTarget.value)} placeholder="Category name" w={"60%"} />
+            <TextInput value={newCategory.name} onChange={(event) => setNewCategoryName(event.currentTarget.value)} placeholder="Category name" w={"60%"} />
             <Button onClick={() => AddCategory({...newCategory})}>Add</Button>
           </Flex>
         </Box>

@@ -7,7 +7,7 @@ import { setIsLogin } from "../../State/User/userSlice";
 import { INotyfication } from "../../Types/Notyfication";
 
 const loginEndpoint =  "User/Login";
-const loginNotification : INotyfication={Title:"Login", Message:"Login is procesing.", SuccessMessage:"Logined successfully."}
+const loginNotification : INotyfication={Title:"Login", Message:"Login is procesing.", SuccessMessage:"Logined successfully.", OnlyError: false}
 
 export function UseLoginForm() {
   const { PostRequest, SaveToken } = Api();

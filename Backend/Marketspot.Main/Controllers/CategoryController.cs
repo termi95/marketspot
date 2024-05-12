@@ -25,9 +25,10 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Route("GetCategoryByParentId"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetCategoryByParentId([FromBody] LoginUserDto user)
+        public async Task<ActionResult> GetCategoryByParentId([FromBody] GetCategoryDto dto)
         {
-            var response = _categoryServices.GetCategoryByParentId();
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _categoryServices.GetCategoryByParentId(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
     }
