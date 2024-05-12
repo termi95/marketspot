@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using backend.Entities;
 using backend.Model.User;
+using Marketspot.Model.Category;
 
 namespace Backend
 {
@@ -9,6 +10,7 @@ namespace Backend
         public MappingConfig()
         {
             CreateMap<RegisterUserDto, User>();
+            CreateMap<AddCategoryDto, Category>();
         }
     }
 }

@@ -1,12 +1,12 @@
 export interface ICategory {
-  Uid: string;
-  ParentUid: string;
+  Id: string;
+  ParentId: string;
   Name: string;
 }
 export interface IAddOrUpdateCategory {
-  ParentUid: string;
+  ParentId: string;
   Name: string;
 }
 export interface IDeleteCategory {
-  Uid: string;
+  Id: string;
 }

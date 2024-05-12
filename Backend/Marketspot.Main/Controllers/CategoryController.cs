@@ -3,28 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using backend.Model.User;
 using Backend.Services;
+using Marketspot.Model.Category;
+using System.Security.Claims;
 
 namespace Backend.Controllers
 {
     [ApiController, Route("api/[controller]")]
     [Consumes("application/json"), Produces("application/json")]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
-    public class CategoryController(CategoryServices categoryServices) : Controller
+    public class CategoryController(CategoryService categoryServices) : Controller
     {
 
-        readonly CategoryServices _categoryServices = categoryServices;
+        readonly CategoryService _categoryServices = categoryServices;
 
-        [HttpPost, Route("AddCategory"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> AddCategory([FromBody] LoginUserDto user)
+        [HttpPost, Authorize, Route("Add"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> AddCategory([FromBody] AddCategoryDto dto)
         {
-            var response = await _categoryServices.AddCategory();
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _categoryServices.AddCategory(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
 
         [HttpPost, Route("GetCategoryByParentId"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetCategoryByParentId([FromBody] LoginUserDto user)
         {
-            var response = await _categoryServices.GetCategoryByParentId(user);
+            var response = _categoryServices.GetCategoryByParentId();
             return StatusCode(response.GetStatusCode(), response);
         }
     }
