@@ -105,7 +105,7 @@ export function Api() {
       if (!OnlyError) {
         ErrorOrSucces(toastId, responeMessage, isError);        
       }
-      else {
+      else if (isError && OnlyError) {
         ShowError("Error", responeMessage)
       }
     }

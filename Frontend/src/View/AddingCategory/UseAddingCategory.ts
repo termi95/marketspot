@@ -5,7 +5,7 @@ import { INotyfication } from "../../Types/Notyfication";
 const addEndpoint = "Category/add";
 const getEndpoint = "Category/GetCategoryByParentId";
 const addNotification: INotyfication={Title:"Adding", Message:"Adding category.", SuccessMessage:"Category was added successfully.", OnlyError: false}
-const getNotification: INotyfication={Title:"", Message:"", SuccessMessage:"", OnlyError: false}
+const getNotification: INotyfication={Title:"", Message:"", SuccessMessage:"", OnlyError: true}
 const initialCategory = {name:"",parentId:"",id:""}
 
 export function UseAddingCategory() {

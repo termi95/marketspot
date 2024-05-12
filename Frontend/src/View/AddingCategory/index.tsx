@@ -21,6 +21,7 @@ function AddingCategory() {
           <Box
             key={x.id}
             ml={rem(10)}
+            mr={rem(10)}
             p={rem(10)}
             bg={"white"}
             style={{
