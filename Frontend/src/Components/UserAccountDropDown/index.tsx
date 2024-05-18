@@ -10,9 +10,9 @@ function AccountDropDown() {
   switch (+userRole) {
     case UserRole.User:
       return <UserDropDown />;
-    case UserRole.Admin:
-      return <AdminDropDown />;
-    default:
+      case UserRole.Admin:
+        return <AdminDropDown />;
+        default:
       return <UserDropDown />;
   }
 }

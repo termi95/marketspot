@@ -2,8 +2,6 @@ import { Button, Container, Group, Menu, Text, rem } from "@mantine/core";
 import {
   IconChevronDown,
   IconLogout,
-  IconPackage,
-  IconSquareCheck,
   IconUser,
   IconUserCircle,
 } from "@tabler/icons-react";
@@ -29,26 +27,6 @@ function UserDropDown() {
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item
-            leftSection={
-              <IconPackage
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-          >
-            Project
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconSquareCheck
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-          >
-            Task
-          </Menu.Item>
           <Menu.Item
             leftSection={
               <IconUser

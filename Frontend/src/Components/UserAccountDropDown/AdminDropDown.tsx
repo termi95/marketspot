@@ -3,14 +3,12 @@ import {
   IconCategory,
   IconChevronDown,
   IconLogout,
-  IconSquareCheck,
-  IconUser,
   IconUserCircle,
 } from "@tabler/icons-react";
 import DropDownAction from "./Action/DropDownAction";
 
 function AdminDropDown() {
-  const { LogOut,NavigateTo } = DropDownAction();
+  const { LogOut, NavigateTo } = DropDownAction();
   return (
     <Container mr="15px">
       <Menu
@@ -36,29 +34,9 @@ function AdminDropDown() {
                 stroke={1.5}
               />
             }
-            onClick={()=>NavigateTo("/add-category")}
+            onClick={() => NavigateTo("/add-category")}
           >
-            Category
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconSquareCheck
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-          >
-            Task
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconUser
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-          >
-            Profile
+            Add category
           </Menu.Item>
           <Menu.Item
             leftSection={
