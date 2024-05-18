@@ -6,18 +6,19 @@ import { useMemo } from "react";
 interface Props {
   categories: ICategory[];
   parentId: string;
+  AddNewParentCategory: (value: ICategory)=> void;
 }
-function Categories({ categories, parentId }: Props) {
+function Categories({ categories, parentId, AddNewParentCategory }: Props) {
   const categoryList = useMemo(() => {
     function GetCategoryByParentId(parentId: string) {
       return categories
         .filter((x) => x.parentId === parentId)
         .map((x) => {
-          console.log(x.parentId);
           return (
-            <Box ml={rem(10)} mr={rem(10)} key={x.id}>
+            <Box ml={rem(10)} mr={rem(10)} key={x.id} onClick={()=>AddNewParentCategory(x)}>
               <CornerIcon Action={(value) => console.log(value)} value={x.id}>
                 <Box
+                className="pointer"
                   p={rem(10)}
                   bg={"white"}
                   style={{
@@ -34,7 +35,7 @@ function Categories({ categories, parentId }: Props) {
         });
     }
     return GetCategoryByParentId(parentId);
-  }, [categories, parentId]);
+  }, [AddNewParentCategory, categories, parentId]);
 
   return <>{categoryList}</>;
 }

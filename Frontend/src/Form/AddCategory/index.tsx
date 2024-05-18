@@ -4,32 +4,34 @@ import {
   Flex,
   SimpleGrid,
   TextInput,
-  Timeline,
   rem,
 } from "@mantine/core";
 import { UseAddingCategory } from "./UseAddingCategory";
 import Categories from "../../Components/Categories";
+import CategoryTimeline from "../../Components/CategoryTimeline";
 
 function AddCategoryForm() {
   const {
-    AddCategory,
+    handleAddCategory,
     AddCategoryOnEnter,
     setNewCategoryName,
+    AddNewParentCategory,
+    setNewParentId,
     categories,
     newCategory,
     parentId,
-    mainCategoryId
+    parentCategory
   } = UseAddingCategory();
+
+  
 
   return (
     <>
-      <Box p={rem(20)} key={mainCategoryId}>
-        <Timeline active={1}>
-          <Timeline.Item title="Main category"></Timeline.Item>
-        </Timeline>
+      <Box p={rem(20)}>
+        <CategoryTimeline parentCategory={parentCategory} setNewParentId={setNewParentId}/>
       </Box>
       <SimpleGrid cols={3}>
-        <Categories categories={categories} parentId={parentId} />
+        <Categories categories={categories} parentId={parentId} AddNewParentCategory={AddNewParentCategory} />
         <Box>
           <Flex
             gap="xs"
@@ -50,7 +52,7 @@ function AddCategoryForm() {
               placeholder="Category name"
               w={"60%"}
             />
-            <Button onClick={() => AddCategory({ ...newCategory })}>Add</Button>
+            <Button onClick={handleAddCategory}>Add</Button>
           </Flex>
         </Box>
       </SimpleGrid>
