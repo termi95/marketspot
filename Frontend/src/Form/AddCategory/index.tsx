@@ -17,6 +17,7 @@ function AddCategoryForm() {
     setNewCategoryName,
     AddNewParentCategory,
     setNewParentId,
+    handleDeleteCategory,
     categories,
     newCategory,
     parentId,
@@ -28,10 +29,10 @@ function AddCategoryForm() {
   return (
     <>
       <Box p={rem(20)}>
-        <CategoryTimeline parentCategory={parentCategory} setNewParentId={setNewParentId}/>
+        <CategoryTimeline parentCategory={parentCategory} setNewParentId={setNewParentId} />
       </Box>
       <SimpleGrid cols={3}>
-        <Categories categories={categories} parentId={parentId} AddNewParentCategory={AddNewParentCategory} />
+        <Categories categories={categories} parentId={parentId} AddNewParentCategory={AddNewParentCategory} handleDeleteCategory={handleDeleteCategory} />
         <Box>
           <Flex
             gap="xs"

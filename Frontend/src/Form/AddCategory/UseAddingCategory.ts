@@ -3,15 +3,23 @@ import { Api } from "../../Helpers/Api/Api";
 import {
   IAddOrUpdateCategory,
   ICategory,
+  IDeleteCategory,
   IGetCategory,
 } from "../../Types/Category";
 import { INotyfication } from "../../Types/Notyfication";
 const addEndpoint = "Category/add";
+const deleteEndpoint = "Category/delete";
 const getEndpoint = "Category/GetCategoryByParentId";
 const addNotification: INotyfication = {
   Title: "Adding",
   Message: "Adding category.",
   SuccessMessage: "Category was added successfully.",
+  OnlyError: false,
+};
+const deleteNotification: INotyfication = {
+  Title: "Deleting",
+  Message: "",
+  SuccessMessage: "Category was Deleted successfully.",
   OnlyError: false,
 };
 const mainCategoryId = "00000000-0000-0000-0000-000000000000";
@@ -57,6 +65,17 @@ export function UseAddingCategory() {
 
   function capitalizeFirstLetter(string:string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  async function handleDeleteCategory(category: IDeleteCategory) {
+    const result = await PostRequest<IDeleteCategory>(
+      deleteNotification,
+      deleteEndpoint,
+      category
+    );
+    if (!result.isError) {
+      GetCategoryLevel();
+    }    
   }
 
   function setNewParentId(ParentId: string) {
@@ -137,6 +156,7 @@ export function UseAddingCategory() {
     AddNewParentCategory,
     handleAddCategory,
     setNewParentId,
+    handleDeleteCategory,
     categories,
     newCategory,
     parentId,

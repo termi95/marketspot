@@ -31,5 +31,13 @@ namespace Backend.Controllers
             var response = await _categoryServices.GetCategoryByParentId(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Route("Delete"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> DeleteCategoryById([FromBody] DeleteCategoryDto dto)
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _categoryServices.DeleteCategoryById(dto, userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }

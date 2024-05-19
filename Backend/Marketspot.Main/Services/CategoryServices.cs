@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using backend.Entities;
+using Marketspot.DataAccess;
 using Marketspot.Model;
 using Marketspot.Model.Category;
 using Marketspot.Model.User;
 using Marketspot.Validator;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Backend.Services
@@ -71,6 +73,42 @@ namespace Backend.Services
 
             response.SetStatusCode(HttpStatusCode.OK);
             response.Result = categories;
+            return response;
+        }
+        public async Task<ApiResponse> DeleteCategoryById(DeleteCategoryDto dto, string userId)
+        {
+            var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
+            if (await IsAuthorized(userId, response))
+            {
+                return response;
+            }
+
+            Guid id = string.IsNullOrEmpty(dto.Id) ? Guid.Empty : Guid.Parse(dto.Id);
+
+            var categories = _context.Categories.FromSqlRaw(RawSqlHelper.GetParentCategoriesWithAllChildrenById(),id).ToArray();
+            try
+            {
+                _context.Categories.RemoveRange(categories);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException is not null)
+                {
+                    response.ErrorsMessages.Add(ex.InnerException.Message);
+                }
+                else
+                {
+                    response.ErrorsMessages.Add(ex.Message);
+                }
+                return response;
+            }
+            response.SetStatusCode(HttpStatusCode.OK);
             return response;
         }
 
