@@ -24,7 +24,7 @@ const userSlice = createSlice({
       state.isLogin = actions.payload;
     },
     setUserRole: (state, actions: PayloadAction<UserRole>) => {
-      state.userRole = actions.payload;
+      state.userRole = +actions.payload;
     },
   },
 });

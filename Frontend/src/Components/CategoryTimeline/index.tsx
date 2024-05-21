@@ -8,11 +8,11 @@ interface Props {
 }
 
 const CategoryTimeline = memo(({ parentCategory, setNewParentId }: Props) => {
-  const test = parentCategory.map((x) => {
+  const timelineItem = parentCategory.map((x) => {
     return <Timeline.Item className="pointer" key={x.id} title={x.name} onClick={() => setNewParentId(x.id)}></Timeline.Item>;
   });
 
-  return <Timeline active={parentCategory.length - 1}>{test}</Timeline>;
+  return <Timeline active={parentCategory.length - 1}>{timelineItem}</Timeline>;
 });
 
 export default CategoryTimeline;

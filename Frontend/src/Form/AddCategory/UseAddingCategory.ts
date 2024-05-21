@@ -67,7 +67,7 @@ export function UseAddingCategory() {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  async function handleDeleteCategory(category: IDeleteCategory) {
+  const handleDeleteCategory = useCallback( async (category: IDeleteCategory) => {
     const result = await PostRequest<IDeleteCategory>(
       deleteNotification,
       deleteEndpoint,
@@ -76,13 +76,13 @@ export function UseAddingCategory() {
     if (!result.isError) {
       GetCategoryLevel();
     }    
-  }
+  },[])
 
-  function setNewParentId(ParentId: string) {
+  const setNewParentId = useCallback((ParentId: string) => {
     const timeline = TimelineOrder(ParentId, parentCategory);
     setParentCategory([...orderParentCategory(parentCategory, timeline)])
     setParentId(ParentId);
-  }
+  },[])
 
   function TimelineOrder(ParentId: string, parentCategory: ICategory[]): ICategory[] {
     let result: ICategory[] = [];    

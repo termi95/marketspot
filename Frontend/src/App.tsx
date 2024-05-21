@@ -4,15 +4,18 @@ import '@mantine/dates/styles.css';
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import MainView from "./View/Main";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setIsLogin, setIsMobile, setUserRole } from "./State/User/userSlice";
-import LoginView from "./View/Login";
-import ForgetPasswordView from "./View/ForgetPassword";
-import ChangePasswordView from "./View/ChangePasswordView";
 import { Api } from "./Helpers/Api/Api";
-import AddingOferView from "./View/AddingOferView";
-import AddingCategory from "./View/AddingCategory";
+import React from "react";
+import CustomLoader from "./Components/Loader";
+
+const LoginView = React.lazy(() => import("./View/Login"));
+const ForgetPasswordView = React.lazy(() => import("./View/ForgetPassword"));
+const ChangePasswordView = React.lazy(() => import("./View/ChangePasswordView"));
+const AddingCategory = React.lazy(() => import("./View/AddingCategory"));
+const AddingOferView = React.lazy(() => import("./View/AddingOferView"));
 
 function App() {
   const { isTokenExpired, GetUserRole } = Api();
@@ -41,6 +44,7 @@ function App() {
   }, []);
 
   return (
+    <Suspense fallback={<CustomLoader/>}>
     <Routes>
       <Route path="/" element={<MainView />} />
       <Route path="/login" element={<LoginView />} />
@@ -49,6 +53,7 @@ function App() {
       <Route path="/adding" element={<AddingOferView />} />
       <Route path="/add-category" element={<AddingCategory />} />
     </Routes>
+    </Suspense>
   );
 }
 

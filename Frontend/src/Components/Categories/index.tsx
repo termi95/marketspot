@@ -37,7 +37,7 @@ function Categories({ categories, parentId, AddNewParentCategory, handleDeleteCa
         });
     }
     return GetCategoryByParentId(parentId);
-  }, [AddNewParentCategory, categories, parentId]);
+  }, [AddNewParentCategory, categories, handleDeleteCategory, parentId]);
 
   return <>{categoryList}</>;
 }
