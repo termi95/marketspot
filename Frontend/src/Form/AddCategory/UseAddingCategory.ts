@@ -7,6 +7,7 @@ import {
   IGetCategory,
 } from "../../Types/Category";
 import { INotyfication } from "../../Types/Notyfication";
+
 const addEndpoint = "Category/add";
 const deleteEndpoint = "Category/delete";
 const getEndpoint = "Category/GetCategoryByParentId";

@@ -2,6 +2,7 @@ import { Box, rem } from "@mantine/core";
 import { ICategory, IDeleteCategory } from "../../Types/Category";
 import CornerIcon from "../CornerIcon";
 import { useMemo } from "react";
+import {  openDeleteModal } from "../Modal/index";
 
 interface Props {
   categories: ICategory[];
@@ -15,9 +16,12 @@ function Categories({ categories, parentId, AddNewParentCategory, handleDeleteCa
       return categories
         .filter((x) => x.parentId === parentId)
         .map((x) => {
+          const title = `Deleting "${x.name}"`;
+          const confirmationText = `Are you sure you want to delete "${x.name}"`;
+          const action = ()=>handleDeleteCategory( {id:x.id} as IDeleteCategory);
           return (
             <Box ml={rem(10)} mr={rem(10)} key={x.id}>
-              <CornerIcon Action={()=>handleDeleteCategory( {id:x.id} as IDeleteCategory)} value={x.id}>
+              <CornerIcon Action={()=>openDeleteModal(action, title , confirmationText)} value={x.id}>
                 <Box
                 className="pointer"
                   p={rem(10)}
