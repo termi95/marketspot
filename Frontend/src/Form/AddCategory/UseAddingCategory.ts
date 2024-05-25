@@ -42,6 +42,7 @@ export function UseAddingCategory() {
   const [parentCategory, setParentCategory] = useState<ICategory[]>([initialParentCategory,]);
   const [newCategory, setNewCategory] = useState<ICategory>(initialCategory);
   const [parentId, setParentId] = useState<string>(mainCategoryId);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     GetCategoryLevel();
@@ -125,6 +126,7 @@ export function UseAddingCategory() {
   }
 
   async function GetCategoryLevel() {
+    setLoading(true)
     const category: IGetCategory = { parentId };
     const result = await PostRequest<ICategory[]>(
       getNotification,
@@ -136,7 +138,9 @@ export function UseAddingCategory() {
       if (result.result !== undefined && result.result[0] !== undefined &&result.result[0].parentId !== parentId) {
         setNewParentId(result.result[0].parentId);
       }
+      
     }
+    setLoading(false)
   }
 
   async function AddCategoryOnEnter(
@@ -163,5 +167,6 @@ export function UseAddingCategory() {
     parentId,
     mainCategoryId,
     parentCategory,
+    loading
   };
 }

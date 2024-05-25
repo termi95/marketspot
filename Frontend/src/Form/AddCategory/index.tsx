@@ -9,6 +9,7 @@ import {
 import { UseAddingCategory } from "./UseAddingCategory";
 import Categories from "../../Components/Categories";
 import CategoryTimeline from "../../Components/CategoryTimeline";
+import CustomLoader from "../../Components/Loader";
 
 function AddCategoryForm() {
   const {
@@ -21,10 +22,13 @@ function AddCategoryForm() {
     categories,
     newCategory,
     parentId,
-    parentCategory
+    parentCategory,
+    loading
   } = UseAddingCategory();
 
-  
+  if(loading){
+    return <CustomLoader setBg={false}/>;
+  }
 
   return (
     <>

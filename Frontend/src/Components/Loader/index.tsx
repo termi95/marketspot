@@ -1,16 +1,20 @@
 import { Center, Container, Loader } from "@mantine/core";
 
-function CustomLoader() {
+interface Props {
+  setBg: boolean;
+}
+
+function CustomLoader({ setBg }: Props) {
   return (
     <>
       <Container
-        bg={"var(--main-color)"}
+        bg= {setBg ? "var(--main-color)" : ""}
         w={"100vw"}
         maw={"100vw"}
         mih={"100vh"}
         m={"0px"}
       >
-        <Center  mih={"100vh"} >
+        <Center mih={"100vh"}>
           <Loader color="blue" />
         </Center>
       </Container>

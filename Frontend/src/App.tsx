@@ -44,7 +44,7 @@ function App() {
   }, []);
 
   return (
-    <Suspense fallback={<CustomLoader/>}>
+    <Suspense fallback={<CustomLoader setBg={true}/>}>
     <Routes>
       <Route path="/" element={<MainView />} />
       <Route path="/login" element={<LoginView />} />
