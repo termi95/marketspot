@@ -13,21 +13,24 @@ import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import MainPanel from "../../Components/MainPanel";
 import { useState } from "react";
 import ImageOfferAdding from "../../Components/ImageOfferAdding";
+import { openDeleteModal } from "../../Components/Modal";
 
 function AddingOferView() {
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const [title, setTitle] = useState<string>("");
+  const [dragPhoto, setDragPhoto] = useState<number | null>(null);
   const [description, setDescription] = useState<string>("");
 
   const previews = files.map((file, index) => {
     return (
-      <>
-        <ImageOfferAdding
-          imageUrl={URL.createObjectURL(file)}
-          index={index}
-          removePhoto={removePhoto}
-        />
-      </>
+      <ImageOfferAdding
+        key={file.name}
+        imageUrl={URL.createObjectURL(file)}
+        index={index}
+        fileName={file.name}
+        removePhoto={removePhoto}
+        setDragingPhoto = {setDragPhoto}
+      />
     );
   });
 
@@ -118,8 +121,8 @@ function AddingOferView() {
         <Space h="md" />
         <Textarea
           className="text-start"
-          label="Input label"
-          placeholder="Input placeholder"
+          label="Description"
+          placeholder="You offer description"
           value={description}
           onChange={(event) => setDescription(event.currentTarget.value)}
         />

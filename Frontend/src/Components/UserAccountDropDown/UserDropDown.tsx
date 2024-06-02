@@ -1,6 +1,7 @@
 import { Button, Container, Group, Menu, Text, rem } from "@mantine/core";
 import {
   IconChevronDown,
+  IconFilePlus,
   IconLogout,
   IconUser,
   IconUserCircle,
@@ -8,7 +9,7 @@ import {
 import DropDownAction from "./Action/DropDownAction";
 
 function UserDropDown() {
-    const { LogOut } = DropDownAction();
+    const { LogOut, NavigateTo } = DropDownAction();
   return (
     <Container mr="15px">
       <Menu
@@ -27,6 +28,17 @@ function UserDropDown() {
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
+          <Menu.Item
+            leftSection={
+              <IconFilePlus
+                style={{ width: rem(16), height: rem(16) }}
+                stroke={1.5}
+              />
+            }
+            onClick={() => NavigateTo("/adding")}
+          >
+            Add offer
+          </Menu.Item>
           <Menu.Item
             leftSection={
               <IconUser
