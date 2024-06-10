@@ -62,11 +62,6 @@ namespace Backend.Services
                 return response;
             }
 
-            if (await IsAuthorized(userId, response))
-            {
-                return response;
-            }
-
             Guid parentId = string.IsNullOrEmpty(dto.ParentId) ? Guid.Empty : Guid.Parse(dto.ParentId);
 
             var categories = _context.Categories.Where(x => x.ParentId == parentId).ToList();

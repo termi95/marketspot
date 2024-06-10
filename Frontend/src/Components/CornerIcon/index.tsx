@@ -25,6 +25,7 @@ function CornerIcon({ Action, value, children }: Props) {
             right: "0",
             visibility: xVisibility ? "visible" : "hidden",
             transform: "translate(50%,-50%)",
+            transition: "300ms"
           }}
           variant="transparent"
           color="red"
@@ -34,7 +35,7 @@ function CornerIcon({ Action, value, children }: Props) {
           <IconTrashFilled
             onMouseEnter={() => setSizeTrash("md")}
             onMouseLeave={() => setSizeTrash("xs")}
-            onClick={() => Action(value)}
+            onClick={() => Action(value)}         
           />
         </ActionIcon>
       </Box>

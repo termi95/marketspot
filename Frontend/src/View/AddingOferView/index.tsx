@@ -7,19 +7,32 @@ import {
   Text,
   rem,
   Textarea,
+  Select,
+  Box,
+  Button,
 } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
-import { Dropzone, FileWithPath, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import MainPanel from "../../Components/MainPanel";
-import { useState } from "react";
 import ImageOfferAdding from "../../Components/ImageOfferAdding";
-import { openDeleteModal } from "../../Components/Modal";
+import UseAddingOferView from "./UseAddingOferView";
 
 function AddingOferView() {
-  const [files, setFiles] = useState<FileWithPath[]>([]);
-  const [title, setTitle] = useState<string>("");
-  const [dragPhoto, setDragPhoto] = useState<number | null>(null);
-  const [description, setDescription] = useState<string>("");
+  const {
+    setFiles,
+    setDescription,
+    setCategory,
+    setTitle,
+    removePhoto,
+    getCategory,
+    files,
+    title,
+    category,
+    description,
+    selectData,
+    hovered,
+    ref
+  } = UseAddingOferView();
 
   const previews = files.map((file, index) => {
     return (
@@ -29,14 +42,9 @@ function AddingOferView() {
         index={index}
         fileName={file.name}
         removePhoto={removePhoto}
-        setDragingPhoto = {setDragPhoto}
       />
     );
   });
-
-  function removePhoto(index: number) {
-    setFiles([...files.slice(0, index), ...files.slice(index + 1)]);
-  }
 
   return (
     <MainPanel>
@@ -49,7 +57,33 @@ function AddingOferView() {
           placeholder="It is important to put meaning full title to your offer"
           value={title}
           onChange={(event) => setTitle(event.currentTarget.value)}
-          required
+        />
+        <Space h="md" />
+        <Select
+          className="text-start"
+          label={`Select your category`}
+          placeholder={`Select your category`}
+          value={category.label}
+          maxDropdownHeight={200}
+          comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
+          data={selectData}
+          onChange={(_value, option: { value: string; label: string }) => {
+            setCategory(option);
+            getCategory(option.value, true);
+          }}
+        />
+        <Space h="md" />
+        <Box>
+          Your Selected Category is:
+          <Text size="xl" fw={700}>{category.label}</Text>
+        </Box>
+        <Space h="md" />
+        <Textarea
+          className="text-start"
+          label="Description"
+          placeholder="You offer description"
+          value={description}
+          onChange={(event) => setDescription(event.currentTarget.value)}
         />
         <Space h="md" />
         <Dropzone
@@ -119,13 +153,18 @@ function AddingOferView() {
           {previews}
         </SimpleGrid>
         <Space h="md" />
-        <Textarea
-          className="text-start"
-          label="Description"
-          placeholder="You offer description"
-          value={description}
-          onChange={(event) => setDescription(event.currentTarget.value)}
-        />
+        <Button
+          w={"100%"}
+          color={"var(--main-color)"}
+          variant={hovered ? "outline" : "filled"}
+          ref={ref}          
+          style={{
+            transition: "300ms",
+            height: rem(42),
+          }}
+        >
+          Add offer
+        </Button>
         <Space h="md" />
       </Container>
     </MainPanel>
