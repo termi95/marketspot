@@ -17,6 +17,7 @@ function ImageOfferAdding({ index, imageUrl, fileName, removePhoto }: Props) {
       <CornerIcon
         Action={() => openDeleteModal(action, title, confirmationText)}
         value={fileName}
+        active={true}
       >
         <Image
           id={fileName}

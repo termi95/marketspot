@@ -36,7 +36,7 @@ function AddCategoryForm() {
         <CategoryTimeline parentCategory={parentCategory} setNewParentId={setNewParentId} />
       </Box>
       <SimpleGrid cols={3}>
-        <Categories categories={categories} parentId={parentId} AddNewParentCategory={AddNewParentCategory} handleDeleteCategory={handleDeleteCategory}/>
+        <Categories categories={categories} parentId={parentId} activeTrashIcon={true} AddNewParentCategory={AddNewParentCategory} handleDeleteCategory={handleDeleteCategory}/>
         <Box>
           <Flex
             gap="xs"

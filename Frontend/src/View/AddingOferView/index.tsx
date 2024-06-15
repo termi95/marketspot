@@ -7,7 +7,6 @@ import {
   Text,
   rem,
   Textarea,
-  Select,
   Box,
   Button,
 } from "@mantine/core";
@@ -16,6 +15,8 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import MainPanel from "../../Components/MainPanel";
 import ImageOfferAdding from "../../Components/ImageOfferAdding";
 import UseAddingOferView from "./UseAddingOferView";
+import { openDeleteModal } from "../../Components/Modal";
+import GetCategoryForm from "../../Form/GetCategory";
 
 function AddingOferView() {
   const {
@@ -24,14 +25,13 @@ function AddingOferView() {
     setCategory,
     setTitle,
     removePhoto,
-    getCategory,
     files,
     title,
     category,
     description,
-    selectData,
     hovered,
-    ref
+    ref,
+    mainCategoryId
   } = UseAddingOferView();
 
   const previews = files.map((file, index) => {
@@ -59,23 +59,22 @@ function AddingOferView() {
           onChange={(event) => setTitle(event.currentTarget.value)}
         />
         <Space h="md" />
-        <Select
-          className="text-start"
-          label={`Select your category`}
-          placeholder={`Select your category`}
-          value={category.label}
-          maxDropdownHeight={200}
-          comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
-          data={selectData}
-          onChange={(_value, option: { value: string; label: string }) => {
-            setCategory(option);
-            getCategory(option.value, true);
+        <Button
+          color={"var(--main-color)"}
+          variant={"outline"}
+          w={"100%"}
+          style={{
+            transition: "300ms",
+            height: rem(42),
           }}
-        />
+          onClick={() => openDeleteModal(()=>{return}, "Category picker", "", <GetCategoryForm GetCategory={setCategory}/>, false)}
+        >
+          Chose your category
+        </Button>
         <Space h="md" />
         <Box>
-          Your Selected Category is:
-          <Text size="xl" fw={700}>{category.label}</Text>
+        <Text>Selected category:</Text>
+          <Text size="xl" fw={700}>{mainCategoryId !== category.id && category.name}</Text>
         </Box>
         <Space h="md" />
         <Textarea

@@ -7,10 +7,11 @@ import {  openDeleteModal } from "../Modal/index";
 interface Props {
   categories: ICategory[];
   parentId: string;
+  activeTrashIcon: boolean;
   AddNewParentCategory: (value: ICategory)=> void;
-  handleDeleteCategory: (value: IDeleteCategory) => void;
+  handleDeleteCategory?: (value: IDeleteCategory) => void;
 }
-function Categories({ categories, parentId, AddNewParentCategory, handleDeleteCategory}: Props) {
+function Categories({ categories, parentId, activeTrashIcon, AddNewParentCategory, handleDeleteCategory}: Props) {
   const categoryList = useMemo(() => {
     function GetCategoryByParentId(parentId: string) {
       return categories
@@ -18,18 +19,22 @@ function Categories({ categories, parentId, AddNewParentCategory, handleDeleteCa
         .map((x) => {
           const title = `Deleting "${x.name}"`;
           const confirmationText = `Are you sure you want to delete "${x.name}"`;
-          const action = ()=>handleDeleteCategory( {id:x.id} as IDeleteCategory);
+          const action = ()=>
+           { if (handleDeleteCategory) {
+              handleDeleteCategory( {id:x.id} as IDeleteCategory);              
+            }}
           return (
             <Box ml={rem(10)} mr={rem(10)} key={x.id}>
-              <CornerIcon Action={()=>openDeleteModal(action, title , confirmationText)} value={x.id}>
+              <CornerIcon Action={()=>openDeleteModal(action, title , confirmationText)} value={x.id} active={activeTrashIcon}>
                 <Box
-                className="pointer"
+                  className="pointer"
                   p={rem(10)}
                   bg={"white"}
                   style={{
                     border:
-                      "calc(.0625rem*var(--mantine-scale)) solid var(--_input-bd)",
-                    borderRadius: "var(--_input-radius)",
+                      "calc(.0625rem*var(--mantine-scale)) solid var(--main-color)",
+                    borderRadius: "var(--mantine-radius-xs)",
+                    borderWidth: "1px"
                   }}
                   onClick={()=>AddNewParentCategory(x)}
                 >

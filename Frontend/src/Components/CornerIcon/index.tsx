@@ -5,8 +5,9 @@ interface Props {
   Action: (value: string) => void;
   value: string;
   children: React.ReactNode;
+  active: boolean;
 }
-function CornerIcon({ Action, value, children }: Props) {
+function CornerIcon({ Action, value, children, active }: Props) {
   const [xVisibility, setXVisibility] = useState<boolean>(false);
   const [sizeTrash, setSizeTrash] = useState<string>("xs");
   return (
@@ -14,8 +15,8 @@ function CornerIcon({ Action, value, children }: Props) {
       <Box
         className="pos-rel"
         style={{ marginBottom: "10px" }}
-        onMouseEnter={() => setXVisibility(true)}
-        onMouseLeave={() => setXVisibility(false)}
+        onMouseEnter={() => active && setXVisibility(true)}
+        onMouseLeave={() => active && setXVisibility(false)}
       >
         {children}
         <ActionIcon
@@ -33,9 +34,9 @@ function CornerIcon({ Action, value, children }: Props) {
           size={sizeTrash}
         >
           <IconTrashFilled
-            onMouseEnter={() => setSizeTrash("md")}
-            onMouseLeave={() => setSizeTrash("xs")}
-            onClick={() => Action(value)}         
+            onMouseEnter={() => active && setSizeTrash("md")}
+            onMouseLeave={() => active && setSizeTrash("xs")}
+            onClick={() => active && Action(value)}         
           />
         </ActionIcon>
       </Box>
