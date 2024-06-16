@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Entities;
@@ -12,9 +13,11 @@ using backend.Entities;
 namespace Marketspot.DataAccess.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240616144055_offers")]
+    partial class offers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,9 +44,6 @@ namespace Marketspot.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("text[]");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Tittle")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -58,7 +58,7 @@ namespace Marketspot.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offers", (string)null);
+                    b.ToTable("Offers");
                 });
 
             modelBuilder.Entity("backend.Entities.Category", b =>
@@ -80,7 +80,7 @@ namespace Marketspot.DataAccess.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("backend.Entities.User", b =>
@@ -121,12 +121,12 @@ namespace Marketspot.DataAccess.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d03e792a-20eb-4036-8fff-0e0416c59aec"),
+                            Id = new Guid("decdeb79-5227-47a6-8331-fe233b9eae03"),
                             Email = "admin@admin.pl",
                             Name = "admin",
                             Password = "AQAAAAIAAYagAAAAEFMvOOAzL4k+idqThNAhbif3uTKHFGYjJVUukDKgnRyC/rHbd8+eRrCr5xOMKFksXA==",

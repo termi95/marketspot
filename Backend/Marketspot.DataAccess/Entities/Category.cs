@@ -1,3 +1,4 @@
+using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -15,6 +16,8 @@ namespace backend.Entities
 
         [NotNull, MaxLength(128) ]
         public string Name { get; set; }
+
+        public List<Offer> Offers { get; set; }
 
     }
 }

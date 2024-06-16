@@ -1,3 +1,4 @@
+using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
@@ -25,6 +26,8 @@ namespace backend.Entities
 
         [NotNull]
         public UserRoles Roles { get; set; } = UserRoles.User;
+
+        public List<Offer> Offers { get; set; }
 
     }
 }

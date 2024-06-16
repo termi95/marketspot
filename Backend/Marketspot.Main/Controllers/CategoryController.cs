@@ -1,7 +1,6 @@
 ﻿using Marketspot.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using backend.Model.User;
 using Backend.Services;
 using Marketspot.Model.Category;
 using System.Security.Claims;

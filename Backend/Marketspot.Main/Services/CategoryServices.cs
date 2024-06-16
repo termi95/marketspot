@@ -31,7 +31,7 @@ namespace Backend.Services
                 dto.ParentId = Guid.Empty.ToString();
             }
             Category category = _mapper.Map<Category>(dto);
-            _context.Categories.Add(category);
+            await _context.Categories.AddAsync(category);
             try
             {
                 await _context.SaveChangesAsync();

@@ -9,6 +9,7 @@ import {
   Textarea,
   Box,
   Button,
+  NumberInput,
 } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
@@ -25,13 +26,16 @@ function AddingOferView() {
     setCategory,
     setTitle,
     removePhoto,
+    setPrice,
+    submit,
     files,
     title,
     category,
     description,
     hovered,
     ref,
-    mainCategoryId
+    mainCategoryId,
+    price
   } = UseAddingOferView();
 
   const previews = files.map((file, index) => {
@@ -58,6 +62,18 @@ function AddingOferView() {
           value={title}
           onChange={(event) => setTitle(event.currentTarget.value)}
         />
+        <Space h="md" />
+        <Box>
+        <NumberInput
+          className="text-start"
+          label="Price"
+          placeholder="How much would you like to receive"
+          min={0}
+          suffix=" PLN"
+          value={price}
+          onChange={setPrice}
+          />
+        </Box>
         <Space h="md" />
         <Button
           color={"var(--main-color)"}
@@ -161,6 +177,7 @@ function AddingOferView() {
             transition: "300ms",
             height: rem(42),
           }}
+          onClick={submit}
         >
           Add offer
         </Button>
