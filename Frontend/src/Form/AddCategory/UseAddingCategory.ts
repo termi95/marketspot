@@ -80,11 +80,11 @@ export function UseAddingCategory() {
     }    
   },[])
 
-  const setNewParentId = useCallback((ParentId: string) => {
+  const setNewParentId = (ParentId: string) => {
     const timeline = TimelineOrder(ParentId, parentCategory);
     setParentCategory([...orderParentCategory(parentCategory, timeline)])
     setParentId(ParentId);
-  },[])
+  };
 
   function TimelineOrder(ParentId: string, parentCategory: ICategory[]): ICategory[] {
     let result: ICategory[] = [];    
