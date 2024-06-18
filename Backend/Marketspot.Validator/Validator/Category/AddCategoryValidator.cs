@@ -11,7 +11,7 @@ namespace Marketspot.Validator.Validator.Category
                     .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                     .MaximumLength(128)
-                    .Matches("^[a-zA-Z]+$").WithMessage("'{PropertyName}' must contain one or more capital letters.");
+                    .Matches("^[a-zA-Z].*").WithMessage("'{PropertyName}' must contain one or more capital letters.");
         }
     }
 }
