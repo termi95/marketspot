@@ -1,4 +1,5 @@
 ﻿using Marketspot.Model;
+using System.Net;
 using System.Reflection;
 
 namespace Marketspot.Validator
@@ -33,6 +34,16 @@ namespace Marketspot.Validator
                 Console.WriteLine(e.Message);
             }
             return validResult;
+        }
+        public static bool CheckIfFound<T>(T item, ApiResponse response)
+        {
+            if (item is null)
+            {
+                response.SetStatusCode(HttpStatusCode.NotFound);
+                response.ErrorsMessages.Add($"{typeof(T).Name} was not found.");
+                return false;
+            }
+            return true;
         }
     }
 }

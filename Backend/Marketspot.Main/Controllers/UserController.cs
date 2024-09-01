@@ -1,6 +1,7 @@
 using backend.Model.User;
 using backend.Services;
 using Marketspot.Model;
+using Marketspot.Model.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers

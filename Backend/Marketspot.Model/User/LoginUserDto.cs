@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace backend.Model.User
+namespace Marketspot.Model.User
 {
     public class LoginUserDto
     {

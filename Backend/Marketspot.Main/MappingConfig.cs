@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using backend.Entities;
 using backend.Model.User;
 using Marketspot.DataAccess.Entities;
 using Marketspot.Model.Category;
-using Marketspot.Validator.Validator.Offer;
+using Marketspot.Model.Offer;
+using Marketspot.Model.User;
 
 namespace Backend
 {
@@ -14,6 +14,9 @@ namespace Backend
             CreateMap<RegisterUserDto, User>();
             CreateMap<AddCategoryDto, Category>();
             CreateMap<AddOfferDto, Offer>();
+            CreateMap<Offer, GetOfferByIdResult>();
+            CreateMap<User, BasicUser>();
+            CreateMap<Category, BasicCategory>();
         }
     }
 }

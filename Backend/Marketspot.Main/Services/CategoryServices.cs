@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using backend.Entities;
 using Marketspot.DataAccess;
+using Marketspot.DataAccess.Entities;
 using Marketspot.Model;
 using Marketspot.Model.Category;
 using Marketspot.Model.User;
@@ -54,7 +55,7 @@ namespace Backend.Services
             return response;
         }
 
-        public async Task<ApiResponse> GetCategoryByParentId(GetCategoryDto dto, string userId)
+        public async Task<ApiResponse> GetCategoryByParentId(GetCategoryDto dto)
         {
             var response = new ApiResponse();
             if (!await ValidatorHelper.ValidateDto(dto, response))

@@ -1,4 +1,4 @@
-﻿namespace Marketspot.Validator.Validator.Offer
+﻿namespace Marketspot.Model.Offer
 {
     public class AddOfferDto
     {

@@ -1,7 +1,6 @@
 ﻿using Backend.Services;
 using Marketspot.Model;
-using Marketspot.Model.Category;
-using Marketspot.Validator.Validator.Offer;
+using Marketspot.Model.Offer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -21,6 +20,13 @@ namespace Backend.Controllers
         {
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var response = await _offerServices.AddOffer(dto, userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
+        [HttpPost, Route("Get-by-id"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK), ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetCategoryById([FromBody] GetOfferByIdDto dto)
+        {
+            var response = await _offerServices.GetOfferById(dto);
             return StatusCode(response.GetStatusCode(), response);
         }
     }

@@ -1,5 +1,5 @@
-﻿using backend.Model.User;
-using FluentValidation;
+﻿using FluentValidation;
+using Marketspot.Model.User;
 
 namespace Marketspot.Validator.Validator
 {

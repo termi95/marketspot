@@ -2,8 +2,10 @@ using AutoMapper;
 using backend.Entities;
 using backend.Model.User;
 using Backend.Helper;
+using Marketspot.DataAccess.Entities;
 using Marketspot.EmailSender;
 using Marketspot.Model;
+using Marketspot.Model.User;
 using Marketspot.Validator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +64,7 @@ namespace backend.Services
                 return response;
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (user is null)
             {
                 response.ErrorsMessages.Add("User not found or Password was incorrect.");
@@ -137,7 +139,7 @@ namespace backend.Services
             {
                 return response;
             }
-            User? user = null;
+            User user = null;
 
             try
             {

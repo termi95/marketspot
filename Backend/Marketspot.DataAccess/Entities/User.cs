@@ -1,10 +1,9 @@
-using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using static Marketspot.Model.User.UserEnum;
 
-namespace backend.Entities
+namespace Marketspot.DataAccess.Entities
 {
     [Index(nameof(Email), IsUnique = true)]
     public class User
@@ -27,7 +26,7 @@ namespace backend.Entities
         [NotNull]
         public UserRoles Roles { get; set; } = UserRoles.User;
 
-        public List<Offer> Offers { get; set; }
+        public virtual ICollection<Offer> Offers { get; set; }
 
     }
 }

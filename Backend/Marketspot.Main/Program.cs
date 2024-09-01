@@ -3,11 +3,13 @@ using backend.Entities;
 using backend.Services;
 using Backend;
 using Backend.Services;
+using Marketspot.DataAccess.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration.GetConnectionString("Default");
@@ -37,7 +39,8 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<OfferService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -60,5 +63,19 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+//app.Use(async (context, next) =>
+//{
+//    context.Response.OnStarting(() =>
+//    {
+//        var responseBody = context.Response.Body;
+//        if (responseBody.Length > 0)
+//        {
+//            context.Response.Headers["Content-Length"] = responseBody.Length.ToString();
+//        }
+//        return Task.CompletedTask;
+//    });
+
+//    await next.Invoke();
+//});
 
 app.Run();

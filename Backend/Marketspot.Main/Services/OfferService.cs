@@ -2,8 +2,9 @@
 using backend.Entities;
 using Marketspot.DataAccess.Entities;
 using Marketspot.Model;
+using Marketspot.Model.Offer;
 using Marketspot.Validator;
-using Marketspot.Validator.Validator.Offer;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Backend.Services
@@ -45,6 +46,33 @@ namespace Backend.Services
             response.SetStatusCode(HttpStatusCode.Created);
             response.Result = offer;
             return response;
+        }
+
+        public async Task<ApiResponse> GetOfferById(GetOfferByIdDto dto)
+        {
+            var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
+            try
+            {
+                var offer = await _context.Offers.AsNoTracking().Include(o => o.User).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == Guid.Parse(dto.Id));
+
+                if (ValidatorHelper.CheckIfFound(offer, response))
+                {
+                    return response;
+                }
+                response.SetStatusCode(HttpStatusCode.OK);
+                response.Result = _mapper.Map<GetOfferByIdResult>(offer);
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.ErrorsMessages.Add(e.Message);
+                return response;
+            }
         }
     }
 }

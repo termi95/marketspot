@@ -1,5 +1,4 @@
-﻿using backend.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Marketspot.DataAccess.Entities
@@ -20,7 +19,7 @@ namespace Marketspot.DataAccess.Entities
         public List<string> Photos { get; set; }
 
         public User User { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
     }
 }
