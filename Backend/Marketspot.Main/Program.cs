@@ -1,5 +1,4 @@
 using backend;
-using backend.Entities;
 using backend.Services;
 using Backend;
 using Backend.Services;
@@ -44,7 +43,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Marketspot.DataAccess")));
 builder.Services.AddCors(options => options.AddPolicy("FrontEndClient", builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins(["https://127.0.0.1:5173", "http://127.0.0.1:5173", "http://localhost:5173", "https://localhost:5173"])));
 
 var app = builder.Build();
@@ -56,6 +55,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 
 app.UseHttpsRedirection();

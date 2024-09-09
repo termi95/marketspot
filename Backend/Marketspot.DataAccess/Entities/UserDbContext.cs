@@ -1,7 +1,6 @@
-using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Entities
+namespace Marketspot.DataAccess.Entities
 {
     public class UserDbContext(DbContextOptions options) : DbContext(options)
     {

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using backend.Entities;
 using Marketspot.DataAccess;
 using Marketspot.DataAccess.Entities;
 using Marketspot.Model;

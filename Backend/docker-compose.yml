@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  backend:
+    image: ${DOCKER_REGISTRY-}backend
+    container_name: Api
+    build:
+      context: .
+      dockerfile: Marketspot.Main/Dockerfile
+    depends_on:
+        - marketSpot.database
+    ports: 
+        - 5066:5066
+        - 7149:7149
+  
+  marketSpot.database:
+    image:  postgres:latest
+    container_name: Database
+    restart: always
+    environment:
+        - POSTGRES_DB=markespot
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=Test123$
+    logging:
+        options:
+            max-size: 10m
+            max-file: "3"
+    volumes:
+        - ./.containers/marketspot-db:/var/lib/postgresql/data
+        - ./sql/historydb.sql:/docker-entrypoint-initdb.d/historydb.sql 
+    ports:
+        - 9876:5432
+
+  marketSpot.pgadmin:
+    image: dpage/pgadmin4
+    container_name: Pgadmin
+    depends_on:
+      - marketSpot.database
+    restart: always
+    ports:
+        - 80:80
+    environment:
+        PGADMIN_DEFAULT_EMAIL: admin@admin.com
+        PGADMIN_DEFAULT_PASSWORD: Test123$
+    volumes:
+        - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
