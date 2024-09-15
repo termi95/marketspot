@@ -17,7 +17,6 @@ export function UseLoginForm() {
   const dispatch = useDispatch();
 
   async function Login(user: IUserLogin) {
-    console.log(user)
     const reqResult = await PostRequest<string>(loginNotification, loginEndpoint, user)
     if (!reqResult.isError && reqResult.result !== undefined) {
       SaveToken(reqResult.result);

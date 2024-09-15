@@ -8,7 +8,6 @@ import ChangePasword from "../../Form/ChangePasword";
 function ChangePasswordView() {
   const { isMobile } = useSelector((state: RootState) => state.user);
   const { id } = useParams<{ id: string }>();
-  console.log(id);
   return (
     <Container
       bg={"var(--main-color)"}

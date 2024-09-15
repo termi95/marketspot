@@ -51,13 +51,11 @@ function UseAddingOferView() {
     categoryId: category.id,
     photos: base64Img
   }
-  console.log(payload);
   const result = await PostRequest<unknown>(
     addNotification,
     addEndpoint,
     payload
   );
-  console.log(result);
   }
 
     return {setFiles, setDescription, setCategory, setTitle, removePhoto, setPrice, submit, files, title, category, description, hovered, ref, mainCategoryId, price}

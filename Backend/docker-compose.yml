@@ -18,7 +18,7 @@ services:
     container_name: Database
     restart: always
     environment:
-        - POSTGRES_DB=markespot
+        - POSTGRES_DB=marketspot
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=Test123$
     logging:
@@ -44,6 +44,17 @@ services:
         PGADMIN_DEFAULT_PASSWORD: Test123$
     volumes:
         - pgadmin-data:/var/lib/pgadmin
+  
+  frontend:
+    image: ${DOCKER_REGISTRY-}frontend
+    container_name: Frontend
+    build:
+        context: ../Frontend/
+        dockerfile: Dockerfile
+    ports:
+        - 5173:5173
+    depends_on:
+        - backend
 
 volumes:
   local_pgdata:
