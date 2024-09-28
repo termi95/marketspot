@@ -11,7 +11,7 @@ export function UseChangePassword() {
   const navigate = useNavigate();
 
   async function ChangePassword(user: IUserChangePassword) {
-    const reqResult = await PostRequest<object>(ForgetNotification, Endpoint, user)
+    const reqResult = await PostRequest<object>(Endpoint, user, ForgetNotification)
     if (!reqResult.isError) {
       return navigate("/login");
     }

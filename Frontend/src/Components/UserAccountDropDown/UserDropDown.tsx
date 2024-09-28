@@ -46,6 +46,7 @@ function UserDropDown() {
                 stroke={1.5}
               />
             }
+            onClick={() => NavigateTo("/profile")}
           >
             Profile
           </Menu.Item>

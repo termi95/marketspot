@@ -1,20 +1,11 @@
-import {
-  Button,
-  PasswordInput,
-  Popover,
-  Progress,
-  Stack,
-  TextInput,
-  rem,
-} from "@mantine/core";
-import { useHover, useValidatedState } from "@mantine/hooks";
-import PasswordRequirement from "../../Components/PasswordRequirement";
-import { getStrength } from "../../Helpers/Password";
+import { Stack, TextInput, rem } from "@mantine/core";
+import { useValidatedState } from "@mantine/hooks";
 import { useState } from "react";
 import { UseRegisterForm } from "./UseRegisterForm";
 import { IUserRegister } from "../../Types/User";
 import { IconAt, IconLock, IconUser } from "@tabler/icons-react";
-import { PasswordReqChecker } from "../../Components/PasswordReqChecker";
+import PassInput from "../../Components/PassInput/indext";
+import Btn from "../../Components/Btn";
 
 interface Props {
   toggleForm: (flag: boolean) => void;
@@ -24,8 +15,6 @@ function RegisterForm({ toggleForm }: Props) {
   const { Register, RegisterOnEnter } = UseRegisterForm({
     toggleForm,
   });
-  const { hovered, ref } = useHover<HTMLButtonElement>();
-  const [popoverOpened, setPopoverOpened] = useState(false);
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -34,15 +23,14 @@ function RegisterForm({ toggleForm }: Props) {
     (val) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val),
     true
   );
-  const checks = PasswordReqChecker(password);
-
-  const strength = getStrength(password);
-  const color = strength === 100 ? "teal" : strength > 50 ? "yellow" : "red";
   return (
     <form
       onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
         if (
-          await RegisterOnEnter({Password: password,Email: value,Name: name,Surname: surname,},e)
+          await RegisterOnEnter(
+            { Password: password, Email: value, Name: name, Surname: surname },
+            e
+          )
         ) {
           toggleForm(true);
         }
@@ -76,44 +64,15 @@ function RegisterForm({ toggleForm }: Props) {
           leftSection={<IconAt style={{ width: rem(18), height: rem(18) }} />}
           onChange={(event) => setEmail(event.currentTarget.value)}
         />
-        <Popover
-          opened={popoverOpened}
-          position="bottom"
-          width="target"
-          transitionProps={{ transition: "pop" }}
-        >
-          <Popover.Target>
-            <div
-              onFocusCapture={() => setPopoverOpened(true)}
-              onBlurCapture={() => setPopoverOpened(false)}
-            >
-              <div style={{ textAlign: "start" }}>
-                <PasswordInput
-                  withAsterisk
-                  label="Your password"
-                  placeholder="Your password"
-                  value={password}
-                  leftSection={
-                    <IconLock style={{ width: rem(18), height: rem(18) }} />
-                  }
-                  onChange={(event) => setPassword(event.currentTarget.value)}
-                />
-              </div>
-            </div>
-          </Popover.Target>
-          <Popover.Dropdown>
-            <Progress color={color} value={strength} size={5} mb="xs" />
-            <PasswordRequirement
-              label="Includes at least 8 characters"
-              meets={password.length > 7}
-            />
-            {checks}
-          </Popover.Dropdown>
-        </Popover>
-        <Button
-          color={"var(--main-color)"}
-          variant={hovered ? "outline" : "filled"}
-          ref={ref}
+        <PassInput
+          label="Your password"
+          placeholder="Your password"
+          password={password}
+          onChangeAction={(event) => setPassword(event.currentTarget.value)}
+          lefIcon={<IconLock style={{ width: rem(18), height: rem(18) }} />}
+        />
+        <Btn
+          title="Submit"
           onClick={async () => {
             await Register({
               Password: password,
@@ -122,9 +81,7 @@ function RegisterForm({ toggleForm }: Props) {
               Surname: surname,
             } as IUserRegister);
           }}
-        >
-          Submit
-        </Button>
+        />
       </Stack>
     </form>
   );

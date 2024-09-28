@@ -1,11 +1,10 @@
-import { Button, PasswordInput, Stack, TextInput, rem } from "@mantine/core";
-import { useHover } from "@mantine/hooks";
+import { PasswordInput, Stack, TextInput, rem } from "@mantine/core";
 import { IconAt, IconLock } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import { UseLoginForm } from "./UseLoginForm";
+import Btn from "../../Components/Btn";
 
 function LoginForm() {
-  const { hovered, ref } = useHover<HTMLButtonElement>();
   const { Login, LoginOnEnter, setEmail, setPassword, password, email } =
     UseLoginForm();
   return (
@@ -40,16 +39,12 @@ function LoginForm() {
         >
           Forget your password?
         </Link>
-        <Button
-          color={"var(--main-color)"}
-          variant={hovered ? "outline" : "filled"}
-          ref={ref}
+        <Btn
+          title="Submit"
           onClick={async () => {
             await Login({ Password: password, Email: email });
           }}
-        >
-          Submit
-        </Button>
+        />
       </Stack>
     </form>
   );

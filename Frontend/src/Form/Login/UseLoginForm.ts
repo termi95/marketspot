@@ -4,10 +4,8 @@ import { IUserLogin } from "../../Types/User";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsLogin, setUserRole } from "../../State/User/userSlice";
-import { INotyfication } from "../../Types/Notyfication";
 
 const loginEndpoint =  "User/Login";
-const loginNotification : INotyfication={Title:"Login", Message:"Login is procesing.", SuccessMessage:"Logined successfully.", OnlyError: false}
 
 export function UseLoginForm() {
   const { PostRequest, SaveToken, GetUserRole } = Api();
@@ -17,7 +15,7 @@ export function UseLoginForm() {
   const dispatch = useDispatch();
 
   async function Login(user: IUserLogin) {
-    const reqResult = await PostRequest<string>(loginNotification, loginEndpoint, user)
+    const reqResult = await PostRequest<string>(loginEndpoint, user)
     if (!reqResult.isError && reqResult.result !== undefined) {
       SaveToken(reqResult.result);
       dispatch(setIsLogin(true))      

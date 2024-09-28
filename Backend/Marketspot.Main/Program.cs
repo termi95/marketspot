@@ -4,9 +4,11 @@ using Backend;
 using Backend.Services;
 using Marketspot.DataAccess.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -39,12 +41,43 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<OfferService>();
 builder.Services.AddControllers().AddJsonOptions(x =>
-   x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+   {
+       x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+       x.JsonSerializerOptions.WriteIndented = true;
+   });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(o =>
+       {
+           o.AddSecurityDefinition(
+            name: JwtBearerDefaults.AuthenticationScheme,
+            securityScheme:
+                new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Description = "Enter the bearer Authorization: `Bearer Generated-JWT-Token`",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+           o.AddSecurityRequirement(new OpenApiSecurityRequirement
+           {
+              {
+                   new OpenApiSecurityScheme
+                   {
+                       Reference = new OpenApiReference
+                       {
+                           Type = ReferenceType.SecurityScheme,
+                           Id = JwtBearerDefaults.AuthenticationScheme
+                       }
+                   },
+                   []
+               }
+           });
+       }
+    );
 builder.Services.AddDbContext<UserDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Marketspot.DataAccess")));
-builder.Services.AddCors(options => options.AddPolicy("FrontEndClient", builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins(["https://127.0.0.1:5173", "http://127.0.0.1:5173", "http://localhost:5173", "https://localhost:5173"])));
+builder.Services.AddCors(options => options.AddPolicy("FrontEndClient", builder => builder.AllowAnyMethod().AllowAnyHeader().WithOrigins([ "http://127.0.0.1:5173", "http://localhost:5173", "http://127.0.0.1:7149", "http://localhost:7149", "https://localhost:7149"])));
 
 var app = builder.Build();
 
@@ -54,7 +87,7 @@ app.UseCors("FrontEndClient");
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.ConfigObject.AdditionalItems.Add("persistAuthorization", "true"));
     app.ApplyMigrations();
 }
 

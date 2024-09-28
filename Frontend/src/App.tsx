@@ -16,6 +16,7 @@ const ForgetPasswordView = React.lazy(() => import("./View/ForgetPassword"));
 const ChangePasswordView = React.lazy(() => import("./View/ChangePasswordView"));
 const AddingCategory = React.lazy(() => import("./View/AddingCategory"));
 const AddingOferView = React.lazy(() => import("./View/AddingOferView"));
+const ProfileView = React.lazy(() => import("./View/Profile"));
 
 function App() {
   const { isTokenExpired, GetUserRole } = Api();
@@ -52,6 +53,7 @@ function App() {
       <Route path="/change-password/:id" element={<ChangePasswordView />} />
       <Route path="/adding" element={<AddingOferView />} />
       <Route path="/add-category" element={<AddingCategory />} />
+      <Route path="/profile" element={<ProfileView />} />
     </Routes>
     </Suspense>
   );

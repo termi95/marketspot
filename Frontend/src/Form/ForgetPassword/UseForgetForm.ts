@@ -19,9 +19,9 @@ export function UseForgetForm() {
 
   async function SendRequest(user: IUserChangePasswordRequest) {
     const reqResult = await PostRequest<object>(
-      ForgetNotification,
       Endpoint,
-      user
+      user,
+      ForgetNotification
     );
     if (!reqResult.isError) {
       return navigate("/login");

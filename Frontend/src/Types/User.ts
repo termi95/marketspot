@@ -23,3 +23,10 @@ export enum UserRole {
   User = 0,
   Admin = 1,
 }
+
+export type BasicUserInfo = {
+  id: string,
+  name: string,
+  surname: string,
+  email: string
+}

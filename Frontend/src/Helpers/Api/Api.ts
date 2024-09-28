@@ -79,16 +79,16 @@ export function Api() {
     return true;
   }
   async function PostRequest<T>(
-    { Title, Message, SuccessMessage, OnlyError = false }: INotyfication,
     endpoint: string,
-    payload: object
+    payload: object,
+    notification?: INotyfication | undefined
   ) {
     const toastId = uuidv4();
     let isError = false;
-    let responeMessage = SuccessMessage;
+    let responeMessage = notification ?  notification.SuccessMessage: "";
     let result = undefined;
-    if (!OnlyError) {
-      Loading(toastId, Title, Message);      
+    if (notification != undefined) {
+      Loading(toastId, notification.Title, notification.Message);      
     }
     try {
       const respone = await Request(ReqType.POST, endpoint, payload);
@@ -102,10 +102,10 @@ export function Api() {
       responeMessage = (error as Error).message;
       isError = true;
     } finally {
-      if (!OnlyError) {
+      if (notification != undefined) {
         ErrorOrSucces(toastId, responeMessage, isError);        
       }
-      else if (isError && OnlyError) {
+      else if (isError && notification == undefined) {
         ShowError("Error", responeMessage)
       }
     }

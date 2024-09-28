@@ -71,7 +71,7 @@ namespace backend.Services
             }
             if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
             {
-                response.ErrorsMessages.Add("User not found or Password was incorrect.");
+                response.ErrorsMessages.Add("Password was incorrect.");
                 return response;
             }
             var claims = new List<Claim>()
@@ -144,7 +144,7 @@ namespace backend.Services
             {
                 user = await _context.Users.FindAsync(dto.PasswordChangeToken);
             }
-            catch{}
+            catch { }
 
             if (user is null || user.PasswordAllowTimeToChange > DateTime.Now)
             {
@@ -153,6 +153,62 @@ namespace backend.Services
             }
             user.Password = _passwordHasher.HashPassword(user, dto.Password);
             user.PasswordAllowTimeToChange = DateTime.MinValue;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                response.ErrorsMessages.Add(ex.Message);
+                return response;
+            }
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
+        }
+
+        public async Task<ApiResponse> GetPersonalInfo(string userId)
+        {
+            var response = new ApiResponse();
+            User user = null;
+
+            user = await _context.Users.Where(x => x.Id == Guid.Parse(userId)).SingleOrDefaultAsync();
+
+            if (user is null)
+            {
+                response.ErrorsMessages.Add("User not found.");
+                return response;
+            }
+
+            response.Result = _mapper.Map<BasicUser>(user);
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
+        }
+
+        public async Task<ApiResponse> UpdateSettingsChangePassword(string  userId, SettingsChangePasswordDto dto)
+        {
+            var response = new ApiResponse();
+            User user = null;
+
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
+            user = await _context.Users.Where(x => x.Id == Guid.Parse(userId)).SingleOrDefaultAsync();
+
+            if (user is null)
+            {
+                response.ErrorsMessages.Add("User not found.");
+                return response;
+            }
+
+            if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
+            {
+                response.ErrorsMessages.Add("Password was incorrect.");
+                return response;
+            }
+            user.Password = _passwordHasher.HashPassword(user, dto.NewPassword);
 
             try
             {

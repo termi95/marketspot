@@ -89,9 +89,9 @@ export function UseGetingCategory() {
     setLoading(true);
     const category: IGetCategory = { parentId };
     const result = await PostRequest<ICategory[]>(
-      getNotification,
       getEndpoint,
-      category
+      category,
+      getNotification
     );
     if (!result.isError && result.result !== undefined) {
       setCategories(result.result);

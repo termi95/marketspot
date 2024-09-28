@@ -14,7 +14,7 @@ export function UseRegisterForm({ toggleForm }: Props) {
   const { PostRequest } = Api();
 
   async function Register(user: IUserRegister) {
-    const reqResult = await PostRequest<object>(ForgetNotification, Endpoint, user)
+    const reqResult = await PostRequest<object>(Endpoint, user, ForgetNotification)
     if (!reqResult.isError) {
       toggleForm(true);
     }

@@ -51,9 +51,9 @@ export function UseAddingCategory() {
   async function AddCategory(category: IAddOrUpdateCategory) {
     category.parentId = parentId;
     const result = await PostRequest<IAddOrUpdateCategory>(
-      addNotification,
       addEndpoint,
-      category
+      category,
+      addNotification
     );
     if (!result.isError) {
       GetCategoryLevel();
@@ -71,9 +71,9 @@ export function UseAddingCategory() {
 
   const handleDeleteCategory = useCallback( async (category: IDeleteCategory) => {
     const result = await PostRequest<IDeleteCategory>(
-      deleteNotification,
       deleteEndpoint,
-      category
+      category,
+      deleteNotification
     );
     if (!result.isError) {
       GetCategoryLevel();
@@ -129,9 +129,9 @@ export function UseAddingCategory() {
     setLoading(true)
     const category: IGetCategory = { parentId };
     const result = await PostRequest<ICategory[]>(
-      getNotification,
       getEndpoint,
-      category
+      category,
+      getNotification
     );
     if (!result.isError && result.result !== undefined) {
       setCategories(result.result);
