@@ -14,21 +14,18 @@ const getEndpoint = "Category/GetCategoryByParentId";
 const addNotification: INotyfication = {
   Title: "Adding",
   Message: "Adding category.",
-  SuccessMessage: "Category was added successfully.",
-  OnlyError: false,
+  SuccessMessage: "Category was added successfully."
 };
 const deleteNotification: INotyfication = {
   Title: "Deleting",
   Message: "",
-  SuccessMessage: "Category was Deleted successfully.",
-  OnlyError: false,
+  SuccessMessage: "Category was Deleted successfully."
 };
 const mainCategoryId = "00000000-0000-0000-0000-000000000000";
 const getNotification: INotyfication = {
   Title: "",
   Message: "",
-  SuccessMessage: "",
-  OnlyError: true,
+  SuccessMessage: ""
 };
 const initialCategory = { name: "", parentId: "", id: "" };
 const initialParentCategory = {

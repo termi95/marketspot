@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IUserChangePassword } from "../../Types/User";
 
 const Endpoint =  "User/change-password";
-const ForgetNotification : INotyfication={Title:"Request", Message:"Request is procesing.", SuccessMessage:"Request was send successfully.", OnlyError: false}
+const ForgetNotification : INotyfication={Title:"Request", Message:"Request is procesing.", SuccessMessage:"Request was send successfully."}
 
 export function UseChangePassword() {
   const { PostRequest } = Api();

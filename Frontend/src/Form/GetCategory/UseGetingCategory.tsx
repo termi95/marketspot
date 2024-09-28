@@ -8,8 +8,7 @@ const mainCategoryId = "00000000-0000-0000-0000-000000000000";
 const getNotification: INotyfication = {
   Title: "",
   Message: "",
-  SuccessMessage: "",
-  OnlyError: true,
+  SuccessMessage: ""
 };
 const initialParentCategory = {
   name: "Main category",

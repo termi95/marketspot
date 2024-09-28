@@ -8,8 +8,7 @@ const Endpoint = "User/change-password-request";
 const ForgetNotification: INotyfication = {
   Title: "Request",
   Message: "Request is procesing.",
-  SuccessMessage: "Request was send successfully.",
-  OnlyError: false,
+  SuccessMessage: "Request was send successfully."
 };
 
 export function UseForgetForm() {

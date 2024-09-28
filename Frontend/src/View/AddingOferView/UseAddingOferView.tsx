@@ -12,8 +12,7 @@ const addEndpoint = "Offer/add";
 const addNotification: INotyfication = {
   Title: "Adding",
   Message: "Adding offer.",
-  SuccessMessage: "offer was added successfully.",
-  OnlyError: false,
+  SuccessMessage: "offer was added successfully."
 };
 
 function UseAddingOferView() {
