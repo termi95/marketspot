@@ -7,12 +7,13 @@ import { Notification } from "../Notification/Notification";
 import { v4 as uuidv4 } from "uuid";
 
 export function Api() {
-  const { Loading, ErrorOrSucces, ShowError } = Notification();
+  const { Loading, ErrorOrSucces, ShowError, Close } = Notification();
   const _baseUrl = config.url;
   async function Request(
     method: string,
     ep: string,
-    payload: object
+    payload: object,
+    signal?: AbortSignal
   ): Promise<ApiResponse> {
     const url = new URL(_baseUrl + ep);
     const requestConfig: RequestInit = {
@@ -25,6 +26,7 @@ export function Api() {
         Authorization: `Bearer ${GetToken()}`,
       }),
       cache: "default",
+      signal: signal,
     };
 
     if (method === ReqType.POST || method === ReqType.PUT) {
@@ -81,17 +83,20 @@ export function Api() {
   async function PostRequest<T>(
     endpoint: string,
     payload: object,
-    notification?: INotyfication | undefined
+    notification?: INotyfication | undefined,
+    signal?: AbortSignal
   ) {
     const toastId = uuidv4();
     let isError = false;
     let responeMessage = notification ?  notification.SuccessMessage: "";
     let result = undefined;
+
     if (notification != undefined) {
       Loading(toastId, notification.Title, notification.Message);      
     }
+
     try {
-      const respone = await Request(ReqType.POST, endpoint, payload);
+      const respone = await Request(ReqType.POST, endpoint, payload, signal);
       if (!respone.isSuccess) {
         responeMessage = respone.errorsMessages.join("\r\n");
         isError = true;
@@ -100,12 +105,19 @@ export function Api() {
       }
     } catch (error) {
       responeMessage = (error as Error).message;
-      isError = true;
+      console.log((error as Error).name)
+      if ((error as Error).name !="AbortError") {
+        isError = true;
+      }
+      else
+      {
+        Close(toastId);
+      }
     } finally {
       if (notification != undefined) {
         ErrorOrSucces(toastId, responeMessage, isError);        
       }
-      else if (isError && notification == undefined) {
+      else if (isError) {
         ShowError("Error", responeMessage)
       }
     }
