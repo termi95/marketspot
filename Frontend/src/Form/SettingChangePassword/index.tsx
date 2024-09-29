@@ -1,9 +1,10 @@
-import { Box, Fieldset, Group } from "@mantine/core";
+import { Box, Fieldset, Group, rem } from "@mantine/core";
 import Btn from "../../Components/Btn";
 import { UseSettingChangePassword } from "./UseSettingChangePassword";
 import OpenPasswordConfirmationModal from "../../Components/PasswordConfirmationAction";
 import { getStrength } from "../../Helpers/Password";
 import PassInput from "../../Components/PassInput/indext";
+import { IconLock } from "@tabler/icons-react";
 
 function SettingsChangePassword() {
   const { Submit, SubmitOnEnter, ChangePasswordProp, passwordState } =
@@ -32,6 +33,7 @@ function SettingsChangePassword() {
             onChangeAction={(e) =>
               ChangePasswordProp(e.target.value, "newPassword")
             }
+            lefIcon={<IconLock style={{ width: rem(18), height: rem(18) }} />}
           />
         </Box>
         <Box mt={"md"}>
@@ -41,6 +43,7 @@ function SettingsChangePassword() {
             onChangeAction={(e) =>
               ChangePasswordProp(e.target.value, "newRePassword")
             }
+            lefIcon={<IconLock style={{ width: rem(18), height: rem(18) }} />}
           />
         </Box>
         <Group justify="flex-end" mt="md">

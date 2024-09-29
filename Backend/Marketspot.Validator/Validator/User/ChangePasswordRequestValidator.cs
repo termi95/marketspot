@@ -1,7 +1,7 @@
 ﻿using backend.Model.User;
 using FluentValidation;
 
-namespace Marketspot.Validator.Validator
+namespace Marketspot.Validator.Validator.User
 {
     public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRequestDto>
     {

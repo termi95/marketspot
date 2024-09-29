@@ -58,5 +58,13 @@ namespace backend.Controllers
             var response = await _userService.UpdateSettingsChangePassword(userId, dto);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Authorize, Route("settings-personal-information"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> UpdateSettingsPersonalInformation([FromBody] SettingsPersonalInformationDto dto)
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _userService.UpdateSettingsPersonalInformation(userId, dto);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }

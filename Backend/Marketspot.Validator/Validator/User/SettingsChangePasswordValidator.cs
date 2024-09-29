@@ -1,7 +1,7 @@
 ﻿using backend.Model.User;
 using FluentValidation;
 
-namespace Marketspot.Validator.Validator
+namespace Marketspot.Validator.Validator.User
 {
     public class SettingsChangePasswordValidator : AbstractValidator<SettingsChangePasswordDto>
     {
@@ -33,7 +33,7 @@ namespace Marketspot.Validator.Validator
                 .Matches("[a-z]").WithMessage("'{PropertyName}' must contain one or more lowercase letters.")
                 .Matches(@"\d").WithMessage("'{PropertyName}' must contain one or more digits.")
                 .Matches(@"[][""!@$%^&*(){}:;<>,.?/+_=|'~\\-]").WithMessage("'{PropertyName}' must contain one or more special characters.")
-                .Equal(x => x.NewPassword).WithMessage("Passwords do not match.");            
+                .Equal(x => x.NewPassword).WithMessage("Passwords do not match.");
         }
     }
 }

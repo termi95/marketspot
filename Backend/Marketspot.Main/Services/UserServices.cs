@@ -222,5 +222,47 @@ namespace backend.Services
             response.SetStatusCode(HttpStatusCode.OK);
             return response;
         }
+
+
+        public async Task<ApiResponse> UpdateSettingsPersonalInformation(string userId, SettingsPersonalInformationDto dto)
+        {
+            var response = new ApiResponse();
+            User user = null;
+
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
+            user = await _context.Users.Where(x => x.Id == Guid.Parse(userId)).SingleOrDefaultAsync();
+
+            if (user is null)
+            {
+                response.ErrorsMessages.Add("User not found.");
+                return response;
+            }
+
+            if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
+            {
+                response.ErrorsMessages.Add("Password was incorrect.");
+                return response;
+            }
+
+            user.Surname = dto.Surname;
+            user.Name = dto.Name;
+            user.Email = dto.Email;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                response.ErrorsMessages.Add(ex.Message);
+                return response;
+            }
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using Marketspot.Model.User;
 
-namespace Marketspot.Validator.Validator
+namespace Marketspot.Validator.Validator.User
 {
     public class LoginUserValidator : AbstractValidator<LoginUserDto>
     {

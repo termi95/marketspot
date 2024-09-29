@@ -2,15 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
 import { INotyfication } from "../../Types/Notyfication";
 import { BasicUserInfo, UserRole } from "../../Types/User";
+import OpenPasswordConfirmationModal from "../../Components/PasswordConfirmationAction";
 
 const PersonalInformationEndpoint = "User/get-info";
-const PersonalInformationNotification: INotyfication = {
-  Title: "Personal Information",
-  Message: "Get personal information.",
-  SuccessMessage: "Personal information get successfully.",
-};
 
-const UpdatePersonalInformationEndpoint = "User/update-info";
+const UpdatePersonalInformationEndpoint = "User/settings-personal-information";
 const UpdatePersonalInformationNotification: INotyfication = {
   Title: "Personal Information",
   Message: "Update is procesing.",
@@ -36,7 +32,7 @@ export function UsepersonalInformation() {
         const reqResult = await PostRequest<BasicUserInfo>(
           PersonalInformationEndpoint,
           {},
-          PersonalInformationNotification,
+          undefined,
           signal
         );
         if (!reqResult.isError && reqResult.result !== undefined) {
@@ -68,10 +64,10 @@ export function UsepersonalInformation() {
         break;
     }
   }
-  async function Submit() {
+  async function Submit(password: string) {
     const reqResult = await PostRequest<BasicUserInfo>(
       UpdatePersonalInformationEndpoint,
-      user,
+      {...user, password},
       UpdatePersonalInformationNotification
     );
     if (!reqResult.isError && reqResult.result !== undefined) {
@@ -84,7 +80,7 @@ export function UsepersonalInformation() {
     const { key } = e;
     if (key === "Enter") {
       e.preventDefault();
-      return await Submit();
+      OpenPasswordConfirmationModal(Submit);
     }
     return false;
   }

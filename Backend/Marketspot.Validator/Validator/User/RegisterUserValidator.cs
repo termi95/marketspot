@@ -1,15 +1,24 @@
 ﻿using backend.Model.User;
 using FluentValidation;
 
-namespace Marketspot.Validator.Validator
+namespace Marketspot.Validator.Validator.User
 {
-    public class ChangePasswordValidator : AbstractValidator<ChangePasswordDto>
+    public class RegisterUserValidator : AbstractValidator<RegisterUserDto>
     {
-        public ChangePasswordValidator()
+        public RegisterUserValidator()
         {
-            RuleFor(x => x.PasswordChangeToken)
+            RuleFor(x => x.Email)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty();
+                .NotEmpty()
+                .MaximumLength(128)
+                .EmailAddress();
+            RuleFor(x => x.Name)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .MaximumLength(128);
+            RuleFor(x => x.Surname)
+                .Cascade(CascadeMode.Stop)
+                .MaximumLength(128);
             RuleFor(x => x.Password)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty()
