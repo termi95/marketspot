@@ -1,7 +1,8 @@
 import { rem, Tabs } from "@mantine/core";
 import MainPanel from "../../Components/MainPanel";
-import { IconMessageCircle, IconPhoto, IconSettings } from "@tabler/icons-react";
+import { IconPhoto, IconReportMoney, IconSettings } from "@tabler/icons-react";
 import Settings from "./settings";
+import MyOffer from "./myOffer";
 
 function ProfileView() {
   const iconStyle = { width: rem(22), height: rem(22) };
@@ -13,8 +14,8 @@ function ProfileView() {
         <Tabs.Tab value="gallery" leftSection={<IconPhoto style={iconStyle} />}>
           Gallery
         </Tabs.Tab>
-        <Tabs.Tab value="messages" leftSection={<IconMessageCircle style={iconStyle} />}>
-          Messages
+        <Tabs.Tab value="My offer" leftSection={<IconReportMoney style={iconStyle} />}>
+          My offer
         </Tabs.Tab>
         <Tabs.Tab value="settings" leftSection={<IconSettings style={iconStyle} />}>
           Settings
@@ -25,8 +26,8 @@ function ProfileView() {
         Gallery tab content
       </Tabs.Panel>
 
-      <Tabs.Panel value="messages">
-        Messages tab content
+      <Tabs.Panel value="My offer">
+        <MyOffer/>
       </Tabs.Panel>
 
       <Tabs.Panel value="settings">

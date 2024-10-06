@@ -15,6 +15,7 @@ namespace Backend
             CreateMap<AddCategoryDto, Category>();
             CreateMap<AddOfferDto, Offer>();
             CreateMap<Offer, GetOfferByIdResult>();
+            CreateMap<Offer, GetUserOffers>().ForMember(dest => dest.Photo, opt=>opt.MapFrom(src => src.IconPhoto));
             CreateMap<User, BasicUser>();
             CreateMap<Category, BasicCategory>();
         }

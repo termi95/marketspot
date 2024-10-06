@@ -17,6 +17,7 @@ namespace Marketspot.DataAccess.Entities
         public int Price { get; set; }
         [NotNull, MinLength(1)]
         public List<string> Photos { get; set; }
+        public string IconPhoto { get; set; }
 
         public User User { get; set; }
         public virtual Category Category { get; set; }

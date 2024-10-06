@@ -29,5 +29,13 @@ namespace Backend.Controllers
             var response = await _offerServices.GetOfferById(dto);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Authorize, Route("Get-User-Offers"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetUSerOffer()
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _offerServices.GetUSerOffer(userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }
