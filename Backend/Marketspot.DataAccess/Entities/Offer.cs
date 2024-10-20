@@ -15,6 +15,7 @@ namespace Marketspot.DataAccess.Entities
         public string Description { get; set; }
         [NotNull]
         public int Price { get; set; }
+        public DateTime? SoftDeletedDate { get; set; } = null;
         [NotNull, MinLength(1)]
         public List<string> Photos { get; set; }
         public string IconPhoto { get; set; }

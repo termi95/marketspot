@@ -37,5 +37,12 @@ namespace Backend.Controllers
             var response = await _offerServices.GetUSerOffer(userId);
             return StatusCode(response.GetStatusCode(), response);
         }
+        [HttpPost, Authorize, Route("Soft-delete"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> SoftDelete([FromBody] SoftDeleteDto dto)
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _offerServices.SoftDelete(dto, userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }
