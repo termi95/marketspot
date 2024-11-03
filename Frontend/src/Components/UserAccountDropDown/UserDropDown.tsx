@@ -7,9 +7,10 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import DropDownAction from "./Action/DropDownAction";
+import { Link } from "react-router-dom";
 
 function UserDropDown() {
-    const { LogOut, NavigateTo } = DropDownAction();
+  const { LogOut } = DropDownAction();
   return (
     <Container mr="15px">
       <Menu
@@ -28,28 +29,30 @@ function UserDropDown() {
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item
-            leftSection={
-              <IconFilePlus
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-            onClick={() => NavigateTo("/adding")}
-          >
-            Add offer
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconUser
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-            onClick={() => NavigateTo("/profile")}
-          >
-            Profile
-          </Menu.Item>
+          <Link to={"/adding"}>
+            <Menu.Item
+              leftSection={
+                <IconFilePlus
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              }
+            >
+              Add offer
+            </Menu.Item>
+          </Link>
+          <Link to={"/profile"}>
+            <Menu.Item
+              leftSection={
+                <IconUser
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              }
+            >
+              Profile
+            </Menu.Item>
+          </Link>
           <Menu.Item
             leftSection={
               <IconLogout
@@ -63,6 +66,7 @@ function UserDropDown() {
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
-    </Container>);
+    </Container>
+  );
 }
-export default UserDropDown
+export default UserDropDown;

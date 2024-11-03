@@ -35,7 +35,7 @@ namespace Marketspot.Validator
             }
             return validResult;
         }
-        public static bool CheckIfFound<T>(T item, ApiResponse response)
+        public static bool CheckIfExists<T>(T item, ApiResponse response)
         {
             if (item is null)
             {

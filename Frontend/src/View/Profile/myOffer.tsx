@@ -5,10 +5,12 @@ import { UserOfferList } from "../../Types/Offer";
 import { ActionIcon, rem, SimpleGrid } from "@mantine/core";
 import { IconEdit, IconEye, IconTrash } from "@tabler/icons-react";
 import OpenPasswordConfirmationModal from "../../Components/PasswordConfirmationAction";
+import { useNavigate } from "react-router-dom";
 
 const GetUserOffersEndpoint = "Offer/Get-User-Offers";
 const SoftDeleteEndpoint = "Offer/Soft-delete";
-function MyOffer() {
+function MyOffer() {              
+  const navigate = useNavigate();
   const { PostRequest } = Api();
   const [data, setData] = useState<UserOfferList[] | null>(null);
   async function GetUser(signal: AbortSignal) {
@@ -40,19 +42,20 @@ function MyOffer() {
   }
 
   const action = (id: string) => {
-    console.log(id);
     return (
       <ActionIcon.Group>
         <SimpleGrid cols={3} w={"100%"}>
-          <ActionIcon
-            size={42}
-            variant="transparent"
-            color="lime"
-            aria-label="Open"
-            onClick={() => {}}
-          >
-            <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
-          </ActionIcon>
+            <ActionIcon
+              size={42}
+              variant="transparent"
+              color="lime"
+              aria-label="Open"
+              onClick={() => {
+                return navigate(`/offer/${id}`);
+              }}
+              >
+              <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
+            </ActionIcon>
           <ActionIcon
             size={42}
             variant="transparent"

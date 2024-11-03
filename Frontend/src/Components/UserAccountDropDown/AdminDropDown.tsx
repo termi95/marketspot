@@ -6,9 +6,10 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import DropDownAction from "./Action/DropDownAction";
+import { Link } from "react-router-dom";
 
 function AdminDropDown() {
-  const { LogOut, NavigateTo } = DropDownAction();
+  const { LogOut } = DropDownAction();
   return (
     <Container mr="15px">
       <Menu
@@ -27,17 +28,18 @@ function AdminDropDown() {
           </Button>
         </Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item
-            leftSection={
-              <IconCategory
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-            onClick={() => NavigateTo("/add-category")}
-          >
-            Add category
-          </Menu.Item>
+          <Link to={"/add-category"}>
+            <Menu.Item
+              leftSection={
+                <IconCategory
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              }
+            >
+              Add category
+            </Menu.Item>
+          </Link>
           <Menu.Item
             leftSection={
               <IconLogout

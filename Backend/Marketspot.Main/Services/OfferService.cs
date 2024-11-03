@@ -62,7 +62,7 @@ namespace Backend.Services
             {
                 var offer = await _context.Offers.AsNoTracking().Include(o => o.User).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == Guid.Parse(dto.Id) && x.SoftDeletedDate == null);
 
-                if (ValidatorHelper.CheckIfFound(offer, response))
+                if (!ValidatorHelper.CheckIfExists(offer, response))
                 {
                     return response;
                 }

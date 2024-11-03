@@ -6,9 +6,10 @@ interface ButtonProps {
   title: string;
   fullWidth?: boolean;
   disabled?: boolean;
+  styles?: React.CSSProperties | undefined;
 }
-// to do Make your own custom button
-function Btn({onClick, title, fullWidth, disabled}:ButtonProps) {
+
+function Btn({onClick, title, fullWidth, disabled, styles}:ButtonProps) {
   const { hovered, ref } = useHover<HTMLButtonElement>();
   return (
     <Button
@@ -17,7 +18,7 @@ function Btn({onClick, title, fullWidth, disabled}:ButtonProps) {
       ref={ref}
       style={{
         transition: "300ms",
-        height: rem(42),
+        height: rem(42), ...styles
       }}
       onClick={onClick}
       fullWidth={fullWidth}

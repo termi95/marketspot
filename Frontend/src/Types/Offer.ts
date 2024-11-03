@@ -20,4 +20,5 @@ export type UserOffer = {
 };
 
 export type UserOfferList = UserOffer & {action: object}
+export type Offer = UserOffer 
 

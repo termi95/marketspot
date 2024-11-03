@@ -60,12 +60,16 @@ function CustomTable<T>({ RowData, Columns, Action }: Props<T>) {
                   : "";
               break;
             case "action":
-              console.log(rowId)
               value = <Table.Td key={String(column)}>{Action(rowId as string)}</Table.Td>
               break;
+              case "price":
+                value = <Table.Td key={String(column)} style={{ textAlign: "start" }} >PLN {row[column] !== null && row[column] !== undefined
+                  ? String(row[column])
+                  : ""}</Table.Td>
+                break;
             default:
               value = (
-                <Table.Td style={{ textAlign: "start" }} key={String(column)}>
+                <Table.Td key={String(column)} style={{ textAlign: "start" }} >
                   {row[column] !== null && row[column] !== undefined
                     ? String(row[column])
                     : ""}
