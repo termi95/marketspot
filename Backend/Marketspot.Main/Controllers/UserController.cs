@@ -11,9 +11,9 @@ namespace backend.Controllers
     [ApiController, Route("api/[controller]")]
     [Consumes("application/json"), Produces("application/json")]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
-    public class UserController(UserService userService) : Controller
+    public class UserController(UserServices userService) : Controller
     {
-        readonly UserService _userService = userService;
+        readonly UserServices _userService = userService;
 
         [HttpPost, Route("login"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> Login([FromBody] LoginUserDto user)

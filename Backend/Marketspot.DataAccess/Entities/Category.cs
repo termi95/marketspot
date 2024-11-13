@@ -15,6 +15,7 @@ namespace Marketspot.DataAccess.Entities
 
         [NotNull, MaxLength(128)]
         public string Name { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 
         public virtual ICollection<Offer> Offers { get; set; }
 

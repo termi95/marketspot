@@ -10,10 +10,10 @@ namespace Backend.Controllers
     [ApiController, Route("api/[controller]")]
     [Consumes("application/json"), Produces("application/json")]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
-    public class CategoryController(CategoryService categoryServices) : Controller
+    public class CategoryController(CategoryServices categoryServices) : Controller
     {
 
-        readonly CategoryService _categoryServices = categoryServices;
+        readonly CategoryServices _categoryServices = categoryServices;
 
         [HttpPost, Authorize, Route("Add"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> AddCategory([FromBody] AddCategoryDto dto)

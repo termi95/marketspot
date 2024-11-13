@@ -22,11 +22,14 @@ namespace Marketspot.DataAccess.Entities
         public Guid PasswordChangeToken { get; set; }
         [AllowNull]
         public DateTime PasswordAllowTimeToChange { get; set; } = DateTime.MinValue;
+        [NotNull]
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 
         [NotNull]
         public UserRoles Roles { get; set; } = UserRoles.User;
 
         public virtual ICollection<Offer> Offers { get; set; }
+        public virtual ICollection<Like> Likes { get; set; }
 
     }
 }

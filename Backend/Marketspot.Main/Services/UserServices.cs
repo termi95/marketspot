@@ -16,7 +16,7 @@ using System.Text;
 
 namespace backend.Services
 {
-    public class UserService(UserDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IMapper mapper)
+    public class UserServices(UserDbContext context, IPasswordHasher<User> passwordHasher, AuthenticationSettings authenticationSettings, IMapper mapper)
     {
         private readonly UserDbContext _context = context;
         private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;

@@ -19,9 +19,11 @@ namespace Marketspot.DataAccess.Entities
         [NotNull, MinLength(1)]
         public List<string> Photos { get; set; }
         public string IconPhoto { get; set; }
+        public DateTime CreationDate { get; set; } = DateTime.Now;
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public virtual Category Category { get; set; }
+        public virtual ICollection<Like> Likes { get; set; }
 
     }
 }

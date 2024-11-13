@@ -11,9 +11,9 @@ namespace Backend.Controllers
     [ApiController]
     [Consumes("application/json"), Produces("application/json")]
     [ProducesResponseType<ApiResponse>(StatusCodes.Status400BadRequest)]
-    public class OfferController(OfferService offerServices) : ControllerBase
+    public class OfferController(OfferServices offerServices) : ControllerBase
     {
-        readonly OfferService _offerServices = offerServices;
+        readonly OfferServices _offerServices = offerServices;
 
         [HttpPost, Authorize, Route("Add"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> AddCategory([FromBody] AddOfferDto dto)

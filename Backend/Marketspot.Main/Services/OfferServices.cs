@@ -9,7 +9,7 @@ using System.Net;
 
 namespace Backend.Services
 {
-    public class OfferService(UserDbContext context, IPasswordHasher<User> passwordHasher, IMapper mapper)
+    public class OfferServices(UserDbContext context, IPasswordHasher<User> passwordHasher, IMapper mapper)
     {
         private readonly UserDbContext _context = context;
         private readonly IMapper _mapper = mapper;

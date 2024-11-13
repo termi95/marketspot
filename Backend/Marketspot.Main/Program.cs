@@ -37,9 +37,10 @@ builder.Services.AddAuthentication(options =>
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<OfferService>();
+builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<CategoryServices>();
+builder.Services.AddScoped<OfferServices>();
+builder.Services.AddScoped<LikeServices>();
 builder.Services.AddControllers().AddJsonOptions(x =>
    {
        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

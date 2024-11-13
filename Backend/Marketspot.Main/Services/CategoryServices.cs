@@ -10,7 +10,7 @@ using System.Net;
 
 namespace Backend.Services
 {
-    public class CategoryService(UserDbContext context, IMapper mapper)
+    public class CategoryServices(UserDbContext context, IMapper mapper)
     {
         private readonly UserDbContext _context = context;
         private readonly IMapper _mapper = mapper;
