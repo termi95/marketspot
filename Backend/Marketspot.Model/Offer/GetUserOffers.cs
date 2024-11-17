@@ -10,6 +10,7 @@ namespace Marketspot.Model.Offer
         public string Description { get; set; }
         public int Price { get; set; }
         public string Photo { get; set; }
+        public DateOnly CreationDate { get; set; }
 
         public BasicUser User { get; set; }
         public BasicCategory Category { get; set; }

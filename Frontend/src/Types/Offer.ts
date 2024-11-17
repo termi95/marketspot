@@ -12,6 +12,7 @@ export type OfferAddDto = {
 export type UserOffer = {
   id: string;
   tittle: string;
+  creationDate: string;
   description: string;
   price: number;
   photo: string;
@@ -19,6 +20,17 @@ export type UserOffer = {
   category: ICategory;
 };
 
+export type MainOfferView = {
+  id: string;
+  likeId: string;
+  tittle: string;
+  creationDate: string;
+  description: string;
+  price: number;
+  photos: string[];
+  user: BasicUserInfo;
+  category: ICategory;
+};
+
 export type UserOfferList = UserOffer & {action: object}
-export type Offer = UserOffer 
 

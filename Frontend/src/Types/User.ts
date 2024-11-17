@@ -29,4 +29,5 @@ export type BasicUserInfo = {
   name: string,
   surname: string,
   email: string
+  creationDate: string
 }

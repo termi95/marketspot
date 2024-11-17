@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Marketspot.DataAccess.Entities;
+using Marketspot.DataAccess.Migrations;
 using Marketspot.Model;
 using Marketspot.Model.Offer;
 using Marketspot.Validator;
@@ -50,7 +51,7 @@ namespace Backend.Services
             return response;
         }
 
-        public async Task<ApiResponse> GetOfferById(GetOfferByIdDto dto)
+        public async Task<ApiResponse> GetOfferById(GetOfferByIdDto dto, string userId)
         {
             var response = new ApiResponse();
             if (!await ValidatorHelper.ValidateDto(dto, response))
@@ -66,8 +67,10 @@ namespace Backend.Services
                 {
                     return response;
                 }
+                var result = _mapper.Map<GetOfferByIdResult>(offer);
+                result.LikeId = await _context.Likes.Where(l => l.OfferId == offer.Id && l.UserId == Guid.Parse(userId)).Select(l => l.Id).SingleOrDefaultAsync();
                 response.SetStatusCode(HttpStatusCode.OK);
-                response.Result = _mapper.Map<GetOfferByIdResult>(offer);
+                response.Result = result;
                 return response;
             }
             catch (Exception e)
@@ -77,7 +80,7 @@ namespace Backend.Services
             }
         }
 
-        public async Task<ApiResponse> GetUSerOffer(string Id)
+        public async Task<ApiResponse> GetUSerOffers(string Id)
         {
             var response = new ApiResponse();
 

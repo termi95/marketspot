@@ -23,6 +23,11 @@ namespace Backend.Services
                 response.ErrorsMessages.Add("Offer not exist or is not active");
                 return response;
             }
+            if (await _context.Likes.Where(l => l.OfferId == offerId && l.UserId == Guid.Parse(userId)).Select(l => l.Id).SingleOrDefaultAsync() != Guid.Empty)
+            {
+                response.ErrorsMessages.Add("You already like this offer.");
+                return response;
+            }
 
             Like like = new() { OfferId = offerId, UserId = Guid.Parse(userId) };
             await _context.Likes.AddAsync(like);

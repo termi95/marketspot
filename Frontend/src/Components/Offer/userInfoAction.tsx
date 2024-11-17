@@ -5,11 +5,7 @@ interface Props {
   user: BasicUserInfo;
 }
 export function UserInfoAction({ user }: Props) {
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
-const fullName = () => `${user.name} ${user.surname}`
+  const fullName = () => `${user.name} ${user.surname}`;
   return (
     <Paper radius="md" withBorder p="lg" bg="var(--mantine-color-body)">
       <Avatar
@@ -22,10 +18,8 @@ const fullName = () => `${user.name} ${user.surname}`
         {fullName()}
       </Text>
       <Text ta="center" c="dimmed" fz="sm">
-        On <Text component="span">Market Spot</Text> from
-        {yyyy + "/" + mm + "/" + dd}
+        On <Text component="span">Market Spot</Text> from {user.creationDate}
       </Text>
-
       <Box pt={"sm"}>
         <Btn title="User offers" fullWidth />
       </Box>

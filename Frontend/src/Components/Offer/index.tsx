@@ -7,22 +7,18 @@ import ReturnBtn from "../ReturnBtn";
 import OrderSection from "./orderSection";
 import { useEffect, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
-import { UserOffer } from "../../Types/Offer";
+import { MainOfferView } from "../../Types/Offer";
 
 const GetUserOffersEndpoint = "Offer/Get-by-id";
 function Offer() {
   const { id } = useParams<{ id: string }>();
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
 
   const border = { borderColor: "red", padding: 0 };
   const { PostRequest } = Api();
-  const [offer, setOffer] = useState<UserOffer>();
+  const [offer, setOffer] = useState<MainOfferView>();
   async function GetOffer(signal: AbortSignal) {
     try {
-      const reqResult = await PostRequest<UserOffer>(
+      const reqResult = await PostRequest<MainOfferView>(
         GetUserOffersEndpoint,
         {id},
         undefined,
@@ -56,8 +52,10 @@ function Offer() {
       <ReturnBtn />
       <Box style={border} mt={"md"} mb={"md"}>
         <TitleOfer
-          date={yyyy + "/" + mm + "/" + dd}
+          date={offer.creationDate}
           tittle={offer.tittle}
+          likeId={offer.likeId}
+          offerId={offer.id}
         />
         <Divider my="md" />
         <Grid>
