@@ -7,10 +7,10 @@ import { Route, Routes } from "react-router-dom";
 import MainView from "./View/Main";
 import { Suspense, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setIsLogin, setIsMobile, setUserRole } from "./State/User/userSlice";
-import { Api } from "./Helpers/Api/Api";
+import { setIsMobile } from "./State/User/userSlice";
 import React from "react";
 import CustomLoader from "./Components/Loader";
+import GeneralHelper from "./Helpers/general/general";
 
 const LoginView = React.lazy(() => import("./View/Login"));
 const ForgetPasswordView = React.lazy(() => import("./View/ForgetPassword"));
@@ -24,21 +24,14 @@ const OfferView = React.lazy(() => import("./View/OfferView/Index"));
 const MyOffer = React.lazy(() => import("./View/Profile/myOffer"));
 const Settings = React.lazy(() => import("./View/Profile/settings"));
 const Gallery = React.lazy(() => import("./View/Profile/gallery"));
+const UserOffersView = React.lazy(() => import("./View/UserOffers/index"));
 
 function App() {
-  const { isTokenExpired, GetUserRole } = Api();
   const dispatch = useDispatch();
+  const { isLogin } = GeneralHelper();
   function isMobile() {
     if (window.screen.width <= 1280) {
       dispatch(setIsMobile(true));
-    }
-  }
-  function isLogin() {
-    if (!isTokenExpired()) {
-      dispatch(setIsLogin(true));
-      dispatch(setUserRole(GetUserRole()));
-    } else {
-      dispatch(setIsLogin(false));
     }
   }
   useEffect(() => {
@@ -66,6 +59,7 @@ function App() {
           <Route path=":tabValue" element={<Settings />} />
         </Route>
         <Route path="/offer/:id" element={<OfferView />} />
+        <Route path="/offers/:id" element={<UserOffersView />} />
       </Routes>
     </Suspense>
   );

@@ -1,10 +1,12 @@
 import { Avatar, Text, Paper, Box } from "@mantine/core";
 import Btn from "../Btn";
 import { BasicUserInfo } from "../../Types/User";
+import { useNavigate } from "react-router-dom";
 interface Props {
   user: BasicUserInfo;
 }
 export function UserInfoAction({ user }: Props) {
+  const navigate = useNavigate();
   const fullName = () => `${user.name} ${user.surname}`;
   return (
     <Paper radius="md" withBorder p="lg" bg="var(--mantine-color-body)">
@@ -21,7 +23,13 @@ export function UserInfoAction({ user }: Props) {
         On <Text component="span">Market Spot</Text> from {user.creationDate}
       </Text>
       <Box pt={"sm"}>
-        <Btn title="User offers" fullWidth />
+        <Btn
+          title="User offers"
+          fullWidth
+          onClick={() => {
+            return navigate(`/offers/${user.id}`);
+          }}
+        />
       </Box>
     </Paper>
   );

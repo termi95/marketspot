@@ -68,7 +68,7 @@ namespace Backend.Services
                     return response;
                 }
                 var result = _mapper.Map<GetOfferByIdResult>(offer);
-                result.LikeId = await _context.Likes.Where(l => l.OfferId == offer.Id && l.UserId == Guid.Parse(userId)).Select(l => l.Id).SingleOrDefaultAsync();
+                result.LikeId = string.IsNullOrEmpty(userId) ? Guid.Empty : await _context.Likes.Where(l => l.OfferId == offer.Id && l.UserId == Guid.Parse(userId)).Select(l => l.Id).SingleOrDefaultAsync();
                 response.SetStatusCode(HttpStatusCode.OK);
                 response.Result = result;
                 return response;
@@ -80,7 +80,7 @@ namespace Backend.Services
             }
         }
 
-        public async Task<ApiResponse> GetUSerOffers(string Id)
+        public async Task<ApiResponse> GetUserOffers(string Id)
         {
             var response = new ApiResponse();
 

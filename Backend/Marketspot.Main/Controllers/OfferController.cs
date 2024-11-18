@@ -24,7 +24,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Route("Get-by-id"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK), ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> GetCategoryById([FromBody] GetOfferByIdDto dto)
+        public async Task<ActionResult> GetOfferById([FromBody] GetOfferByIdDto dto)
         {
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var response = await _offerServices.GetOfferById(dto, userId);
@@ -32,10 +32,15 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Authorize, Route("Get-User-Offers"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetUSerOffer()
+        public async Task<ActionResult> GetUSerOffer([FromBody] GetOffersByIdDto dto)
         {
-            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var response = await _offerServices.GetUSerOffers(userId);
+            string id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(dto.Id) && Guid.TryParse(dto.Id, out var userId))
+            {
+                id = userId.ToString();
+            }
+
+            var response = await _offerServices.GetUserOffers(id);
             return StatusCode(response.GetStatusCode(), response);
         }
         [HttpPost, Authorize, Route("Soft-delete"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]

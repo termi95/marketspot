@@ -1,11 +1,13 @@
 import { Box, Flex, rem, Text, Title } from "@mantine/core";
 import Btn from "../Btn";
+import { Api } from "../../Helpers/Api/Api";
 
 interface Props {
   price: number;
 }
 
 function OrderSection({ price }: Props) {
+  const { isTokenExpired } = Api();
   return (
     <Box
       p={"md"}
@@ -19,7 +21,7 @@ function OrderSection({ price }: Props) {
         <Title order={4}>Price: </Title>
         <Text size={rem(18)}>{price} PLN</Text>
       </Flex>
-      <Btn title="Buy" fullWidth />
+      <Btn title="Buy" fullWidth  disabled={isTokenExpired()}/>
     </Box>
   );
 }
