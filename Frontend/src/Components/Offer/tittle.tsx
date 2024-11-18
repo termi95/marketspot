@@ -1,4 +1,4 @@
-import { Box, Flex, rem, Text, Title } from "@mantine/core";
+import { Box, Flex, Popover, rem, Text, Title } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { Helper } from "../../Types/Helper";
 import ApiAction from "./apiAction";
@@ -13,17 +13,16 @@ interface Props {
 }
 
 function TitleOfer({ date, tittle, likeId, offerId }: Props) {
+  const [opened, setOpened] = useState<boolean>(false);
   const { isTokenExpired } = Api();
   const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = (color: string) => (color != "red" ? "red" : "white");
-  const [heartColor, setColor] = useState<{ id: string; color: string }>({
-    id: likeId,
-    color: getColor(likeId),
-  });
+  const [heartColor, setColor] = useState<{ id: string; color: string }>({id: likeId, color: getColor(likeId)});
   const { HandleLikes } = ApiAction();
 
   async function handleLike() {
     if (isTokenExpired()) {
+      setOpened(true);
       return;
     }
     setColor({ id: heartColor.id, color: InvertColor(heartColor.color) });
@@ -35,13 +34,20 @@ function TitleOfer({ date, tittle, likeId, offerId }: Props) {
       <Flex m={"md"} align={"start"} direction={"column"}>
         <Flex align={"center"}>
           <Title order={2}>{tittle}</Title>
-          <IconHeart
-            color="var(--mantine-color-gray-9)"
-            fill={heartColor.color}
-            className="pointer"
-            style={{ marginLeft: rem(12) }}
-            onClick={handleLike}
-          />
+          <Popover width={200} trapFocus  opened={opened} position="bottom" offset={0} disabled={!isTokenExpired()} onChange={setOpened}>
+            <Popover.Target>
+              <IconHeart
+                color="var(--mantine-color-gray-9)"
+                fill={heartColor.color}
+                className="pointer"
+                style={{ marginLeft: rem(12) }}
+                onClick={handleLike}
+              />
+            </Popover.Target>
+            <Popover.Dropdown>
+              <Text size="xs">You have to be login to like offerts.</Text>
+            </Popover.Dropdown>
+          </Popover>
         </Flex>
         <Text c="dimmed" fz="sm">
           Offer added: {date}
