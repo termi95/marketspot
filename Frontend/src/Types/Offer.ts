@@ -11,6 +11,7 @@ export type OfferAddDto = {
 
 export type UserOffer = {
   id: string;
+  likeId: string;
   tittle: string;
   creationDate: string;
   description: string;

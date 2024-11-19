@@ -30,5 +30,13 @@ namespace Backend.Controllers
             var response = await _likeServices.Delete(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Authorize, Route("get-all"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GettAllLiked()
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _likeServices.GettAllLiked(userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }

@@ -1,28 +1,23 @@
-import { useNavigate, useParams } from "react-router-dom";
-import MainPanel from "../../Components/MainPanel";
+import { useEffect, useState } from "react";
 import CustomTable from "../../Components/Table";
-import { Api } from "../../Helpers/Api/Api";
-import { UserOfferList } from "../../Types/Offer";
 import { ActionIcon, rem, SimpleGrid } from "@mantine/core";
 import { IconEye, IconHeart } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
-import ReturnBtn from "../../Components/ReturnBtn";
+import { UserOfferList } from "../../Types/Offer";
+import { Api } from "../../Helpers/Api/Api";
+import { useNavigate } from "react-router-dom";
 import ApiAction from "../../Components/Offer/apiAction";
-import { Helper } from "../../Types/Helper";
 
-const GetUserOffersEndpoint = "Offer/Get-User-Offers";
-function UserOffersView() {
-  const { id } = useParams<{ id: string }>();                
+const GetUserLikedOffersEndpoint = "Like/Get-all";
+function Likes() {              
   const navigate = useNavigate();
-  const { PostRequest } = Api();
   const { HandleLikes } = ApiAction();
+  const { PostRequest } = Api();
   const [data, setData] = useState<UserOfferList[] | null>(null);
-  const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
   async function GetUser(signal: AbortSignal) {
     try {
       const reqResult = await PostRequest<UserOfferList[]>(
-        GetUserOffersEndpoint,
-        {id},
+        GetUserLikedOffersEndpoint,
+        {},
         undefined,
         signal
       );
@@ -37,9 +32,8 @@ function UserOffersView() {
     await HandleLikes(data!.find(x=> x.id === id)!.likeId, id);
     const controller = new AbortController();
     const signal = controller.signal;
-    await GetUser(signal); 
+    GetUser(signal);
   }
-  
 
   const action = (id: string) => {
     return (
@@ -55,7 +49,7 @@ function UserOffersView() {
               }}
               >
               <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
-            </ActionIcon>                        
+            </ActionIcon>            
             <ActionIcon
               size={42}
               variant="transparent"
@@ -63,8 +57,8 @@ function UserOffersView() {
               aria-label="Remove like"
               onClick={async ()=> await handleLike(id)}
               >
-              <IconHeart fill={getColor(data!.find(x=> x.id === id)!.likeId)} style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
-            </ActionIcon>      
+              <IconHeart fill="red" style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
+            </ActionIcon>
         </SimpleGrid>
       </ActionIcon.Group>
     );
@@ -80,15 +74,12 @@ function UserOffersView() {
   }, []);
 
   return (
-    <MainPanel>
-    <ReturnBtn />
     <CustomTable
       RowData={data}
       Columns={["photo", "tittle", "description", "price", "action"]}
       Action={action}
     />
-      </MainPanel>
   );
 }
 
-export default UserOffersView
+export default Likes;

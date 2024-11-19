@@ -90,6 +90,7 @@ namespace Backend.Services
                     .Offers.AsNoTracking()
                     .Include(o => o.User)
                     .Include(c => c.Category)
+                    .Include(c => c.Likes.Where(x=> x.UserId == Guid.Parse(Id)))
                     .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null)
                     .ToListAsync();
 

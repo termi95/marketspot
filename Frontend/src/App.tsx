@@ -23,7 +23,7 @@ const ProfileView = React.lazy(() => import("./View/Profile"));
 const OfferView = React.lazy(() => import("./View/OfferView/Index"));
 const MyOffer = React.lazy(() => import("./View/Profile/myOffer"));
 const Settings = React.lazy(() => import("./View/Profile/settings"));
-const Gallery = React.lazy(() => import("./View/Profile/gallery"));
+const Gallery = React.lazy(() => import("./View/Profile/Likes"));
 const UserOffersView = React.lazy(() => import("./View/UserOffers/index"));
 
 function App() {

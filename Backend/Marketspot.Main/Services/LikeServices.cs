@@ -1,15 +1,20 @@
-﻿using Marketspot.DataAccess.Entities;
+﻿using AutoMapper;
+using Marketspot.DataAccess.Entities;
 using Marketspot.Model;
+using Marketspot.Model.Category;
 using Marketspot.Model.Like;
+using Marketspot.Model.Offer;
+using Marketspot.Model.User;
 using Marketspot.Validator;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Backend.Services
 {
-    public class LikeServices(UserDbContext context)
+    public class LikeServices(UserDbContext context, IMapper mapper)
     {
         private readonly UserDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
         public async Task<ApiResponse> Add(AddLikeDto dto, string userId)
         {
             var response = new ApiResponse();
@@ -74,6 +79,16 @@ namespace Backend.Services
                 return response;
             }
 
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
+        }
+
+        public async Task<ApiResponse> GettAllLiked(string userId)
+        {
+            var response = new ApiResponse();
+
+            List<Like> likes = await _context.Likes.AsNoTracking().Include(i => i.User).Include(i => i.Offer).Where(x => x.UserId == Guid.Parse(userId)).ToListAsync();
+            response.Result = _mapper.Map<List<GetUserOffers>>(likes);
             response.SetStatusCode(HttpStatusCode.OK);
             return response;
         }

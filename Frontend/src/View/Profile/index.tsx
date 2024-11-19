@@ -4,7 +4,7 @@ import { IconPhoto, IconReportMoney, IconSettings } from "@tabler/icons-react";
 import Settings from "./settings";
 import MyOffer from "./myOffer";
 import { useNavigate, useParams } from "react-router-dom";
-import Gallery from "./gallery";
+import Likes from "./Likes";
 
 function ProfileView() {
   const iconStyle = { width: rem(22), height: rem(22) };
@@ -14,10 +14,10 @@ function ProfileView() {
   console.log(tabValue);
   return (    
     <MainPanel>
-      <Tabs variant="outline" defaultValue="gallery" activateTabWithKeyboard={false} keepMounted={false}  value={tabValue} onChange={(value) => navigate(`/profile/${value}`)} >
+      <Tabs variant="outline" defaultValue="liked" activateTabWithKeyboard={false} keepMounted={false}  value={tabValue} onChange={(value) => navigate(`/profile/${value}`)} >
       <Tabs.List >
-        <Tabs.Tab value="gallery" leftSection={<IconPhoto style={iconStyle} />}>
-          Gallery
+        <Tabs.Tab value="liked" leftSection={<IconPhoto style={iconStyle} />}>
+          Liked Offer
         </Tabs.Tab>
         <Tabs.Tab value="my-offer" leftSection={<IconReportMoney style={iconStyle} />}>
           My offer
@@ -27,8 +27,8 @@ function ProfileView() {
         </Tabs.Tab>
       </Tabs.List>
 
-      <Tabs.Panel value="gallery">
-        <Gallery/>
+      <Tabs.Panel value="liked">
+        <Likes/>
       </Tabs.Panel>
 
       <Tabs.Panel value="my-offer">
