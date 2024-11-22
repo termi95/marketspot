@@ -47,7 +47,7 @@ namespace Backend.Services
             }
 
             response.SetStatusCode(HttpStatusCode.Created);
-            response.Result = offer;
+            response.Result = offer.Id;
             return response;
         }
 

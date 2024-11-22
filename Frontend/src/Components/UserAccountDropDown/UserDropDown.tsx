@@ -15,7 +15,7 @@ function UserDropDown() {
     <Container mr="15px">
       <Menu
         transitionProps={{ transition: "pop-top-right" }}
-        position="top-end"
+        position="bottom-start"
         width={220}
         withinPortal
       >

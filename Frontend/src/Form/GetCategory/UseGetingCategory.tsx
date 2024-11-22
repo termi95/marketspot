@@ -1,15 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
 import { ICategory, IGetCategory } from "../../Types/Category";
-import { INotyfication } from "../../Types/Notyfication";
 
 const getEndpoint = "Category/GetCategoryByParentId";
 const mainCategoryId = "00000000-0000-0000-0000-000000000000";
-const getNotification: INotyfication = {
-  Title: "",
-  Message: "",
-  SuccessMessage: ""
-};
 const initialParentCategory = {
   name: "Main category",
   parentId: mainCategoryId,
@@ -90,7 +84,7 @@ export function UseGetingCategory() {
     const result = await PostRequest<ICategory[]>(
       getEndpoint,
       category,
-      getNotification
+      undefined
     );
     if (!result.isError && result.result !== undefined) {
       setCategories(result.result);

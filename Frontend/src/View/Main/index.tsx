@@ -3,7 +3,7 @@ import MainPanel from "../../Components/MainPanel";
 function MainView() {
   return (
     <MainPanel>
-      <p>dupa</p>
+      <p>lista</p>
     </MainPanel>
   );
 }

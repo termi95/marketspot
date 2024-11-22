@@ -5,6 +5,7 @@ import { useHover } from "@mantine/hooks";
 import { OfferAddDto } from "../../Types/Offer";
 import { INotyfication } from "../../Types/Notyfication";
 import { Api } from "../../Helpers/Api/Api";
+import { useNavigate } from "react-router-dom";
 
 const mainCategoryId = "00000000-0000-0000-0000-000000000000";
 
@@ -17,6 +18,7 @@ const addNotification: INotyfication = {
 
 function UseAddingOferView() {
   const { PostRequest } = Api();
+  const navigate = useNavigate();
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const [title, setTitle] = useState<string>("");
   const [price, setPrice] = useState<string |number>(0);
@@ -50,12 +52,14 @@ function UseAddingOferView() {
     categoryId: category.id,
     photos: base64Img
   }
-  const result = await PostRequest<unknown>(
+  const result = await PostRequest<string>(
     addEndpoint,
     payload,
     addNotification
   );
-  return result;
+  if (!result.isError && result.result !== undefined) {
+    navigate(`/offer/${result.result}`);
+  }
   }
 
     return {setFiles, setDescription, setCategory, setTitle, removePhoto, setPrice, submit, files, title, category, description, hovered, ref, mainCategoryId, price}

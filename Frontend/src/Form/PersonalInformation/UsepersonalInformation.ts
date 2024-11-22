@@ -21,6 +21,7 @@ export function UsepersonalInformation() {
     id: "",
     name: "",
     surname: "",
+    creationDate: "",
   });
   const [userRole, setUserRole] = useState<string>(UserRole.User.toString());
 

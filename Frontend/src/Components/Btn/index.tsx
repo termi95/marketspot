@@ -6,15 +6,18 @@ interface ButtonProps {
   title: string;
   fullWidth?: boolean;
   disabled?: boolean;
+  invert?: boolean;
   styles?: React.CSSProperties | undefined;
 }
 
-function Btn({onClick, title, fullWidth, disabled, styles}:ButtonProps) {
+function Btn({onClick, title, fullWidth, disabled, styles, invert}:ButtonProps) {
   const { hovered, ref } = useHover<HTMLButtonElement>();
+  const variant = () => hovered ? "outline" : "filled";
+  const invertVariant = () =>  "outline";
   return (
     <Button
-      color={"var(--main-color)"}
-      variant={hovered ? "outline" : "filled"}
+      color={invert ? "White" : "var(--main-color)"}
+      variant={invert ? invertVariant() : variant()}
       ref={ref}
       style={{
         transition: "300ms",

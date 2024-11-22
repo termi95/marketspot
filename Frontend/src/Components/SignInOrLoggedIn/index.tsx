@@ -6,8 +6,12 @@ import AccountDropDown from "../UserAccountDropDown";
 
 function SignInOrLoggedIn() {
   const { isLogin, isMobile } = useSelector((state: RootState) => state.user);
-  if (isMobile) return <Box p="5px"/>;
-  return isLogin ? <AccountDropDown /> : <SignInButton />;
+  const buttonOrDropdonw = () =>
+    isLogin ? <AccountDropDown /> : <SignInButton />;
+  if (isMobile) {
+    return <Box p="5px">{buttonOrDropdonw()}</Box>;
+  }
+  return buttonOrDropdonw();
 }
 
 export default SignInOrLoggedIn;
