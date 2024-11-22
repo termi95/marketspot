@@ -11,6 +11,7 @@ import { setIsMobile } from "./State/User/userSlice";
 import React from "react";
 import CustomLoader from "./Components/Loader";
 import GeneralHelper from "./Helpers/general/general";
+import PrivateRoutes from "./Helpers/RouterUtil";
 
 const LoginView = React.lazy(() => import("./View/Login"));
 const ForgetPasswordView = React.lazy(() => import("./View/ForgetPassword"));
@@ -51,12 +52,14 @@ function App() {
         <Route path="/login" element={<LoginView />} />
         <Route path="/forget-password" element={<ForgetPasswordView />} />
         <Route path="/change-password/:id" element={<ChangePasswordView />} />
-        <Route path="/adding" element={<AddingOferView />} />
-        <Route path="/add-category" element={<AddingCategory />} />
-        <Route path="/profile" element={<ProfileView />}>
-          <Route path=":tabValue" element={<Gallery />} />
-          <Route path=":tabValue" element={<MyOffer />} />
-          <Route path=":tabValue" element={<Settings />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/adding" element={<AddingOferView />} />
+          <Route path="/add-category" element={<AddingCategory />} />
+          <Route path="/profile" element={<ProfileView />}>
+            <Route path=":tabValue" element={<Gallery />} />
+            <Route path=":tabValue" element={<MyOffer />} />
+            <Route path=":tabValue" element={<Settings />} />
+          </Route>
         </Route>
         <Route path="/offer/:id" element={<OfferView />} />
         <Route path="/offers/:id" element={<UserOffersView />} />
