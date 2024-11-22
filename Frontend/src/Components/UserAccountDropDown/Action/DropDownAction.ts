@@ -11,6 +11,7 @@ function DropDownAction() {
     try {
       RemoveToken();
       dispatch(setIsLogin(false));
+      navigate("/")
     } catch (error) {
       /* empty */
     }

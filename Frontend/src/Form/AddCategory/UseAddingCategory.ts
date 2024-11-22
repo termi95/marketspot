@@ -22,11 +22,6 @@ const deleteNotification: INotyfication = {
   SuccessMessage: "Category was Deleted successfully."
 };
 const mainCategoryId = "00000000-0000-0000-0000-000000000000";
-const getNotification: INotyfication = {
-  Title: "",
-  Message: "",
-  SuccessMessage: ""
-};
 const initialCategory = { name: "", parentId: "", id: "" };
 const initialParentCategory = {
   name: "Main category",
@@ -128,7 +123,7 @@ export function UseAddingCategory() {
     const result = await PostRequest<ICategory[]>(
       getEndpoint,
       category,
-      getNotification
+      undefined
     );
     if (!result.isError && result.result !== undefined) {
       setCategories(result.result);
