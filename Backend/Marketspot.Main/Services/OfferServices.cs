@@ -80,9 +80,13 @@ namespace Backend.Services
             }
         }
 
-        public async Task<ApiResponse> GetUserOffers(string Id)
+        public async Task<ApiResponse> GetUserOffers(string Id, string idOfLoginUser)
         {
             var response = new ApiResponse();
+            if (string.IsNullOrEmpty(idOfLoginUser))
+            {
+                idOfLoginUser = Guid.Empty.ToString();
+            }
 
             try
             {
@@ -90,7 +94,7 @@ namespace Backend.Services
                     .Offers.AsNoTracking()
                     .Include(o => o.User)
                     .Include(c => c.Category)
-                    .Include(c => c.Likes.Where(x=> x.UserId == Guid.Parse(Id)))
+                    .Include(c => c.Likes.Where(x=> x.UserId == Guid.Parse(idOfLoginUser)))
                     .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null)
                     .ToListAsync();
 

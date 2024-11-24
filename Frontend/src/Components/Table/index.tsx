@@ -104,6 +104,7 @@ function CustomTable<T>({ RowData, Columns, Action }: Props<T>) {
   const tableHeader = Columns.map((x) => {
     return (
       <Th
+        key={String(x)}
         sorted={sortBy === x}
         reversed={reverseSortDirection}
         onSort={() => setSorting(x as keyof T)}

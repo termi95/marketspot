@@ -40,7 +40,7 @@ namespace Backend.Controllers
                 id = userId.ToString();
             }
 
-            var response = await _offerServices.GetUserOffers(id);
+            var response = await _offerServices.GetUserOffers(id, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return StatusCode(response.GetStatusCode(), response);
         }
         [HttpPost, Authorize, Route("Soft-delete"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]

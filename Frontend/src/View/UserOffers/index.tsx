@@ -4,25 +4,22 @@ import CustomTable from "../../Components/Table";
 import { Api } from "../../Helpers/Api/Api";
 import { UserOfferList } from "../../Types/Offer";
 import { ActionIcon, rem, SimpleGrid } from "@mantine/core";
-import { IconEye, IconHeart } from "@tabler/icons-react";
+import { IconEye } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import ReturnBtn from "../../Components/ReturnBtn";
-import ApiAction from "../../Components/Offer/apiAction";
-import { Helper } from "../../Types/Helper";
+import ActionHeartIcon from "../../Components/ActionHeartIcon";
 
 const GetUserOffersEndpoint = "Offer/Get-User-Offers";
 function UserOffersView() {
-  const { id } = useParams<{ id: string }>();                
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { PostRequest, isTokenExpired } = Api();
-  const { HandleLikes } = ApiAction();
+  const { PostRequest } = Api();
   const [data, setData] = useState<UserOfferList[] | null>(null);
-  const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
   async function GetUser(signal: AbortSignal) {
     try {
       const reqResult = await PostRequest<UserOfferList[]>(
         GetUserOffersEndpoint,
-        {id},
+        { id },
         undefined,
         signal
       );
@@ -33,41 +30,46 @@ function UserOffersView() {
       /* empty */
     }
   }
-  async function handleLike(id: string) {
-    if (isTokenExpired()) return;
-    await HandleLikes(data!.find(x=> x.id === id)!.likeId, id);
-    const controller = new AbortController();
-    const signal = controller.signal;
-    await GetUser(signal); 
-  }
-  
 
   const action = (id: string) => {
     return (
       <ActionIcon.Group>
         <SimpleGrid cols={3} w={"100%"}>
-            <ActionIcon
-              size={42}
-              variant="transparent"
-              color="lime"
-              aria-label="Open"
-              onClick={() => {
-                return navigate(`/offer/${id}`);
-              }}
-              >
-              <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
-            </ActionIcon>                        
-            <ActionIcon
-              size={42}
-              variant="transparent"
-              color="red"
-              aria-label="Remove like"
-              disabled={isTokenExpired()}
-              onClick={async ()=> await handleLike(id)}
-              style={{backgroundColor:"transparent"}}
-              >
-              <IconHeart fill={getColor(data!.find(x=> x.id === id)!.likeId)} style={{ width: rem(24), height: rem(24) }} stroke={1.5}  />
-            </ActionIcon>      
+          <ActionIcon
+            size={42}
+            variant="transparent"
+            color="lime"
+            aria-label="Open"
+            onClick={() => {
+              return navigate(`/offer/${id}`);
+            }}
+          >
+            <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
+          </ActionIcon>
+          <ActionHeartIcon
+            id={id}
+            likeId={data!.find((x) => x.id === id)!.likeId}
+            action={async () => {
+              const controller = new AbortController();
+              const signal = controller.signal;
+              await GetUser(signal);
+            }}
+          />
+          {/* <ActionIcon
+            size={42}
+            variant="transparent"
+            color="red"
+            aria-label="Remove like"
+            disabled={isTokenExpired()}
+            onClick={async () => await handleLike(id)}
+            style={{ backgroundColor: "transparent" }}
+          >
+            <IconHeart
+              fill={getColor(data!.find((x) => x.id === id)!.likeId)}
+              style={{ width: rem(24), height: rem(24) }}
+              stroke={1.5}
+            />
+          </ActionIcon> */}
         </SimpleGrid>
       </ActionIcon.Group>
     );
@@ -84,14 +86,14 @@ function UserOffersView() {
 
   return (
     <MainPanel>
-    <ReturnBtn />
-    <CustomTable
-      RowData={data}
-      Columns={["photo", "tittle", "description", "price", "action"]}
-      Action={action}
-    />
-      </MainPanel>
+      <ReturnBtn />
+      <CustomTable
+        RowData={data}
+        Columns={["photo", "tittle", "description", "price", "action"]}
+        Action={action}
+      />
+    </MainPanel>
   );
 }
 
-export default UserOffersView
+export default UserOffersView;
