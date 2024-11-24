@@ -14,7 +14,7 @@ const GetUserOffersEndpoint = "Offer/Get-User-Offers";
 function UserOffersView() {
   const { id } = useParams<{ id: string }>();                
   const navigate = useNavigate();
-  const { PostRequest } = Api();
+  const { PostRequest, isTokenExpired } = Api();
   const { HandleLikes } = ApiAction();
   const [data, setData] = useState<UserOfferList[] | null>(null);
   const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
@@ -34,6 +34,7 @@ function UserOffersView() {
     }
   }
   async function handleLike(id: string) {
+    if (isTokenExpired()) return;
     await HandleLikes(data!.find(x=> x.id === id)!.likeId, id);
     const controller = new AbortController();
     const signal = controller.signal;
@@ -61,9 +62,11 @@ function UserOffersView() {
               variant="transparent"
               color="red"
               aria-label="Remove like"
+              disabled={isTokenExpired()}
               onClick={async ()=> await handleLike(id)}
+              style={{backgroundColor:"transparent"}}
               >
-              <IconHeart fill={getColor(data!.find(x=> x.id === id)!.likeId)} style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
+              <IconHeart fill={getColor(data!.find(x=> x.id === id)!.likeId)} style={{ width: rem(24), height: rem(24) }} stroke={1.5}  />
             </ActionIcon>      
         </SimpleGrid>
       </ActionIcon.Group>

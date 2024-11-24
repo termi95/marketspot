@@ -31,7 +31,7 @@ namespace Backend.Controllers
             return StatusCode(response.GetStatusCode(), response);
         }
 
-        [HttpPost, Authorize, Route("Get-User-Offers"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        [HttpPost, Route("Get-User-Offers"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetUSerOffer([FromBody] GetOffersByIdDto dto)
         {
             string id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
