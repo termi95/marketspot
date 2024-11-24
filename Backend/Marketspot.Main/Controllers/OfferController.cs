@@ -45,15 +45,11 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Route("Get-recent"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetRecentOffer([FromBody] GetOffersByIdDto dto)
+        public async Task<ActionResult> GetRecentOffers([FromBody] GetSimpleOfferListDto dto)
         {
             string id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!string.IsNullOrEmpty(dto.Id) && Guid.TryParse(dto.Id, out var userId))
-            {
-                id = userId.ToString();
-            }
 
-            var response = await _offerServices.GetRecentOffers(id, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var response = await _offerServices.GetRecentOffers(dto, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return StatusCode(response.GetStatusCode(), response);
         }
 

@@ -108,13 +108,21 @@ namespace Backend.Services
                 return response;
             }
         }
-        public async Task<ApiResponse> GetRecentOffers(string Id, string idOfLoginUser)
+        public async Task<ApiResponse> GetRecentOffers(GetSimpleOfferListDto dto, string idOfLoginUser)
         {
             var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
             if (string.IsNullOrEmpty(idOfLoginUser))
             {
                 idOfLoginUser = Guid.Empty.ToString();
             }
+
+            int skip = 1 * (-1 + dto.Page);
+            int take = 3;
 
             try
             {
@@ -123,8 +131,10 @@ namespace Backend.Services
                     .Include(o => o.User)
                     .Include(c => c.Category)
                     .Include(c => c.Likes.Where(x => x.UserId == Guid.Parse(idOfLoginUser)))
-                    .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null)
-                    .Take(5)
+                    .Where(x => x.SoftDeletedDate == null)
+                    .OrderBy(x => x.CreationDate)
+                    .Skip(skip)
+                    .Take(take)
                     .ToListAsync();
 
                 response.SetStatusCode(HttpStatusCode.OK);
