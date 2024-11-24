@@ -55,21 +55,6 @@ function UserOffersView() {
               await GetUser(signal);
             }}
           />
-          {/* <ActionIcon
-            size={42}
-            variant="transparent"
-            color="red"
-            aria-label="Remove like"
-            disabled={isTokenExpired()}
-            onClick={async () => await handleLike(id)}
-            style={{ backgroundColor: "transparent" }}
-          >
-            <IconHeart
-              fill={getColor(data!.find((x) => x.id === id)!.likeId)}
-              style={{ width: rem(24), height: rem(24) }}
-              stroke={1.5}
-            />
-          </ActionIcon> */}
         </SimpleGrid>
       </ActionIcon.Group>
     );

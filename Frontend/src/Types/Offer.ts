@@ -33,5 +33,13 @@ export type MainOfferView = {
   category: ICategory;
 };
 
-export type UserOfferList = UserOffer & {action: object}
+export type SimpleOfferList = {
+  id: string;
+  likeId: string;
+  photo: string;
+  tittle: string;
+  price: string;
+  creationDate: string;
+};
 
+export type UserOfferList = UserOffer & { action: object };

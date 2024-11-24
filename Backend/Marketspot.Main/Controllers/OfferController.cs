@@ -43,6 +43,20 @@ namespace Backend.Controllers
             var response = await _offerServices.GetUserOffers(id, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Route("Get-recent"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetRecentOffer([FromBody] GetOffersByIdDto dto)
+        {
+            string id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!string.IsNullOrEmpty(dto.Id) && Guid.TryParse(dto.Id, out var userId))
+            {
+                id = userId.ToString();
+            }
+
+            var response = await _offerServices.GetRecentOffers(id, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
         [HttpPost, Authorize, Route("Soft-delete"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> SoftDelete([FromBody] SoftDeleteDto dto)
         {

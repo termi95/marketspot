@@ -108,6 +108,35 @@ namespace Backend.Services
                 return response;
             }
         }
+        public async Task<ApiResponse> GetRecentOffers(string Id, string idOfLoginUser)
+        {
+            var response = new ApiResponse();
+            if (string.IsNullOrEmpty(idOfLoginUser))
+            {
+                idOfLoginUser = Guid.Empty.ToString();
+            }
+
+            try
+            {
+                var offers = await _context
+                    .Offers.AsNoTracking()
+                    .Include(o => o.User)
+                    .Include(c => c.Category)
+                    .Include(c => c.Likes.Where(x => x.UserId == Guid.Parse(idOfLoginUser)))
+                    .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null)
+                    .Take(5)
+                    .ToListAsync();
+
+                response.SetStatusCode(HttpStatusCode.OK);
+                response.Result = _mapper.Map<List<GetUserOffers>>(offers);
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.ErrorsMessages.Add(e.Message);
+                return response;
+            }
+        }
         public async Task<ApiResponse> SoftDelete(SoftDeleteDto dto, string userId)
         {
             var response = new ApiResponse();
