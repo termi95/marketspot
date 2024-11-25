@@ -124,8 +124,9 @@ namespace Backend.Services
             int skip = 1 * (-1 + dto.Page);
             int take = 3;
 
-            try
-            {
+            try {
+                // to do
+                var test = _context.Offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery("test"))).ToList();
                 var offers = await _context
                     .Offers.AsNoTracking()
                     .Include(o => o.User)

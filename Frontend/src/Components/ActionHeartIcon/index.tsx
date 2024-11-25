@@ -1,4 +1,4 @@
-import { ActionIcon, rem } from "@mantine/core";
+import { ActionIcon, rem, Tooltip } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import ApiAction from "../Offer/apiAction";
 import { Api } from "../../Helpers/Api/Api";
@@ -15,7 +15,6 @@ function ActionHeartIcon({ action, likeId, id }: Props) {
   const getColor = () => (likeId != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = () => (heartColor != "red" ? "red" : "white");
   const [heartColor, setColor] = useState<string>(getColor());
-  
 
   async function handleLike() {
     if (isTokenExpired()) return;
@@ -34,11 +33,13 @@ function ActionHeartIcon({ action, likeId, id }: Props) {
       style={{ backgroundColor: "transparent" }}
       disabled={isTokenExpired()}
     >
-      <IconHeart
-        fill={heartColor}
-        style={{ width: rem(24), height: rem(24) }}
-        stroke={1.5}
-      />
+      <Tooltip label={isTokenExpired() ? "You have to be login to like offerts." : "Like"}>
+        <IconHeart
+          fill={heartColor}
+          style={{ width: rem(24), height: rem(24) }}
+          stroke={1.5}
+        />
+      </Tooltip>
     </ActionIcon>
   );
 }

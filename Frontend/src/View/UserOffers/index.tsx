@@ -3,7 +3,7 @@ import MainPanel from "../../Components/MainPanel";
 import CustomTable from "../../Components/Table";
 import { Api } from "../../Helpers/Api/Api";
 import { UserOfferList } from "../../Types/Offer";
-import { ActionIcon, rem, SimpleGrid } from "@mantine/core";
+import { ActionIcon, rem, SimpleGrid, Tooltip } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import ReturnBtn from "../../Components/ReturnBtn";
@@ -44,7 +44,9 @@ function UserOffersView() {
               return navigate(`/offer/${id}`);
             }}
           >
-            <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
+            <Tooltip label={"View"}>
+              <IconEye style={{ width: rem(24), height: rem(24) }} stroke={1.5} />
+            </Tooltip>
           </ActionIcon>
           <ActionHeartIcon
             id={id}
