@@ -65,7 +65,7 @@ function MyOffer() {
             size={42}
             variant="transparent"
             aria-label="Edit"
-            onClick={() => {}}
+            onClick={() => navigate(`/offer/update/${id}`)}
           >
             <Tooltip label={"Edit"}>
               <IconEdit

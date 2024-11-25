@@ -23,6 +23,14 @@ namespace Backend.Controllers
             return StatusCode(response.GetStatusCode(), response);
         }
 
+        [HttpPost, Authorize, Route("Update"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Update([FromBody] AddOfferDto dto)
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _offerServices.Update(dto, userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
         [HttpPost, Route("Get-by-id"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK), ProducesResponseType<ApiResponse>(StatusCodes.Status404NotFound)]
         public async Task<ActionResult> GetOfferById([FromBody] GetOfferByIdDto dto)
         {
@@ -47,8 +55,6 @@ namespace Backend.Controllers
         [HttpPost, Route("Get-recent"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
         public async Task<ActionResult> GetRecentOffers([FromBody] GetSimpleOfferListDto dto)
         {
-            string id = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             var response = await _offerServices.GetRecentOffers(dto, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return StatusCode(response.GetStatusCode(), response);
         }

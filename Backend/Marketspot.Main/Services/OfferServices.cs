@@ -51,6 +51,42 @@ namespace Backend.Services
             return response;
         }
 
+        public async Task<ApiResponse> Update(AddOfferDto dto, string userId)
+        {
+            var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
+
+            Offer offer = _mapper.Map<Offer>(dto);
+            offer.User = _context.Users.Find(Guid.Parse(userId));
+            offer.Category = _context.Categories.Find(Guid.Parse(dto.CategoryId));
+            offer.IconPhoto = offer.Photos[0];
+
+            if (offer.User is null || offer.Category is null)
+            {
+                response.ErrorsMessages.Add("User or Category not found");
+                return response;
+            }
+
+            await _context.Offers.AddAsync(offer);
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                response.ErrorsMessages.Add(e.Message);
+                return response;
+            }
+
+            response.SetStatusCode(HttpStatusCode.Created);
+            response.Result = offer.Id;
+            return response;
+        }
+
         public async Task<ApiResponse> GetOfferById(GetOfferByIdDto dto, string userId)
         {
             var response = new ApiResponse();

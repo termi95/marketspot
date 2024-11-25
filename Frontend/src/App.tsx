@@ -19,7 +19,8 @@ const ChangePasswordView = React.lazy(
   () => import("./View/ChangePasswordView")
 );
 const AddingCategory = React.lazy(() => import("./View/AddingCategory"));
-const AddingOferView = React.lazy(() => import("./View/AddingOferView"));
+const AddingOferView = React.lazy(() => import("./View/AddingOfferView"));
+const UpdateOfferView = React.lazy(() => import("./View/UpdateOfferView"));
 const ProfileView = React.lazy(() => import("./View/Profile"));
 const OfferView = React.lazy(() => import("./View/OfferView/Index"));
 const MyOffer = React.lazy(() => import("./View/Profile/myOffer"));
@@ -54,6 +55,7 @@ function App() {
         <Route path="/change-password/:id" element={<ChangePasswordView />} />
         <Route element={<PrivateRoutes />}>
           <Route path="/adding" element={<AddingOferView />} />
+          <Route path="/offer/update/:id" element={<UpdateOfferView />} />
           <Route path="/add-category" element={<AddingCategory />} />
           <Route path="/profile" element={<ProfileView />}>
             <Route path=":tabValue" element={<Gallery />} />

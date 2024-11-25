@@ -5,7 +5,7 @@ import CategoryTimeline from "../../Components/CategoryTimeline";
 import CustomLoader from "../../Components/Loader";
 import Btn from "../../Components/Btn";
 
-function AddCategoryForm() {
+function AddOrUpdateCategoryForm() {
   const {
     handleAddCategory,
     AddCategoryOnEnter,
@@ -66,4 +66,4 @@ function AddCategoryForm() {
   );
 }
 
-export default AddCategoryForm;
+export default AddOrUpdateCategoryForm;
