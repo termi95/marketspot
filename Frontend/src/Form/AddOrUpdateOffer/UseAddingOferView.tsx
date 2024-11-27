@@ -1,21 +1,28 @@
 import { FileWithPath } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
 import { ICategory } from "../../Types/Category";
-import { MainOfferView, OfferAddDto } from "../../Types/Offer";
+import { MainOfferView, OfferAddDto, OfferUpdateDto } from "../../Types/Offer";
 import { INotyfication } from "../../Types/Notyfication";
 import { Api } from "../../Helpers/Api/Api";
 import { useNavigate } from "react-router-dom";
 import { Helper } from "../../Types/Helper";
 import GeneralHelper from "../../Helpers/general/general";
+import ImageOfferAdding from "../../Components/ImageOfferAdding";
+import { Image, rem } from "@mantine/core";
 
 const mainCategoryId = Helper.EmptyGuid;
 
 const addEndpoint = "Offer/add";
+const updateEndpoint = "Offer/update";
 const GetUserOffersEndpoint = "Offer/Get-by-id";
 const addNotification: INotyfication = {
   Title: "Adding",
   Message: "Adding offer.",
   SuccessMessage: "offer was added successfully.",
+};const updateNotification: INotyfication = {
+  Title: "Update",
+  Message: "Updating offer.",
+  SuccessMessage: "offer was updated successfully.",
 };
 
 interface Props {
@@ -28,6 +35,7 @@ function UseAddingOferView({ id }: Props) {
   const navigate = useNavigate();
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const [title, setTitle] = useState<string>("");
+  const [photos, setPhotos] = useState<string[]>([]);
   const [price, setPrice] = useState<string | number>(0);
   const [category, setCategory] = useState<ICategory>({
     id: mainCategoryId,
@@ -48,6 +56,10 @@ function UseAddingOferView({ id }: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    setPhotos([])
+  }, [files])  
+
   async function GetOffer(signal: AbortSignal) {
     try {
       setLoading(true);
@@ -61,6 +73,8 @@ function UseAddingOferView({ id }: Props) {
         setTitle(reqResult.result.tittle);
         setPrice(reqResult.result.price);
         setDescription(reqResult.result.description);
+        setCategory(reqResult.result.category);
+        setPhotos(reqResult.result.photos);
       }
     } catch (error) {
       /* empty */
@@ -71,6 +85,31 @@ function UseAddingOferView({ id }: Props) {
 
   function removePhoto(index: number) {
     setFiles([...files.slice(0, index), ...files.slice(index + 1)]);
+  }
+
+  function GetPreview() {
+    let preview;
+    if (photos.length <= 0) {
+      preview = files.map((file, index) => {
+        return (
+          <ImageOfferAdding
+            key={file.name}
+            imageUrl={URL.createObjectURL(file)}
+            index={index}
+            fileName={file.name}
+            removePhoto={removePhoto}
+          />
+        );
+      });
+    } else {
+      preview = photos.map((photo, index) => {
+        return (
+          <Image key={index} src={photo} mb={rem(10)} alt="Offert images" />
+        );
+      });
+    }
+
+    return preview;
   }
 
   const getBase64 = (file: Blob): Promise<string> => {
@@ -85,7 +124,13 @@ function UseAddingOferView({ id }: Props) {
     });
   };
 
-  async function submit() {
+  async function GetPhotosPayload() {
+    return photos.length <= 0
+      ? await Promise.all(files.map((x) => getBase64(x)))
+      : photos;
+  }
+
+  async function Add() {
     const base64Img = await Promise.all(files.map((x) => getBase64(x)));
     const payload: OfferAddDto = {
       description: description,
@@ -104,6 +149,33 @@ function UseAddingOferView({ id }: Props) {
     }
   }
 
+  async function Update() {
+    const payload: OfferUpdateDto = {
+      id: id!,
+      description: description,
+      price: price as number,
+      tittle: title,
+      categoryId: category.id,
+      photos: await GetPhotosPayload(),
+    };
+    const result = await PostRequest<string>(
+      updateEndpoint,
+      payload,
+      updateNotification
+    );
+    if (!result.isError && result.result !== undefined) {
+      navigate(`/offer/${result.result}`);
+    }
+  }
+
+  async function submit() {
+    if (IsNullOrEmpty(id)) {
+      await Add();
+    } else {
+      await Update();
+    }
+  }
+
   return {
     setFiles,
     setDescription,
@@ -113,6 +185,7 @@ function UseAddingOferView({ id }: Props) {
     setPrice,
     submit,
     IsNullOrEmpty,
+    GetPreview,
     files,
     title,
     category,

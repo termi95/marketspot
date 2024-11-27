@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Marketspot.DataAccess.Entities;
-using Marketspot.DataAccess.Migrations;
 using Marketspot.Model;
 using Marketspot.Model.Offer;
 using Marketspot.Validator;
@@ -51,7 +50,7 @@ namespace Backend.Services
             return response;
         }
 
-        public async Task<ApiResponse> Update(AddOfferDto dto, string userId)
+        public async Task<ApiResponse> Update(UpdateOfferDto dto, string userId)
         {
             var response = new ApiResponse();
             if (!await ValidatorHelper.ValidateDto(dto, response))
@@ -59,18 +58,20 @@ namespace Backend.Services
                 return response;
             }
 
-            Offer offer = _mapper.Map<Offer>(dto);
-            offer.User = _context.Users.Find(Guid.Parse(userId));
-            offer.Category = _context.Categories.Find(Guid.Parse(dto.CategoryId));
-            offer.IconPhoto = offer.Photos[0];
+            Offer offer = await _context.Offers.SingleOrDefaultAsync(x => x.Id == Guid.Parse(dto.Id) && x.User.Id == Guid.Parse(userId));
 
-            if (offer.User is null || offer.Category is null)
+            if (!ValidatorHelper.CheckIfExists(offer, response))
             {
-                response.ErrorsMessages.Add("User or Category not found");
                 return response;
             }
+            Category category = await _context.Categories.SingleOrDefaultAsync(x => x.Id == Guid.Parse(dto.CategoryId));
 
-            await _context.Offers.AddAsync(offer);
+            offer.Tittle = dto.Tittle;
+            offer.Description = dto.Description;
+            offer.Price = dto.Price;
+            offer.Photos = dto.Photos;
+            offer.IconPhoto = offer.Photos[0];
+            offer.Category = category is null ? offer.Category : category;
 
             try
             {
@@ -130,7 +131,7 @@ namespace Backend.Services
                     .Offers.AsNoTracking()
                     .Include(o => o.User)
                     .Include(c => c.Category)
-                    .Include(c => c.Likes.Where(x=> x.UserId == Guid.Parse(idOfLoginUser)))
+                    .Include(c => c.Likes.Where(x => x.UserId == Guid.Parse(idOfLoginUser)))
                     .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null)
                     .ToListAsync();
 
@@ -160,7 +161,8 @@ namespace Backend.Services
             int skip = 1 * (-1 + dto.Page);
             int take = 3;
 
-            try {
+            try
+            {
                 // to do
                 var test = _context.Offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery("test"))).ToList();
                 var offers = await _context

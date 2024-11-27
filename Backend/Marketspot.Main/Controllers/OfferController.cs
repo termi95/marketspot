@@ -24,7 +24,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Authorize, Route("Update"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Update([FromBody] AddOfferDto dto)
+        public async Task<ActionResult> Update([FromBody] UpdateOfferDto dto)
         {
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var response = await _offerServices.Update(dto, userId);

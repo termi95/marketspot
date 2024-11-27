@@ -2,7 +2,6 @@ import { Box, Button, Container, Group, NumberInput, rem, SimpleGrid, Space, Tex
 import Btn from "../../Components/Btn";
 import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import ImageOfferAdding from "../../Components/ImageOfferAdding";
 import UseAddingOferView from "./UseAddingOferView";
 import { openDeleteModal } from "../../Components/Modal";
 import GetCategoryForm from "../GetCategory";
@@ -18,11 +17,10 @@ function AddOrUpdateOfferForm({ id }:Props) {
       setDescription,
       setCategory,
       setTitle,
-      removePhoto,
+      GetPreview,
       setPrice,
       submit,
       IsNullOrEmpty,
-      files,
       title,
       category,
       description,
@@ -34,17 +32,7 @@ function AddOrUpdateOfferForm({ id }:Props) {
     if (loading) {
       return <CustomLoader setBg={false} />;
     }
-    const previews = files.map((file, index) => {
-      return (
-        <ImageOfferAdding
-          key={file.name}
-          imageUrl={URL.createObjectURL(file)}
-          index={index}
-          fileName={file.name}
-          removePhoto={removePhoto}
-        />
-      );
-    });
+    const previews = GetPreview();
     return (
         <Container bg={"#f8f9fa"}>
           <Space h="md" />

@@ -9,6 +9,8 @@ export type OfferAddDto = {
   photos: string[];
 };
 
+export type OfferUpdateDto = OfferAddDto & { id: string };
+
 export type UserOffer = {
   id: string;
   likeId: string;
