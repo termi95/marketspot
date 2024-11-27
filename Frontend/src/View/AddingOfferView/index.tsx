@@ -6,7 +6,7 @@ function AddingOferView() {
   return (
     <MainPanel>
       <Space h="md" />
-      <AddOrUpdateOfferForm id={null} />
+      <AddOrUpdateOfferForm />
     </MainPanel>
   );
 }

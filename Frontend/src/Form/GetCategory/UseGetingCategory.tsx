@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
 import { ICategory, IGetCategory } from "../../Types/Category";
+import { Helper } from "../../Types/Helper";
 
 const getEndpoint = "Category/GetCategoryByParentId";
-const mainCategoryId = "00000000-0000-0000-0000-000000000000";
+const mainCategoryId = Helper.EmptyGuid;
 const initialParentCategory = {
   name: "Main category",
   parentId: mainCategoryId,
@@ -22,14 +23,14 @@ export function UseGetingCategory() {
     GetCategoryLevel();
   }, [parentId]);
 
-  const setNewParentId = useCallback((ParentId: string) => {
+  const setNewParentId = (ParentId: string) => {
     const timeline = TimelineOrder(ParentId, parentCategory);
     setParentCategory([...orderParentCategory(parentCategory, timeline)]);
     setParentId(ParentId);
-  }, []);
+  };
 
   function getChosenCategory() {
-    return parentCategory.filter(x=> x.id === parentId)[0];
+    return parentCategory.filter((x) => x.id === parentId)[0];
   }
 
   function TimelineOrder(
@@ -70,14 +71,10 @@ export function UseGetingCategory() {
     return secondArray;
   }
 
-  const AddNewParentCategory = useCallback(
-    (category: ICategory) => {
-      setParentCategory([...parentCategory, category]);
-      setParentId(category.id);
-    },
-    [parentCategory, setParentCategory, setParentId]
-  );
-
+  const AddNewParentCategory = (category: ICategory) => {
+    setParentCategory([...parentCategory, category]);
+    setParentId(category.id);
+  };
   async function GetCategoryLevel() {
     setLoading(true);
     const category: IGetCategory = { parentId };

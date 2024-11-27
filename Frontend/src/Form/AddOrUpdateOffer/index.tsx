@@ -8,7 +8,7 @@ import GetCategoryForm from "../GetCategory";
 import CustomLoader from "../../Components/Loader";
 
 interface Props {
-    id: string | undefined | null;
+    id?: string | undefined | null;
   }
   
 function AddOrUpdateOfferForm({ id }:Props) {
