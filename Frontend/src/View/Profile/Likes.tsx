@@ -6,12 +6,13 @@ import { UserOfferList } from "../../Types/Offer";
 import { Api } from "../../Helpers/Api/Api";
 import { useNavigate } from "react-router-dom";
 import ActionHeartIcon from "../../Components/ActionHeartIcon";
+import { Helper } from "../../Types/Helper";
 
 const GetUserLikedOffersEndpoint = "Like/Get-all";
 function Likes() {
   const navigate = useNavigate();
   const { PostRequest } = Api();
-  const [data, setData] = useState<UserOfferList[] | null>(null);
+  const [data, setData] = useState<UserOfferList[]>([]);
   async function GetUser(signal: AbortSignal) {
     try {
       const reqResult = await PostRequest<UserOfferList[]>(
@@ -29,6 +30,10 @@ function Likes() {
   }
 
   const action = (id: string) => {
+    let like = Helper.EmptyGuid.toString();
+    if (data.length > 0) {
+      like=data.find((x) => x.id === id)!.likeId;
+    }
     return (
       <ActionIcon.Group>
         <SimpleGrid cols={3} w={"100%"}>
@@ -47,7 +52,7 @@ function Likes() {
           </ActionIcon>
           <ActionHeartIcon
             id={id}
-            likeId={data!.find((x) => x.id === id)!.likeId}
+            likeId={like}
             action={() => {
               const controller = new AbortController();
               const signal = controller.signal;

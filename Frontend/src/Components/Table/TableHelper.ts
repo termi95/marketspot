@@ -26,7 +26,6 @@ export const GetColumns = <T extends object>(data: T[], excludedColumn: string[]
 
   function ColumnNameIsNotInExludedList(key:string, columns: string[]) {
     const excludedColumn = ["id"];
-    console.log(key)
     if (columns.length > 0) {
         return !columns.includes(key);        
     }else{
