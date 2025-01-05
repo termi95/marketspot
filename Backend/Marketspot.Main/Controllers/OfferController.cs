@@ -53,7 +53,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Route("Get-recent"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GetRecentOffers([FromBody] GetSimpleOfferListDto dto)
+        public async Task<ActionResult> GetRecentOffers([FromBody] OfferQueryDto dto)
         {
             var response = await _offerServices.GetRecentOffers(dto, HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             return StatusCode(response.GetStatusCode(), response);

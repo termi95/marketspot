@@ -3,9 +3,9 @@ using Marketspot.Model.Offer;
 
 namespace Marketspot.Validator.Validator.Offer
 {
-    internal class GetSimpleOfferListValidator : AbstractValidator<GetSimpleOfferListDto>
+    internal class OfferQueryValidator : AbstractValidator<OfferQueryDto>
     {
-        public GetSimpleOfferListValidator()
+        public OfferQueryValidator()
         {
             RuleFor(x => x.Page)
                 .NotEmpty()

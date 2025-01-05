@@ -145,7 +145,7 @@ namespace Backend.Services
                 return response;
             }
         }
-        public async Task<ApiResponse> GetRecentOffers(GetSimpleOfferListDto dto, string idOfLoginUser)
+        public async Task<ApiResponse> GetRecentOffers(OfferQueryDto dto, string idOfLoginUser)
         {
             var response = new ApiResponse();
             if (!await ValidatorHelper.ValidateDto(dto, response))
@@ -159,25 +159,32 @@ namespace Backend.Services
             }
 
             int skip = 1 * (-1 + dto.Page);
-            int take = 3;
-
+            int take = 2;
             try
             {
-                // to do
-                var test = _context.Offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery("test"))).ToList();
-                var offers = await _context
-                    .Offers.AsNoTracking()
-                    .Include(o => o.User)
-                    .Include(c => c.Category)
-                    .Include(c => c.Likes.Where(x => x.UserId == Guid.Parse(idOfLoginUser)))
-                    .Where(x => x.SoftDeletedDate == null)
-                    .OrderBy(x => x.CreationDate)
+                var offers = _context.Offers.AsQueryable();
+                if (!string.IsNullOrEmpty(dto.SearchText))
+                {
+                    offers = offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery(dto.SearchText)));
+                }
+                if (dto.MinPrice.HasValue)
+                {
+                    offers = offers.Where(p => p.Price >= dto.MinPrice.Value);
+                }
+
+                if (dto.MaxPrice.HasValue)
+                {
+                    offers = offers.Where(p => p.Price <= dto.MaxPrice.Value);
+                }
+
+                offers = SortBy(offers, dto);
+
+                response.SetStatusCode(HttpStatusCode.OK);
+                var result = await offers
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
-
-                response.SetStatusCode(HttpStatusCode.OK);
-                response.Result = _mapper.Map<List<GetUserOffers>>(offers);
+                response.Result = _mapper.Map<List<GetUserOffers>>(result);
                 return response;
             }
             catch (Exception e)
@@ -229,6 +236,35 @@ namespace Backend.Services
                 response.ErrorsMessages.Add(e.Message);
                 return response;
             }
+        }
+
+        private IQueryable<Offer> SortBy(IQueryable<Offer> offers, OfferQueryDto dto)
+        {
+            return dto.SortBy switch
+            {
+                "Price" => dto.SortDescending
+                    ? offers.OrderByDescending(p => p.Price)
+                    : offers.OrderBy(p => p.Price),
+                "CreatedDate" => dto.SortDescending
+                    ? offers.OrderByDescending(p => p.CreationDate)
+                    : offers.OrderBy(p => p.CreationDate),
+                "SearchText" => dto.SortDescending
+                    ? offers.OrderByDescending(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Rank(EF.Functions.PhraseToTsQuery(dto.SearchText)))
+                    : offers.OrderBy(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Rank(EF.Functions.PhraseToTsQuery(dto.SearchText))),
+                _ => offers.OrderByDescending(p => p.CreationDate)
+            };
+        }
+        private List<Guid> GetCategoryHierarchyInternal(IEnumerable<Category> categories, Guid parentId)
+        {
+            var result = new List<Guid> { parentId };
+
+            var children = categories.Where(c => c.ParentId == parentId).ToList();
+            foreach (var child in children)
+            {
+                result.AddRange(GetCategoryHierarchyInternal(categories, child.Id));
+            }
+
+            return result;
         }
     }
 }

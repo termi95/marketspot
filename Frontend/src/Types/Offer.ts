@@ -44,4 +44,14 @@ export type SimpleOfferList = {
   creationDate: string;
 };
 
+export type SearchQuery = {
+  searchText: string;
+  page: number;
+  sortBy: string;
+  categoryId: string;
+  sortDescending: boolean;
+  minPrice: number | null;
+  maxPrice: number | null;
+};
+
 export type UserOfferList = UserOffer & { action: object };

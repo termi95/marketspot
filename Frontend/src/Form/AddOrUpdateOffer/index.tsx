@@ -29,6 +29,7 @@ function AddOrUpdateOfferForm({ id }:Props) {
       loading
     } = UseAddingOferView({id});  
   
+    // to do check use-debounced-value aby sprawdzic czy poprawi to wydajnosc !opcjonalne!
     if (loading) {
       return <CustomLoader setBg={false} />;
     }
