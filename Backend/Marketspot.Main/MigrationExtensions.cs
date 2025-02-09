@@ -10,7 +10,7 @@ namespace Backend
             using IServiceScope scope = app.ApplicationServices.CreateScope();
 
             using UserDbContext dbContext = scope.ServiceProvider.GetRequiredService<UserDbContext>();
-            dbContext.Database.EnsureCreated();
+            //dbContext.Database.EnsureCreated();
             dbContext.Database.Migrate();
         }
     }

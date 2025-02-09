@@ -13,7 +13,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
-string connectionString = builder.Configuration.GetConnectionString("Default");
+string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"🔍 Connection String: {connectionString}");
+
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
 builder.Services.AddSingleton(authenticationSettings);
@@ -97,19 +99,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-//app.Use(async (context, next) =>
-//{
-//    context.Response.OnStarting(() =>
-//    {
-//        var responseBody = context.Response.Body;
-//        if (responseBody.Length > 0)
-//        {
-//            context.Response.Headers["Content-Length"] = responseBody.Length.ToString();
-//        }
-//        return Task.CompletedTask;
-//    });
-
-//    await next.Invoke();
-//});
 
 app.Run();

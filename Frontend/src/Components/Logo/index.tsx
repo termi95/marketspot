@@ -1,5 +1,5 @@
 import { Box, Group, Image, Text, rem } from "@mantine/core";
-import logo from "../../Assets/logo.svg";
+import logo from "../../assets/logo.svg";
 import { useSelector } from "react-redux";
 import { RootState } from "../../State/store";
 import { useNavigate } from "react-router-dom";
