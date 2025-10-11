@@ -15,7 +15,7 @@ const UpdatePersonalInformationNotification: INotyfication = {
 
 export function UsepersonalInformation() {
   const { PostRequest, GetUserRole } = Api();
-  const InitialUser = useRef<BasicUserInfo>();
+  const InitialUser = useRef<BasicUserInfo | null>(null);
   const [user, setUser] = useState<BasicUserInfo>({
     email: "",
     id: "",

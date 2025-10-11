@@ -33,7 +33,11 @@ function CardsCarousel({images}:Props) {
     <Carousel
       height={400}
       // slideSize="33.333333%"
-      align="center"
+      emblaOptions={{
+        loop: true,
+        dragFree: false,
+        align: 'center'
+      }}
       // slidesToScroll={mobile ? 1 : 2}
       withIndicators
     >

@@ -11,11 +11,12 @@ import {
 import { IconSearch } from "@tabler/icons-react";
 import Th from "../TableHeader";
 import { UseCustomTable } from "./UseCustomTable";
+import { ReactNode } from "react";
 
 interface Props<T> {
   RowData: T[] | null;
   Columns: (keyof T)[];
-  Action: (Id:string) => JSX.Element;
+  Action: (Id:string) => ReactNode;
 }
 
 function CustomTable<T>({ RowData, Columns, Action }: Props<T>) {

@@ -1,6 +1,6 @@
 import { PasswordInput, Popover, Progress } from "@mantine/core";
 import PasswordRequirement from "../PasswordRequirement";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { getStrength } from "../../Helpers/Password";
 import { PasswordReqChecker } from "../PasswordReqChecker";
 
@@ -9,7 +9,7 @@ interface Props {
   placeholder?: string;
   password: string;
   onChangeAction: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  lefIcon?: JSX.Element;
+  lefIcon?: ReactNode;
 }
 
 function PassInput({ label, password, placeholder, onChangeAction, lefIcon }: Props) {
