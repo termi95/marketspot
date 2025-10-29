@@ -5,6 +5,7 @@ using Marketspot.Model.Offer;
 using Marketspot.Validator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using System.Net;
 
 namespace Backend.Services
@@ -98,7 +99,15 @@ namespace Backend.Services
 
             try
             {
-                var offer = await _context.Offers.AsNoTracking().Include(o => o.User).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == Guid.Parse(dto.Id) && x.SoftDeletedDate == null);
+                if (dto.Id is null)
+                {
+                    response.SetStatusCode(HttpStatusCode.OK);
+                    response.Result = null;
+                    return response;
+                }
+
+                Guid offerId = Guid.Parse(dto.Id);
+                var offer = await _context.Offers.AsNoTracking().Include(o => o.User).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == offerId && x.SoftDeletedDate == null);
 
                 if (!ValidatorHelper.CheckIfExists(offer, response))
                 {
@@ -162,7 +171,29 @@ namespace Backend.Services
             int take = 2;
             try
             {
-                var offers = _context.Offers.AsQueryable();
+                IQueryable<Offer> offers;
+                if (!string.IsNullOrEmpty(dto.categoryId) && dto.categoryId != Guid.Empty.ToString())
+                {
+                    var sql = @"WITH RECURSIVE descendants AS (
+                                    SELECT c.""Id"", c.""ParentId""
+                                    FROM ""Categories"" c
+                                    WHERE c.""Id"" = @categoryId
+                                    UNION ALL
+                                    SELECT ch.""Id"", ch.""ParentId""
+                                    FROM ""Categories"" ch
+                                    JOIN descendants d ON ch.""ParentId"" = d.""Id""
+                                )
+                                SELECT o.*
+                                FROM ""Offers"" o
+                                JOIN descendants d ON o.""CategoryId"" = d.""Id""";
+                    var p = new NpgsqlParameter("categoryId", Guid.Parse(dto.categoryId));
+                    offers = _context.Offers.FromSqlRaw(sql, p);
+                }
+                else
+                {
+                    offers = _context.Offers.AsQueryable();
+                }
+
                 if (!string.IsNullOrEmpty(dto.SearchText))
                 {
                     offers = offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery(dto.SearchText)));
@@ -176,6 +207,7 @@ namespace Backend.Services
                 {
                     offers = offers.Where(p => p.Price <= dto.MaxPrice.Value);
                 }
+                
 
                 offers = SortBy(offers, dto);
 

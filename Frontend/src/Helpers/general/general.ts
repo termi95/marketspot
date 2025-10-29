@@ -14,7 +14,7 @@ function GeneralHelper() {
         }
       }
       function IsNullOrEmpty(value:string | null | undefined) {
-        return value == "" && value == undefined && value == null;
+        return value == "" || value == undefined || value == null;
       }
       return {isLogin, IsNullOrEmpty}
 }

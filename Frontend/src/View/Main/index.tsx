@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import MainPanel from "../../Components/MainPanel";
 import SingleOfferOnMainView from "../../Components/SingleOfferOnMainView";
 import { Api } from "../../Helpers/Api/Api";
@@ -18,11 +18,18 @@ import { ICategory } from "../../Types/Category";
 
 const GetUserOffersEndpoint = "Offer/get-recent";
 
-function MainView() {
-  const { PostRequest } = Api();
-  const [data, setData] = useState<SimpleOfferList[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
+type MainViewState = {
+  loading: boolean;
+  categories: ICategory[];
+  offers: SimpleOfferList[];
+  searchQuery: SearchQuery;
+};
+
+const defaultState: MainViewState = {
+  loading: false,
+  categories: [{ id: Helper.EmptyGuid, name: "Main", parentId: Helper.EmptyGuid },],
+  offers: [],
+  searchQuery: {
     page: 1,
     searchText: "",
     sortDescending: false,
@@ -30,50 +37,48 @@ function MainView() {
     categoryId: Helper.EmptyGuid.toString(),
     maxPrice: null,
     minPrice: null,
-  });
-  const observerRef = useRef<HTMLDivElement | null>(null);
-  const [categories, setCategories] = useState<ICategory[]>([
-    { id: Helper.EmptyGuid, name: "Main", parentId: Helper.EmptyGuid },
-  ]);
-  const afterFirstFetch = useRef(false);
+  }
+}
 
-  function setCategoryId(value: string) {
-    setSearchQuery((prev) => {
-      return { ...prev, categoryId: value };
-    });
+
+function MainView() {
+  const { PostRequest } = Api();
+  const [data, setData] = useState<MainViewState>(defaultState);
+  const startLoading = () => setData(prev => ({ ...prev, loading: true }));
+  const stopLoading = () => setData(prev => ({ ...prev, loading: false }));
+  const resetOffers = () => setData(prev => ({ ...prev, offers: [] }));
+  const getBreadcrumbsHierarchy = (index: number) => {
+    const copy = [...data.categories];
+    const keep = index + 1;
+    return copy.slice(0, keep);
   }
 
   function addCategory(value: ICategory) {
-    setCategoryId(value.id);
-    setCategories((prev) => [...prev, value]);
-    setSearchQuery((prev) => {
-      return { ...prev, page: 1 };
-    });
-    setData([]);
+    setData(prev => ({ ...prev, categories: [...prev.categories, value], searchQuery:{...prev.searchQuery, categoryId: value.id, page: 1}}));
   }
 
-  async function GetOffers(signal: AbortSignal, pageNumber: number) {
+  async function GetOffers(signal: AbortSignal) {
     try {
-      setLoading(true);
+      startLoading();
       const reqResult = await PostRequest<SimpleOfferList[]>(
         GetUserOffersEndpoint,
-        { page: pageNumber },
+        { page: data.searchQuery.page, categoryId: data.searchQuery.categoryId},
         undefined,
         signal
       );
       if (
-        !reqResult.isError &&
-        reqResult.result !== undefined &&
-        reqResult.result.length > 0
+        !reqResult.isError
       ) {
-        setData((prevData) => [...prevData, ...reqResult.result!]);
+        const items = reqResult.result;
+        if (items) {
+          setData(prev => ({ ...prev, offers: items }));
+        }
       }
     } catch (error) {
       console.error("Error fetching offers:", error);
     } finally {
       if (!signal.aborted) {
-        setLoading(false);
-        afterFirstFetch.current = true;
+        stopLoading()
       }
     }
   }
@@ -82,45 +87,29 @@ function MainView() {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    GetOffers(signal, searchQuery.page);
+    GetOffers(signal);
 
     return () => {
       controller.abort();
     };
-  }, [searchQuery.page]);
+  }, [data.searchQuery]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && afterFirstFetch) {
-          setSearchQuery((prev) => {
-            return { ...prev, page: prev.page + 1 };
-          });
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current);
-    }
-
-    return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current);
-      }
-    };
-  }, [loading]);
-
-  const items = categories.map((item) => (
+  const items = data.categories.map((item) => (
     <Box
       key={item.id}
       className="pointer"
       onClick={() => {
-        const index = categories.findIndex((x) => x.id === item.id);
-        setCategories(categories.splice(0, index+1));
-        setCategoryId(categories[categories.length-1].id);
-        setData([]);
+        const index = data.categories.findIndex((x) => x.id === item.id);
+        const newCategories = getBreadcrumbsHierarchy(index);
+        const newCurrentId =
+          newCategories.length > 0 ? newCategories[newCategories.length - 1].id : Helper.EmptyGuid;
+
+        setData(prev => ({
+          ...prev,
+          categories: newCategories,
+          searchQuery: { ...prev.searchQuery, categoryId: newCurrentId, page: 1 },
+        }));
+        resetOffers();
       }}
     >
       {item.name}
@@ -130,7 +119,7 @@ function MainView() {
     <MainPanel>
       <Flex align={"center"} justify={"center"}>
         <SimpleGrid cols={1} w={"80%"}>
-          <CategoryPicker getLastPickCategoryId={addCategory} />
+          <CategoryPicker key={`${data.searchQuery.categoryId}-${data.categories.length}`} getLastPickCategoryId={addCategory} id={data.searchQuery.categoryId} />
           <SimpleGrid cols={2} w={"100%"}>
             <Flex align={"self-start"} justify={"start"}>
               <Breadcrumbs>{items}</Breadcrumbs>
@@ -140,7 +129,7 @@ function MainView() {
       </Flex>
       <Divider my="sm" />
       <SimpleGrid cols={1} w={"100%"}>
-        {data.map((x) => (
+        {data.offers.map((x) => (
           <Flex align={"center"} justify={"center"} key={x.id}>
             <SingleOfferOnMainView
               Id={x.id}
@@ -153,9 +142,8 @@ function MainView() {
           </Flex>
         ))}
         <Flex align={"center"} justify={"center"} m={rem(12)}>
-          {loading && <Loader color="blue" />}
+          {data.loading && <Loader color="blue" />}
         </Flex>
-        {!loading && <div ref={observerRef} style={{ height: "1px" }} />}
       </SimpleGrid>
     </MainPanel>
   );

@@ -93,7 +93,15 @@ namespace backend.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             response.SetStatusCode(HttpStatusCode.OK);
-            response.Result = tokenHandler.WriteToken(token);
+            try
+            {
+                response.Result = tokenHandler.WriteToken(token);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
             return response;
         }
 

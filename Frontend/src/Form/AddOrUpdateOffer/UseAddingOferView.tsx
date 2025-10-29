@@ -48,7 +48,7 @@ function UseAddingOferView({ id }: Props) {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    if (!IsNullOrEmpty(id)) {
+    if (IsNullOrEmpty(id)) {
       GetOffer(signal);
     }
     return () => {

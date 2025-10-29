@@ -6,18 +6,21 @@ import { Helper } from "../../Types/Helper";
 
 interface Props {
   getLastPickCategoryId: (id: ICategory) => void;
+  id?: string;
 }
 
 const getEndpoint = "Category/GetCategoryByParentId";
-function CategoryPicker({ getLastPickCategoryId }: Props) {
+function CategoryPicker({ getLastPickCategoryId, id = undefined }: Props) {
   const { PostRequest } = Api();
-  const [parentId, setParentId] = useState<string>(Helper.EmptyGuid);
+
+  const [parentId, setParentId] = useState<string>(id ?? Helper.EmptyGuid);
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function GetCategoryLevel() {
+  async function GetCategoryLevel(id: string | null = null) {
+    const categoryParentId = id ? id : parentId
     setLoading(true);
-    const category: IGetCategory = { parentId };
+    const category: IGetCategory = { parentId: categoryParentId };
     const result = await PostRequest<ICategory[]>(
       getEndpoint,
       category,
@@ -45,39 +48,39 @@ function CategoryPicker({ getLastPickCategoryId }: Props) {
         {loading
           ? loader
           : categories.map((x) => {
-              return (
+            return (
+              <Box
+                mt={rem(30)}
+                key={x.id}
+                onClick={() => {
+                  let category = undefined;
+                  if (categories.length > 0) {
+                    category = categories.find(
+                      (category) => category.id === x.id
+                    );
+                  }
+                  if (category != undefined) {
+                    getLastPickCategoryId(category);
+                    setParentId(x.id);
+                  }
+                }}
+              >
                 <Box
-                  mt={rem(30)}
-                  key={x.id}
-                  onClick={() => {
-                    let category = undefined;
-                    if (categories.length > 0) {
-                      category = categories.find(
-                        (category) => category.id === x.id
-                      );
-                    }
-                    if (category != undefined) {
-                      getLastPickCategoryId(category);
-                      setParentId(x.id);
-                    }
+                  className="pointer"
+                  p={rem(10)}
+                  bg={"white"}
+                  style={{
+                    border:
+                      "calc(.0625rem*var(--mantine-scale)) solid var(--main-color)",
+                    borderRadius: "var(--mantine-radius-xs)",
+                    borderWidth: "1px",
                   }}
                 >
-                  <Box
-                    className="pointer"
-                    p={rem(10)}
-                    bg={"white"}
-                    style={{
-                      border:
-                        "calc(.0625rem*var(--mantine-scale)) solid var(--main-color)",
-                      borderRadius: "var(--mantine-radius-xs)",
-                      borderWidth: "1px",
-                    }}
-                  >
-                    {x.name}
-                  </Box>
+                  {x.name}
                 </Box>
-              );
-            })}
+              </Box>
+            );
+          })}
       </SimpleGrid>
     </>
   );

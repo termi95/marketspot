@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
     <Content Update="appsettingsexample.json">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
