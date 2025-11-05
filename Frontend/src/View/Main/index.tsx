@@ -2,19 +2,27 @@ import { useEffect, useState } from "react";
 import MainPanel from "../../Components/MainPanel";
 import SingleOfferOnMainView from "../../Components/SingleOfferOnMainView";
 import { Api } from "../../Helpers/Api/Api";
-import { SearchQuery, SimpleOfferList } from "../../Types/Offer";
+import { SearchQuery, SimpleOfferList, SortBy } from "../../Types/Offer";
 import {
   Box,
   Breadcrumbs,
+  Combobox,
   Divider,
   Flex,
+  Group,
+  Input,
+  InputBase,
   Loader,
+  NumberInput,
   rem,
   SimpleGrid,
+  TextInput,
+  useCombobox,
 } from "@mantine/core";
 import { Helper } from "../../Types/Helper";
 import CategoryPicker from "../../Form/CategoryPicker";
 import { ICategory } from "../../Types/Category";
+import { IconArrowNarrowDown, IconSearch } from "@tabler/icons-react";
 
 const GetUserOffersEndpoint = "Offer/get-recent";
 
@@ -24,6 +32,14 @@ type MainViewState = {
   offers: SimpleOfferList[];
   searchQuery: SearchQuery;
 };
+const sortOptions: { label: string; value: string }[] = [
+  { label: '🔻 Price high → low', value: 'PriceDesc' },
+  { label: '🔺 Price low → high', value: 'PriceAsc' },
+  { label: '🆕 Newest first', value: 'CreatedDateDesc' },
+  { label: '📆 Oldest first', value: 'CreatedDateAsc' },
+  { label: '🔎 Alfabetycznie Z → A', value: 'SearchTextDesc' },
+  { label: '🔎 Alfabetycznie A → Z', value: 'SearchTextAsc' },
+];
 
 const defaultState: MainViewState = {
   loading: false,
@@ -32,11 +48,10 @@ const defaultState: MainViewState = {
   searchQuery: {
     page: 1,
     searchText: "",
-    sortDescending: false,
-    sortBy: "",
+    sortBy: "CreatedDateDesc",
     categoryId: Helper.EmptyGuid.toString(),
-    maxPrice: null,
-    minPrice: null,
+    maxPrice: undefined,
+    minPrice: undefined,
   }
 }
 
@@ -47,22 +62,47 @@ function MainView() {
   const startLoading = () => setData(prev => ({ ...prev, loading: true }));
   const stopLoading = () => setData(prev => ({ ...prev, loading: false }));
   const resetOffers = () => setData(prev => ({ ...prev, offers: [] }));
+  const setMinPrice = (value: number | string | undefined) => {
+    if (value != data.searchQuery.minPrice) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, minPrice: value } }));
+    }
+  }
+  const setMaxPrice = (value: number | string | undefined) => {
+    if (value != data.searchQuery.maxPrice) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, maxPrice: value } }));
+    }
+  }
+  const setSortBy = (value: SortBy) => {
+    if (value != data.searchQuery.sortBy) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, sortBy: value } }));
+    }
+  }
+  const setSearchText = (value: string) => {
+    if (value != data.searchQuery.searchText) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, searchText: value } }));
+    }
+  }
   const getBreadcrumbsHierarchy = (index: number) => {
     const copy = [...data.categories];
     const keep = index + 1;
     return copy.slice(0, keep);
   }
+  const getSortLabelByValue = (value: string) => {
+    return sortOptions.find(x => x.value === value)?.label ?? '🆕 Newest first';
+
+  }
 
   function addCategory(value: ICategory) {
-    setData(prev => ({ ...prev, categories: [...prev.categories, value], searchQuery:{...prev.searchQuery, categoryId: value.id, page: 1}}));
+    setData(prev => ({ ...prev, categories: [...prev.categories, value], searchQuery: { ...prev.searchQuery, categoryId: value.id, page: 1 } }));
   }
 
   async function GetOffers(signal: AbortSignal) {
     try {
       startLoading();
+      const payload = { ...data.searchQuery }
       const reqResult = await PostRequest<SimpleOfferList[]>(
         GetUserOffersEndpoint,
-        { page: data.searchQuery.page, categoryId: data.searchQuery.categoryId},
+        payload,
         undefined,
         signal
       );
@@ -115,11 +155,70 @@ function MainView() {
       {item.name}
     </Box>
   ));
+  const combobox = useCombobox({
+    onDropdownClose: () => combobox.resetSelectedOption(),
+  });
+
+
+  const options = sortOptions.map((item) => (
+    <Combobox.Option value={item.value} key={item.value} style={{ textAlign: "left" }}>
+      {item.label}
+    </Combobox.Option>
+  ));
   return (
     <MainPanel>
       <Flex align={"center"} justify={"center"}>
         <SimpleGrid cols={1} w={"80%"}>
           <CategoryPicker key={`${data.searchQuery.categoryId}-${data.categories.length}`} getLastPickCategoryId={addCategory} id={data.searchQuery.categoryId} />
+          <Group align="center" gap={"xs"} grow>
+            <NumberInput
+              label="Price from"
+              value={data.searchQuery.minPrice}
+              onBlur={(e) => setMinPrice(e.target.value)}
+              min={0}
+              decimalSeparator="."
+              hideControls
+            />
+            <NumberInput
+              label="Price to"
+              value={data.searchQuery.maxPrice}
+              onBlur={(e) => setMaxPrice(e.target.value)}
+              min={0}
+              decimalSeparator="."
+              hideControls
+            />
+            <Combobox
+              store={combobox}
+              onOptionSubmit={(val) => {
+                setSortBy(val as SortBy);
+                combobox.closeDropdown();
+              }}
+            >
+              <Combobox.Target>
+                <InputBase
+                  label="Sort by"
+                  component="button"
+                  type="button"
+                  pointer
+                  rightSection={<IconArrowNarrowDown />}
+                  rightSectionPointerEvents="none"
+                  onClick={() => combobox.toggleDropdown()}
+                >
+                  {getSortLabelByValue(data.searchQuery.sortBy) || <Input.Placeholder>Sort by</Input.Placeholder>}
+                </InputBase>
+              </Combobox.Target>
+              <Combobox.Dropdown>
+                <Combobox.Options>{options}</Combobox.Options>
+              </Combobox.Dropdown>
+            </Combobox>
+          </Group>
+          <TextInput
+            onBlur={(e) => setSearchText(e.target.value)}
+            leftSection={
+              <IconSearch
+                style={{ width: rem(12), height: rem(12) }}
+                stroke={1.5}
+              />} w={"100%"} placeholder="Search" />
           <SimpleGrid cols={2} w={"100%"}>
             <Flex align={"self-start"} justify={"start"}>
               <Breadcrumbs>{items}</Breadcrumbs>

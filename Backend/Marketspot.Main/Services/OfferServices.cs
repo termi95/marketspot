@@ -172,7 +172,7 @@ namespace Backend.Services
             try
             {
                 IQueryable<Offer> offers;
-                if (!string.IsNullOrEmpty(dto.categoryId) && dto.categoryId != Guid.Empty.ToString())
+                if (!string.IsNullOrEmpty(dto.CategoryId) && dto.CategoryId != Guid.Empty.ToString())
                 {
                     var sql = @"WITH RECURSIVE descendants AS (
                                     SELECT c.""Id"", c.""ParentId""
@@ -186,7 +186,7 @@ namespace Backend.Services
                                 SELECT o.*
                                 FROM ""Offers"" o
                                 JOIN descendants d ON o.""CategoryId"" = d.""Id""";
-                    var p = new NpgsqlParameter("categoryId", Guid.Parse(dto.categoryId));
+                    var p = new NpgsqlParameter("categoryId", Guid.Parse(dto.CategoryId));
                     offers = _context.Offers.FromSqlRaw(sql, p);
                 }
                 else
@@ -194,10 +194,6 @@ namespace Backend.Services
                     offers = _context.Offers.AsQueryable();
                 }
 
-                if (!string.IsNullOrEmpty(dto.SearchText))
-                {
-                    offers = offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery(dto.SearchText)));
-                }
                 if (dto.MinPrice.HasValue)
                 {
                     offers = offers.Where(p => p.Price >= dto.MinPrice.Value);
@@ -207,7 +203,12 @@ namespace Backend.Services
                 {
                     offers = offers.Where(p => p.Price <= dto.MaxPrice.Value);
                 }
-                
+
+                if (!string.IsNullOrEmpty(dto.SearchText))
+                {
+                    offers = offers.Where(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Matches(EF.Functions.PhraseToTsQuery(dto.SearchText)));
+                }
+
 
                 offers = SortBy(offers, dto);
 
@@ -274,15 +275,12 @@ namespace Backend.Services
         {
             return dto.SortBy switch
             {
-                "Price" => dto.SortDescending
-                    ? offers.OrderByDescending(p => p.Price)
-                    : offers.OrderBy(p => p.Price),
-                "CreatedDate" => dto.SortDescending
-                    ? offers.OrderByDescending(p => p.CreationDate)
-                    : offers.OrderBy(p => p.CreationDate),
-                "SearchText" => dto.SortDescending
-                    ? offers.OrderByDescending(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Rank(EF.Functions.PhraseToTsQuery(dto.SearchText)))
-                    : offers.OrderBy(x => EF.Functions.ToTsVector(x.Tittle + " " + x.Description).Rank(EF.Functions.PhraseToTsQuery(dto.SearchText))),
+                "PriceDesc" => offers.OrderByDescending(p => p.Price),
+                "PriceAsc" => offers.OrderBy(p => p.Price),
+                "CreatedDateDesc" => offers.OrderByDescending(p => p.CreationDate),
+                "CreatedDateAsc" => offers.OrderBy(p => p.CreationDate),
+                "SearchTextDesc" => offers.OrderByDescending(x => x.Tittle),
+                "SearchTextAsc" => offers.OrderBy(x => x.Tittle),
                 _ => offers.OrderByDescending(p => p.CreationDate)
             };
         }

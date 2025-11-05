@@ -47,11 +47,12 @@ export type SimpleOfferList = {
 export type SearchQuery = {
   searchText: string;
   page: number;
-  sortBy: string;
+  sortBy: SortBy;
   categoryId: string;
-  sortDescending: boolean;
-  minPrice: number | null;
-  maxPrice: number | null;
+  minPrice: number | string | undefined;
+  maxPrice: number | string | undefined;
 };
+
+export type SortBy = 'PriceDesc' | 'PriceAsc' | 'CreatedDateDesc' | 'CreatedDateAsc' | 'SearchTextDesc' | 'SearchTextAsc';
 
 export type UserOfferList = UserOffer & { action: object };
