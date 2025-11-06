@@ -16,13 +16,15 @@ import {
   NumberInput,
   rem,
   SimpleGrid,
+  Space,
   TextInput,
+  Tooltip,
   useCombobox,
 } from "@mantine/core";
 import { Helper } from "../../Types/Helper";
 import CategoryPicker from "../../Form/CategoryPicker";
 import { ICategory } from "../../Types/Category";
-import { IconArrowNarrowDown, IconSearch } from "@tabler/icons-react";
+import { IconArrowLeft, IconArrowNarrowDown, IconArrowRight, IconSearch } from "@tabler/icons-react";
 
 const GetUserOffersEndpoint = "Offer/get-recent";
 
@@ -62,6 +64,10 @@ function MainView() {
   const startLoading = () => setData(prev => ({ ...prev, loading: true }));
   const stopLoading = () => setData(prev => ({ ...prev, loading: false }));
   const resetOffers = () => setData(prev => ({ ...prev, offers: [] }));
+  const setNextPage = () => setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, page: prev.searchQuery.page + 1 } }));
+  const setPrevPage = () => setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, page: Math.max(1, prev.searchQuery.page - 1) } }));
+  const addCategory = (value: ICategory) => setData(prev => ({ ...prev, categories: [...prev.categories, value], searchQuery: { ...prev.searchQuery, categoryId: value.id, page: 1 } }));
+  const getSortLabelByValue = (value: string) => sortOptions.find(x => x.value === value)?.label ?? '🆕 Newest first';
   const setMinPrice = (value: number | string | undefined) => {
     if (value != data.searchQuery.minPrice) {
       setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, minPrice: value } }));
@@ -87,14 +93,6 @@ function MainView() {
     const keep = index + 1;
     return copy.slice(0, keep);
   }
-  const getSortLabelByValue = (value: string) => {
-    return sortOptions.find(x => x.value === value)?.label ?? '🆕 Newest first';
-
-  }
-
-  function addCategory(value: ICategory) {
-    setData(prev => ({ ...prev, categories: [...prev.categories, value], searchQuery: { ...prev.searchQuery, categoryId: value.id, page: 1 } }));
-  }
 
   async function GetOffers(signal: AbortSignal) {
     try {
@@ -110,8 +108,11 @@ function MainView() {
         !reqResult.isError
       ) {
         const items = reqResult.result;
-        if (items) {
-          setData(prev => ({ ...prev, offers: items }));
+        if (items && items.length > 0) {
+          setData(prev => ({ ...prev, offers: items, hasMore: true }));
+        }
+        else if (items && items.length === 0 && data.searchQuery.page > 1) {
+          setPrevPage();
         }
       }
     } catch (error) {
@@ -132,29 +133,36 @@ function MainView() {
     return () => {
       controller.abort();
     };
-  }, [data.searchQuery]);
+  }, [
+    data.searchQuery.page,
+    data.searchQuery.sortBy,
+    data.searchQuery.categoryId,
+    data.searchQuery.minPrice,
+    data.searchQuery.maxPrice,
+    data.searchQuery.searchText,
+  ]);
 
-  const items = data.categories.map((item) => (
-    <Box
-      key={item.id}
-      className="pointer"
+  const items = data.categories.map((item) => {
+    return (<Box
+      key={item.id} 
+      className={data.searchQuery.categoryId !== item.id ? "pointer": undefined }
       onClick={() => {
         const index = data.categories.findIndex((x) => x.id === item.id);
         const newCategories = getBreadcrumbsHierarchy(index);
-        const newCurrentId =
-          newCategories.length > 0 ? newCategories[newCategories.length - 1].id : Helper.EmptyGuid;
-
-        setData(prev => ({
-          ...prev,
-          categories: newCategories,
-          searchQuery: { ...prev.searchQuery, categoryId: newCurrentId, page: 1 },
-        }));
-        resetOffers();
+        const newCurrentId = newCategories.length > 0 ? newCategories[newCategories.length - 1].id : Helper.EmptyGuid;
+        if (newCurrentId != data.searchQuery.categoryId) {
+          setData(prev => ({
+            ...prev,
+            categories: newCategories,
+            searchQuery: { ...prev.searchQuery, categoryId: newCurrentId, page: 1 },
+          }));
+          resetOffers();
+        }
       }}
     >
       {item.name}
-    </Box>
-  ));
+    </Box>);
+  });
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   });
@@ -165,6 +173,29 @@ function MainView() {
       {item.label}
     </Combobox.Option>
   ));
+
+  const paginationArrows = (
+    <Flex align={"center"} justify={"center"}>
+      <SimpleGrid cols={3} w={"80%"}>
+        <Flex align={"self-start"} justify={"start"}>
+          <h4>Page: {data.searchQuery.page}</h4>
+        </Flex>
+        <Flex align={"center"} justify={"center"}>
+          <Box>{data.searchQuery.page > 1 && (
+            <Tooltip label="Previous page" className="pointer" onClick={setPrevPage} >
+              <IconArrowLeft />
+            </Tooltip>)}
+          </Box>
+          <Space w="xl" />
+          <Box>
+            <Tooltip label="Next page" className="pointer" onClick={setNextPage}>
+              <IconArrowRight />
+            </Tooltip>
+          </Box>
+        </Flex>
+      </SimpleGrid>
+    </Flex>
+  )
   return (
     <MainPanel>
       <Flex align={"center"} justify={"center"}>
@@ -227,6 +258,7 @@ function MainView() {
         </SimpleGrid>
       </Flex>
       <Divider my="sm" />
+      {paginationArrows}
       <SimpleGrid cols={1} w={"100%"}>
         {data.offers.map((x) => (
           <Flex align={"center"} justify={"center"} key={x.id}>
@@ -244,6 +276,7 @@ function MainView() {
           {data.loading && <Loader color="blue" />}
         </Flex>
       </SimpleGrid>
+      {paginationArrows}
     </MainPanel>
   );
 }
