@@ -66,5 +66,13 @@ namespace Backend.Controllers
             var response = await _offerServices.SoftDelete(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Authorize, Route("get-checkout-offer"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetCheckoutOffer([FromBody] CheckoutOfferDto dto)
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _offerServices.GetCheckoutOffer(dto, userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }

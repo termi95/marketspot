@@ -13,7 +13,7 @@ function GeneralHelper() {
           dispatch(setIsLogin(false));
         }
       }
-      function IsNullOrEmpty(value:string | null | undefined) {
+      function IsNullOrEmpty(value:string | null | undefined):boolean {
         return value == "" || value == undefined || value == null;
       }
       return {isLogin, IsNullOrEmpty}

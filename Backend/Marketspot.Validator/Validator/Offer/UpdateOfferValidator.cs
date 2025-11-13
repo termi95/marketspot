@@ -12,12 +12,13 @@ namespace Marketspot.Validator.Validator.Offer
                 .Cascade(CascadeMode.Stop)
                 .Custom((x, context) =>
                 {
-                    if (!string.IsNullOrEmpty(x))
+                    if (string.IsNullOrEmpty(x))
                     {
-                        if (!Guid.TryParse(x, out Guid value))
-                        {
-                            context.AddFailure($"{x} is not in valid format.");
-                        }
+                        context.AddFailure("Id cannot be null or empty.");
+                    }
+                    else if (!Guid.TryParse(x, out Guid value))
+                    {
+                        context.AddFailure($"{x} is not in a valid GUID format.");
                     }
                 });
         }

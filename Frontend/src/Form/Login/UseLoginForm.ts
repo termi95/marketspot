@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
 import { IUserLogin } from "../../Types/User";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setIsLogin, setUserRole } from "../../State/User/userSlice";
 
-const loginEndpoint =  "User/Login";
+const loginEndpoint = "User/Login";
 
 export function UseLoginForm() {
+  const { state } = useLocation();
+  const fromOffer = state?.fromOffer;
+  const offer = state?.offer;
   const { PostRequest, SaveToken, GetUserRole } = Api();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,9 +21,13 @@ export function UseLoginForm() {
     const reqResult = await PostRequest<string>(loginEndpoint, user)
     if (!reqResult.isError && reqResult.result !== undefined) {
       SaveToken(reqResult.result);
-      dispatch(setIsLogin(true))      
+      dispatch(setIsLogin(true))
       dispatch(setUserRole(GetUserRole()))
-      return navigate("/");      
+      if (fromOffer && offer) {
+        navigate("/checkout", { state: { offer } });
+      } else {
+        navigate("/");
+      }
     }
   }
   async function LoginOnEnter(

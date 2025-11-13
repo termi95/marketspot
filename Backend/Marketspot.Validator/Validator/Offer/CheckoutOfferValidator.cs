@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
-using Marketspot.Model.Category;
+using Marketspot.Model.Offer;
 
-namespace Marketspot.Validator.Validator.Category
+namespace Marketspot.Validator.Validator.Offer
 {
-    internal class GetCategoryValidator : AbstractValidator<GetCategoryDto>
+    internal class CheckoutOfferValidator : AbstractValidator<CheckoutOfferDto>
     {
-        public GetCategoryValidator()
+        public CheckoutOfferValidator()
         {
-            RuleFor(x => x.ParentId)
+            RuleFor(x => x.Id)
                     .Cascade(CascadeMode.Stop)
                     .Custom((x, context) =>
                     {

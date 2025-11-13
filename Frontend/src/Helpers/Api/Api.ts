@@ -136,6 +136,17 @@ export function Api() {
       return UserRole.User;
     }
   }
+  function GetUserId():string | undefined {
+    const token: string | null = GetToken();
+    if (token) {
+      const parts: string[] = token.split(".");
+      const payload = JSON.parse(atob(parts[1]));
+      const id = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      return id;
+    } else {
+      return undefined;
+    }
+  }
   return {
     Request,
     SaveToken,
@@ -143,5 +154,6 @@ export function Api() {
     isTokenExpired,
     PostRequest,
     GetUserRole,
+    GetUserId,
   };
 }

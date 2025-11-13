@@ -270,7 +270,35 @@ namespace Backend.Services
                 return response;
             }
         }
+        public async Task<ApiResponse> GetCheckoutOffer(CheckoutOfferDto dto, string userId)
+        {
+            var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+            {
+                return response;
+            }
 
+            try
+            {
+                Checkout offer = await _context.Offers.AsNoTracking().Where(x => x.Id == Guid.Parse(dto.Id)).Select(x => new Checkout() { CreationDate = DateOnly.FromDateTime(x.CreationDate), Tittle = x.Tittle, Photo = x.IconPhoto, Id = x.Id, Price = x.Price, Description = x.Description }).FirstOrDefaultAsync();
+
+                if (offer == null)
+                {
+                    response.ErrorsMessages.Add("Offer not found");
+                    response.SetStatusCode(HttpStatusCode.NotFound);
+                    return response;
+                }
+
+                response.Result = offer;
+                response.SetStatusCode(HttpStatusCode.OK);
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.ErrorsMessages.Add(e.Message);
+                return response;
+            }
+        }
         private IQueryable<Offer> SortBy(IQueryable<Offer> offers, OfferQueryDto dto)
         {
             return dto.SortBy switch

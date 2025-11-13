@@ -8,6 +8,8 @@ namespace Marketspot.DataAccess.Entities
         public DbSet<Category> Categories { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             User user = new() { Id = Guid.NewGuid(), Email = "admin@admin.pl", Name = "admin", Roles = Marketspot.Model.User.UserEnum.UserRoles.Admin, Surname = "Jefe", Password = "AQAAAAIAAYagAAAAEFMvOOAzL4k+idqThNAhbif3uTKHFGYjJVUukDKgnRyC/rHbd8+eRrCr5xOMKFksXA==" };

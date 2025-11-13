@@ -43,6 +43,7 @@ builder.Services.AddScoped<UserServices>();
 builder.Services.AddScoped<CategoryServices>();
 builder.Services.AddScoped<OfferServices>();
 builder.Services.AddScoped<LikeServices>();
+builder.Services.AddScoped<AddressServices>();
 builder.Services.AddControllers().AddJsonOptions(x =>
    {
        x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

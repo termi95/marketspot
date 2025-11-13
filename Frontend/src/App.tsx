@@ -27,6 +27,7 @@ const MyOffer = React.lazy(() => import("./View/Profile/myOffer"));
 const Settings = React.lazy(() => import("./View/Profile/settings"));
 const Gallery = React.lazy(() => import("./View/Profile/Likes"));
 const UserOffersView = React.lazy(() => import("./View/UserOffers/index"));
+const Checkout = React.lazy(() => import("./View/CheckoutView/CheckoutView"));
 
 function App() {
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ function App() {
             <Route path=":tabValue" element={<MyOffer />} />
             <Route path=":tabValue" element={<Settings />} />
           </Route>
+          <Route path="/checkout" element={<Checkout />}/>
         </Route>
         <Route path="/offer/:id" element={<OfferView />} />
         <Route path="/offers/:id" element={<UserOffersView />} />

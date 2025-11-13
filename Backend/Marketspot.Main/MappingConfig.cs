@@ -12,7 +12,7 @@ namespace Backend
         public MappingConfig()
         {
             CreateMap<RegisterUserDto, User>();
-            CreateMap<AddCategoryDto, Category>();
+            CreateMap<UpsertAddressDto, Category>();
             CreateMap<AddOfferDto, Offer>();
             CreateMap<Offer, GetOfferByIdResult>()
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Marketspot.DataAccess.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251110150457_Orders")]
+    partial class Orders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,6 +181,9 @@ namespace Marketspot.DataAccess.Migrations
                     b.Property<Guid>("SellerId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ShippingAddressId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BuyerId");
@@ -185,6 +191,8 @@ namespace Marketspot.DataAccess.Migrations
                     b.HasIndex("OfferId");
 
                     b.HasIndex("SellerId");
+
+                    b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Orders");
                 });
@@ -235,8 +243,8 @@ namespace Marketspot.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("168663b2-e449-479f-b8ce-9140fbe42903"),
-                            CreationDate = new DateTime(2025, 11, 10, 23, 1, 9, 835, DateTimeKind.Local).AddTicks(7016),
+                            Id = new Guid("c3b59f5e-6f12-4b98-a62d-01b587f950e9"),
+                            CreationDate = new DateTime(2025, 11, 10, 16, 4, 57, 242, DateTimeKind.Local).AddTicks(8147),
                             Email = "admin@admin.pl",
                             Name = "admin",
                             Password = "AQAAAAIAAYagAAAAEFMvOOAzL4k+idqThNAhbif3uTKHFGYjJVUukDKgnRyC/rHbd8+eRrCr5xOMKFksXA==",
@@ -312,30 +320,11 @@ namespace Marketspot.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("Marketspot.DataAccess.Entities.ShippingAddressValue", "ShippingAddress", b1 =>
-                        {
-                            b1.Property<Guid>("OrderId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("City")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Country")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Phone")
-                                .HasColumnType("text");
-
-                            b1.Property<string>("Street")
-                                .HasColumnType("text");
-
-                            b1.HasKey("OrderId");
-
-                            b1.ToTable("Orders");
-
-                            b1.WithOwner()
-                                .HasForeignKey("OrderId");
-                        });
+                    b.HasOne("Marketspot.DataAccess.Entities.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Buyer");
 
@@ -343,8 +332,7 @@ namespace Marketspot.DataAccess.Migrations
 
                     b.Navigation("Seller");
 
-                    b.Navigation("ShippingAddress")
-                        .IsRequired();
+                    b.Navigation("ShippingAddress");
                 });
 
             modelBuilder.Entity("Marketspot.DataAccess.Entities.Category", b =>

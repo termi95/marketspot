@@ -23,6 +23,8 @@ export type UserOffer = {
   category: ICategory;
 };
 
+export type CheckoutOffer = Omit<MainOfferView,"likeId" | "category">;
+
 export type MainOfferView = {
   id: string;
   likeId: string;

@@ -1,13 +1,20 @@
 import { Box, Flex, rem, Text, Title } from "@mantine/core";
 import Btn from "../Btn";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../State/store";
 import { Api } from "../../Helpers/Api/Api";
+import { CheckoutOffer } from "../../Types/Offer";
 
 interface Props {
-  price: number;
+  offer: CheckoutOffer;
 }
 
-function OrderSection({ price }: Props) {
-  const { isTokenExpired } = Api();
+function OrderSection({ offer }: Props) { 
+  const { GetUserId } = Api();
+  const { isLogin } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
+  const link = isLogin ? () => navigate(`/checkout`, {state: { offer }}) : () =>  navigate(`/login`, { state: { fromOffer: true, offer } });
   return (
     <Box
       p={"md"}
@@ -19,9 +26,9 @@ function OrderSection({ price }: Props) {
     >
       <Flex align={"center"} pb={"sm"}>
         <Title order={4}>Price: </Title>
-        <Text size={rem(18)}>{price} PLN</Text>
+        <Text size={rem(18)}>{offer.price} PLN</Text>
       </Flex>
-      <Btn title="Buy" fullWidth  disabled={isTokenExpired()}/>
+      <Btn title="Buy" fullWidth disabled={GetUserId() === offer.user.id} onClick={link}/>
     </Box>
   );
 }

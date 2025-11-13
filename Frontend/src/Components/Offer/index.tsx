@@ -71,7 +71,7 @@ function Offer() {
                   </Box>
                 </Grid.Col>
                 <Grid.Col span={{ base: 12 }}>
-                  <OrderSection price={offer.price} />
+                  <OrderSection offer={offer} />
                 </Grid.Col>
               </Grid>
             </Box>

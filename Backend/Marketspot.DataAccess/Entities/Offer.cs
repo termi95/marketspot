@@ -8,14 +8,15 @@ namespace Marketspot.DataAccess.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [MaxLength(128), NotNull]
+        [MaxLength(512), NotNull]
         public string Tittle { get; set; }
 
-        [MaxLength(512), NotNull]
+        [NotNull]
         public string Description { get; set; }
         [NotNull]
         public int Price { get; set; }
         public DateTime? SoftDeletedDate { get; set; } = null;
+        public bool IsBought { get; set; } = false;
         [NotNull, MinLength(1)]
         public List<string> Photos { get; set; }
         public string IconPhoto { get; set; }
