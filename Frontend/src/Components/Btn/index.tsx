@@ -8,9 +8,10 @@ interface ButtonProps {
   disabled?: boolean;
   invert?: boolean;
   styles?: React.CSSProperties | undefined;
+  className?: string | undefined
 }
 
-function Btn({onClick, title, fullWidth, disabled, styles, invert}:ButtonProps) {
+function Btn({onClick, title, fullWidth, disabled, styles, invert,className}:ButtonProps) {
   const { hovered, ref } = useHover<HTMLButtonElement>();
   const variant = () => hovered ? "outline" : "filled";
   const invertVariant = () =>  "outline";
@@ -26,6 +27,7 @@ function Btn({onClick, title, fullWidth, disabled, styles, invert}:ButtonProps) 
       onClick={onClick}
       fullWidth={fullWidth}
       disabled={disabled}
+      className={className}
     >
       {title}
     </Button>

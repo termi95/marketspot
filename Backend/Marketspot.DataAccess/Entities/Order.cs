@@ -13,6 +13,13 @@ namespace Marketspot.DataAccess.Entities
         Blik,
         Paypal
     }
+    public enum DeliveryMethodId
+    {
+        Dpd,
+        Inpost,
+        Poczta,
+        Orlen
+    }
 
     [Owned]
     public class ShippingAddressValue
@@ -39,6 +46,7 @@ namespace Marketspot.DataAccess.Entities
         public DateTime PurchasedAtUtc { get; set; } = DateTime.UtcNow;
         [NotNull]
         public PaymentMethod PaymentMethod { get; set; }
+        public DeliveryMethodId DeliveryMethodIdDeliveryMethodId { get; set; }
         [NotNull]
         public Guid BuyerId { get; set; }
         [NotNull]

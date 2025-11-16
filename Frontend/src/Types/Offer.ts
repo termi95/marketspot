@@ -25,6 +25,25 @@ export type UserOffer = {
 
 export type CheckoutOffer = Omit<MainOfferView,"likeId" | "category">;
 
+export enum PaymentMethod {
+  Unknown = 0,
+  CashOnDelivery = 1,
+  BankTransfer = 2,
+  Card = 3,
+  Blik = 4,
+  Paypal = 5,
+}
+
+export type DeliveryMethodId = "dpd" | "inpost" | "poczta" | "orlen";
+
+export type DeliveryMethod = {
+    id: DeliveryMethodId;
+    name: string;
+    description: string;
+    price: number;
+};
+
+
 export type MainOfferView = {
   id: string;
   likeId: string;

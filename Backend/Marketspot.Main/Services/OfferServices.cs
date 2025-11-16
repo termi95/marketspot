@@ -168,8 +168,8 @@ namespace Backend.Services
                 Guid.TryParse(idOfLoginUser, out loginUserId);
             }
 
-                int skip = 1 * (-1 + dto.Page);
             int take = 2;
+            int skip = (dto.Page - 1) * take;
             try
             {
                 IQueryable<Offer> offers;
