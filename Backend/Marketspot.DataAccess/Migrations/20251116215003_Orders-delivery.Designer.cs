@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Marketspot.DataAccess.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251116215003_Orders-delivery")]
+    partial class Ordersdelivery
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -166,7 +169,7 @@ namespace Marketspot.DataAccess.Migrations
                     b.Property<Guid>("BuyerId")
                         .HasColumnType("uuid");
 
-                    b.Property<int>("DeliveryMethodIdDeliveryMethod")
+                    b.Property<int>("DeliveryMethodIdDeliveryMethodId")
                         .HasColumnType("integer");
 
                     b.Property<Guid>("OfferId")
@@ -238,8 +241,8 @@ namespace Marketspot.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e4c95a0b-e2b4-488c-a448-1854665cbe31"),
-                            CreationDate = new DateTime(2025, 11, 16, 23, 23, 14, 77, DateTimeKind.Local).AddTicks(6432),
+                            Id = new Guid("420e7bc0-a6a7-4a62-9eaf-2f1ffdbbc962"),
+                            CreationDate = new DateTime(2025, 11, 16, 22, 50, 3, 301, DateTimeKind.Local).AddTicks(7070),
                             Email = "admin@admin.pl",
                             Name = "admin",
                             Password = "AQAAAAIAAYagAAAAEFMvOOAzL4k+idqThNAhbif3uTKHFGYjJVUukDKgnRyC/rHbd8+eRrCr5xOMKFksXA==",

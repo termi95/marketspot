@@ -40,6 +40,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<UserServices>();
+builder.Services.AddScoped<OrderServices>();
 builder.Services.AddScoped<CategoryServices>();
 builder.Services.AddScoped<OfferServices>();
 builder.Services.AddScoped<LikeServices>();
