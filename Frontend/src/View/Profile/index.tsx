@@ -10,8 +10,7 @@ function ProfileView() {
   const iconStyle = { width: rem(22), height: rem(22) };
   const navigate = useNavigate();
   const { tabValue } = useParams();
-
-  console.log(tabValue);
+  
   return (    
     <MainPanel>
       <Tabs variant="outline" defaultValue="liked" activateTabWithKeyboard={false} keepMounted={false}  value={tabValue} onChange={(value) => navigate(`/profile/${value}`)} >

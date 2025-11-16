@@ -105,7 +105,6 @@ export function Api() {
       }
     } catch (error) {
       responeMessage = (error as Error).message;
-      console.log((error as Error).name)
       if ((error as Error).name !="AbortError") {
         isError = true;
       }

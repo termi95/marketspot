@@ -8,10 +8,11 @@ interface Props {
   action?: () => void;
   likeId: string;
   id: string;
+  userId: string;
 }
-function ActionHeartIcon({ action, likeId, id }: Props) {
+function ActionHeartIcon({ action, likeId, id, userId }: Props) {
   const { HandleLikes } = ApiAction();
-  const { isTokenExpired } = Api();
+  const { isTokenExpired, GetUserId } = Api();
   const getColor = () => (likeId != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = () => (heartColor != "red" ? "red" : "white");
   const [heartColor, setColor] = useState<string>(getColor());
@@ -22,6 +23,25 @@ function ActionHeartIcon({ action, likeId, id }: Props) {
     await HandleLikes(likeId, id);
     if (action) action();
   }
+  function setDisable() {
+    if (isTokenExpired()) {
+      return true;
+    }
+    if (userId === GetUserId()) {
+      return true;
+    }
+    return false;
+  }
+  function setLabel()
+  {
+    if (isTokenExpired()) {
+      return "You have to be login to like offerts.";
+    }
+    if (userId === GetUserId()) {
+      return "You are not able to like your own offer.";
+    }
+    return "Like";
+  }
   return (
     <ActionIcon
       id={id}
@@ -31,9 +51,9 @@ function ActionHeartIcon({ action, likeId, id }: Props) {
       aria-label="Remove like"
       onClick={async () => await handleLike()}
       style={{ backgroundColor: "transparent" }}
-      disabled={isTokenExpired()}
+      disabled={setDisable()}
     >
-      <Tooltip label={isTokenExpired() ? "You have to be login to like offerts." : "Like"}>
+      <Tooltip label={setLabel()}>
         <IconHeart
           fill={heartColor}
           style={{ width: rem(24), height: rem(24) }}

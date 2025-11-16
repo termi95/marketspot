@@ -162,36 +162,46 @@ namespace Backend.Services
                 return response;
             }
 
-            if (string.IsNullOrEmpty(idOfLoginUser))
+            Guid loginUserId = Guid.Empty;
+            if (!string.IsNullOrEmpty(idOfLoginUser))
             {
-                idOfLoginUser = Guid.Empty.ToString();
+                Guid.TryParse(idOfLoginUser, out loginUserId);
             }
 
-            int skip = 1 * (-1 + dto.Page);
+                int skip = 1 * (-1 + dto.Page);
             int take = 2;
             try
             {
                 IQueryable<Offer> offers;
                 if (!string.IsNullOrEmpty(dto.CategoryId) && dto.CategoryId != Guid.Empty.ToString())
                 {
-                    var sql = @"WITH RECURSIVE descendants AS (
+                    var sql = @"
+                                WITH RECURSIVE descendants AS (
                                     SELECT c.""Id"", c.""ParentId""
                                     FROM ""Categories"" c
                                     WHERE c.""Id"" = @categoryId
+
                                     UNION ALL
+
                                     SELECT ch.""Id"", ch.""ParentId""
                                     FROM ""Categories"" ch
                                     JOIN descendants d ON ch.""ParentId"" = d.""Id""
                                 )
                                 SELECT o.*
                                 FROM ""Offers"" o
-                                JOIN descendants d ON o.""CategoryId"" = d.""Id""";
+                                JOIN descendants d ON o.""CategoryId"" = d.""Id""
+                            ";
+
                     var p = new NpgsqlParameter("categoryId", Guid.Parse(dto.CategoryId));
-                    offers = _context.Offers.FromSqlRaw(sql, p);
+
+                    offers = _context.Offers
+                        .FromSqlRaw(sql, p)
+                        .Include(o => o.User)
+                        .Include(o => o.Likes.Where(l => l.UserId == loginUserId));
                 }
                 else
                 {
-                    offers = _context.Offers.AsQueryable();
+                    offers = _context.Offers.Include(c => c.Likes.Where(x => x.UserId == loginUserId)).Include(o => o.User).AsQueryable();
                 }
 
                 if (dto.MinPrice.HasValue)

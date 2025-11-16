@@ -6,6 +6,7 @@ namespace Marketspot.Model.Offer
     public class GetUserOffers
     {
         public Guid Id { get; set; }
+        public Guid UserId { get; set; }
         public Guid LikeId { get; set; }
         public string Tittle { get; set; }
         public string Description { get; set; }
@@ -15,5 +16,6 @@ namespace Marketspot.Model.Offer
 
         public BasicUser User { get; set; }
         public BasicCategory Category { get; set; }
+        public bool IsLiked { get; set; }
     }
 }

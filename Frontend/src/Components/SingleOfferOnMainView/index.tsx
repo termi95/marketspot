@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 interface Props {
   Id: string;
+  UserId: string;
   LikeId: string;
   Icon: string;
   Tittle: string;
@@ -13,6 +14,7 @@ interface Props {
 
 function SingleOfferOnMainView({
   Id,
+  UserId,
   LikeId,
   Icon,
   Price,
@@ -36,6 +38,7 @@ function SingleOfferOnMainView({
           p={rem(8)}
           className="pointer"
           onClick={() => navigate(`/offer/${Id}`)}
+          loading="lazy"
         />
       </Box>
       <SimpleGrid cols={1} w={"100%"}>
@@ -76,7 +79,7 @@ function SingleOfferOnMainView({
               justify={"flex-end"}
             >
               <Box>
-                <ActionHeartIcon id={Id} likeId={LikeId} />
+                <ActionHeartIcon id={Id} likeId={LikeId} userId={UserId} />
               </Box>
             </Flex>
           </SimpleGrid>

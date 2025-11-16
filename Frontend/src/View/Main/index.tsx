@@ -129,7 +129,7 @@ function MainView() {
     const signal = controller.signal;
 
     GetOffers(signal);
-
+    
     return () => {
       controller.abort();
     };
@@ -144,8 +144,8 @@ function MainView() {
 
   const items = data.categories.map((item) => {
     return (<Box
-      key={item.id} 
-      className={data.searchQuery.categoryId !== item.id ? "pointer": undefined }
+      key={item.id}
+      className={data.searchQuery.categoryId !== item.id ? "pointer" : undefined}
       onClick={() => {
         const index = data.categories.findIndex((x) => x.id === item.id);
         const newCategories = getBreadcrumbsHierarchy(index);
@@ -260,18 +260,21 @@ function MainView() {
       <Divider my="sm" />
       {paginationArrows}
       <SimpleGrid cols={1} w={"100%"}>
-        {data.offers.map((x) => (
-          <Flex align={"center"} justify={"center"} key={x.id}>
-            <SingleOfferOnMainView
-              Id={x.id}
-              LikeId={x.likeId}
-              Tittle={x.tittle}
-              Price={x.price}
-              AddedAt={x.creationDate}
-              Icon={x.photo}
-            />
-          </Flex>
-        ))}
+        {data.offers.map((x) => {
+          return (
+            <Flex align={"center"} justify={"center"} key={x.id}>
+              <SingleOfferOnMainView
+                Id={x.id}
+                LikeId={x.likeId}
+                Tittle={x.tittle}
+                Price={x.price}
+                AddedAt={x.creationDate}
+                Icon={x.photo}
+                UserId={x.userId}
+              />
+            </Flex>
+          )
+        })}
         <Flex align={"center"} justify={"center"} m={rem(12)}>
           {data.loading && <Loader color="blue" />}
         </Flex>

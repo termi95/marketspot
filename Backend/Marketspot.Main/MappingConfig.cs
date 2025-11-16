@@ -17,9 +17,11 @@ namespace Backend
             CreateMap<Offer, GetOfferByIdResult>()
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));
             CreateMap<Offer, GetUserOffers>()
-                .ForMember(dest => dest.Photo, opt=>opt.MapFrom(src => src.IconPhoto))
-                .ForMember(dest => dest.LikeId, opt=>opt.MapFrom(src => src.Likes.FirstOrDefault(x=> x.OfferId == src.Id).Id))
-                .ForMember(dest => dest.CreationDate, opt=>opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.IconPhoto))
+                .ForMember(dest => dest.LikeId, opt => opt.MapFrom(src => src.Likes.FirstOrDefault(x => x.OfferId == src.Id).Id))
+                .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)))
+                .ForMember(dest => dest.IsLiked, opt => opt.MapFrom(src => src.Likes.Any()))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
             CreateMap<User, BasicUser>()
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));
             CreateMap<Category, BasicCategory>();

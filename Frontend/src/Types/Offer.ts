@@ -39,11 +39,13 @@ export type MainOfferView = {
 
 export type SimpleOfferList = {
   id: string;
+  userId: string;
   likeId: string;
   photo: string;
   tittle: string;
   price: string;
   creationDate: string;
+  isLiked: boolean;
 };
 
 export type SearchQuery = {
