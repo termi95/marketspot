@@ -8,7 +8,7 @@ interface Props {
   action?: () => void;
   likeId: string;
   id: string;
-  userId: string;
+  userId?: string;
 }
 function ActionHeartIcon({ action, likeId, id, userId }: Props) {
   const { HandleLikes } = ApiAction();

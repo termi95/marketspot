@@ -107,7 +107,7 @@ namespace Backend.Services
                 }
 
                 Guid offerId = Guid.Parse(dto.Id);
-                var offer = await _context.Offers.AsNoTracking().Include(o => o.User).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == offerId && x.SoftDeletedDate == null);
+                Offer offer = await _context.Offers.AsNoTracking().Include(o => o.User).Include(c => c.Category).FirstOrDefaultAsync(x => x.Id == offerId && x.SoftDeletedDate == null);
 
                 if (!ValidatorHelper.CheckIfExists(offer, response))
                 {
@@ -333,6 +333,15 @@ namespace Backend.Services
             }
 
             return result;
+        }
+        public async Task<ApiResponse> GetBoughtOffers(string userId)
+        {
+            var response = new ApiResponse();
+
+            List<Offer> offers = await _context.Orders.AsNoTracking().Include(i => i.Offer).Where(x => x.BuyerId == Guid.Parse(userId) && x.Offer.IsBought == true).Select(x => x.Offer).ToListAsync();
+            response.Result = _mapper.Map<List<GetUserOffers>>(offers);
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
         }
     }
 }

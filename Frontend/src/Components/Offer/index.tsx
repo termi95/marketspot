@@ -20,7 +20,7 @@ function Offer() {
     try {
       const reqResult = await PostRequest<MainOfferView>(
         GetUserOffersEndpoint,
-        {id},
+        { id },
         undefined,
         signal
       );
@@ -42,8 +42,7 @@ function Offer() {
     };
   }, []);
 
-  if (offer === undefined)
-  {
+  if (offer === undefined) {
     return;
   }
 
@@ -56,23 +55,26 @@ function Offer() {
           tittle={offer.tittle}
           likeId={offer.likeId}
           offerId={offer.id}
+          isBought={offer.isBought}
         />
         <Divider my="md" />
         <Grid>
           <Grid.Col span={{ base: 12, md: 9 }}>
-            <CardsCarousel images={offer.photos}/>
+            <CardsCarousel images={offer.photos} />
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 3 }}>
             <Box style={border} h={"100%"}>
               <Grid>
                 <Grid.Col span={{ base: 12 }}>
                   <Box>
-                    <UserInfoAction user={offer.user}/>
+                    <UserInfoAction user={offer.user} />
                   </Box>
                 </Grid.Col>
-                <Grid.Col span={{ base: 12 }}>
-                  <OrderSection offer={offer} />
-                </Grid.Col>
+                {!offer.isBought &&
+                  <Grid.Col span={{ base: 12 }}>
+                    <OrderSection offer={offer} />
+                  </Grid.Col>
+                }
               </Grid>
             </Box>
           </Grid.Col>

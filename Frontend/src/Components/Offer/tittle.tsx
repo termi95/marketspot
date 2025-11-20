@@ -10,9 +10,10 @@ interface Props {
   tittle: string;
   likeId: string;
   offerId: string;
+  isBought?: boolean;
 }
 
-function TitleOfer({ date, tittle, likeId, offerId }: Props) {
+function TitleOfer({ date, tittle, likeId, offerId, isBought}: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const { isTokenExpired } = Api();
   const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
@@ -34,7 +35,7 @@ function TitleOfer({ date, tittle, likeId, offerId }: Props) {
       <Flex m={"md"} align={"start"} direction={"column"}>
         <Flex align={"center"}>
           <Title order={2}>{tittle}</Title>
-          <Popover width={200} trapFocus  opened={opened} position="bottom" offset={0} disabled={!isTokenExpired()} onChange={setOpened}>
+          { !isBought && <Popover width={200} trapFocus  opened={opened} position="bottom" offset={0} disabled={!isTokenExpired()} onChange={setOpened}>
             <Popover.Target>
               <IconHeart
                 color="var(--mantine-color-gray-9)"
@@ -47,7 +48,7 @@ function TitleOfer({ date, tittle, likeId, offerId }: Props) {
             <Popover.Dropdown>
               <Text size="xs">You have to be login to like offerts.</Text>
             </Popover.Dropdown>
-          </Popover>
+          </Popover>}          
         </Flex>
         <Text c="dimmed" fz="sm">
           Offer added: {date}

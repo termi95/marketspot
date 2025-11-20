@@ -87,7 +87,7 @@ namespace Backend.Services
         {
             var response = new ApiResponse();
 
-            List<Like> likes = await _context.Likes.AsNoTracking().Include(i => i.User).Include(i => i.Offer).Where(x => x.UserId == Guid.Parse(userId)).ToListAsync();
+            List<Like> likes = await _context.Likes.AsNoTracking().Include(i => i.User).Include(i => i.Offer).Where(x => x.UserId == Guid.Parse(userId) && x.Offer.IsBought == false).ToListAsync();
             response.Result = _mapper.Map<List<GetUserOffers>>(likes);
             response.SetStatusCode(HttpStatusCode.OK);
             return response;

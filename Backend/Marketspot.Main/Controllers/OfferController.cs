@@ -74,5 +74,13 @@ namespace Backend.Controllers
             var response = await _offerServices.GetCheckoutOffer(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
+
+        [HttpPost, Authorize, Route("get-bought"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetBoughtOffers()
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _offerServices.GetBoughtOffers(userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
     }
 }

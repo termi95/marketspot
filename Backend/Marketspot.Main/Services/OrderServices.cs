@@ -43,8 +43,8 @@ namespace Backend.Services
                 SellerId = offer.User.Id,
                 OfferId = offer.Id,
                 ShippingAddress = new ShippingAddressValue(address),
-                PaymentMethod = Enum.Parse<PaymentMethod>(dto.PaymentMethod),
-                DeliveryMethodIdDeliveryMethod = Enum.Parse<DeliveryMethod>(dto.DeliveryMethod)
+                PaymentMethod = Enum.Parse<PaymentMethod>(dto.PaymentMethod,true),
+                DeliveryMethodIdDeliveryMethod = Enum.Parse<DeliveryMethod>(dto.DeliveryMethod, true)
             };
 
             try

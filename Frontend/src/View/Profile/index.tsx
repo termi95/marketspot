@@ -5,6 +5,7 @@ import Settings from "./settings";
 import MyOffer from "./myOffer";
 import { useNavigate, useParams } from "react-router-dom";
 import Likes from "./Likes";
+import Bought from "./bought";
 
 function ProfileView() {
   const iconStyle = { width: rem(22), height: rem(22) };
@@ -38,7 +39,7 @@ function ProfileView() {
       </Tabs.Panel>
 
       <Tabs.Panel value="Bought">
-        <Settings/>
+        <Bought/>
       </Tabs.Panel>
 
       <Tabs.Panel value="settings">

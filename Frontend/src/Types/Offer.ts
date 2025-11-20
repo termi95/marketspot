@@ -54,6 +54,7 @@ export type MainOfferView = {
   photos: string[];
   user: BasicUserInfo;
   category: ICategory;
+  isBought: boolean;
 };
 
 export type SimpleOfferList = {

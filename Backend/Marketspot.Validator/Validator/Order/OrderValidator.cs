@@ -58,7 +58,7 @@ namespace Marketspot.Validator.Validator.Order
                         {
                             context.AddFailure("Id cannot be null or empty.");
                         }
-                        else if (!Enum.TryParse<PaymentMethod>(x, out var payment))
+                        else if (!Enum.TryParse<PaymentMethod>(x, true, out var payment))
                         {
                             context.AddFailure($"{x} is not a valid payment method.");
                         }
@@ -71,7 +71,7 @@ namespace Marketspot.Validator.Validator.Order
                         {
                             context.AddFailure("Id cannot be null or empty.");
                         }
-                        else if (!Enum.TryParse<DeliveryMethod>(x, out var delivery))
+                        else if (!Enum.TryParse<DeliveryMethod>(x, true, out var delivery))
                         {
                             context.AddFailure($"{x} is not a valid delivery method.");
                         }

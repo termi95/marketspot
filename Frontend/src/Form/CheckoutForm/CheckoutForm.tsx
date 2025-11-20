@@ -5,6 +5,9 @@ import { Api } from "../../Helpers/Api/Api";
 import { CheckoutOffer, DeliveryMethod, DeliveryMethodId } from "../../Types/Offer";
 import { Address } from "../../Types/Address";
 import { IconBarcode, IconBrandPaypal, IconBuilding, IconBuildingBank, IconCash, IconCreditCard, IconLabel, IconPackages, IconPhone } from "@tabler/icons-react";
+import { Order } from "../../Types/Order";
+import { useNavigate } from "react-router-dom";
+import { INotyfication } from "../../Types/Notyfication";
 
 interface Props {
     offer: CheckoutOffer;
@@ -117,8 +120,15 @@ const radioStackStylesChecked = {
 } as const;
 const inputIconStyle = { width: rem(18), height: rem(18) };
 const GetUserOffersEndpoint = "Address/get";
+const CreateOrderEndpoint = "Order/create-order";
 
+const OrderNotification: INotyfication = {
+  Title: "Order",
+  Message: "Creating Order.",
+  SuccessMessage: "Your purchase was successful."
+};
 function CheckoutForm({ offer }: Props) {
+    const navigate = useNavigate();
     const { PostRequest } = Api();
     const [data, setData] = useState<CheckoutState>({ ...initState, offer });
     const setDeliveryMethod = (id: DeliveryMethodId) => setData((prev) => ({ ...prev, deliveryMethodId: id }));
@@ -128,7 +138,7 @@ function CheckoutForm({ offer }: Props) {
             const reqResult = await PostRequest<Address>(
                 GetUserOffersEndpoint,
                 {},
-                undefined,
+                OrderNotification,
                 signal
             );
             if (!reqResult.isError && reqResult.result !== undefined) {
@@ -137,6 +147,35 @@ function CheckoutForm({ offer }: Props) {
         } catch (error) {
             /* empty */
         }
+    }
+    async function CreateOrder(signal: AbortSignal | undefined = undefined) {
+        if (data.address?.id && data.deliveryMethodId && data.offer?.id && data.paymentMethod) {
+            const payloady: Order = { addressId: data.address?.id, deliveryMethod: data.deliveryMethodId, OfferId: data.offer?.id, paymentMethod: data.paymentMethod }
+            try {
+                const reqResult = await PostRequest<Address>(
+                    CreateOrderEndpoint,
+                    payloady,
+                    undefined,
+                    signal
+                );
+                if (!reqResult.isError && reqResult.result !== undefined) {
+                    navigate(`/`)
+                }
+            } catch (error) {
+                /* empty */
+            }
+        }
+    }
+
+    async function SubmitOnEnter(
+        e: React.KeyboardEvent<HTMLElement>
+    ) {
+        const { key } = e;
+        if (key === "Enter") {
+            e.preventDefault();
+            return await CreateOrder();
+        }
+        return false;
     }
 
     useEffect(() => {
@@ -162,9 +201,9 @@ function CheckoutForm({ offer }: Props) {
                 >
                     <form
                         style={{ margin: rem(8) }}
-                    // onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
-                    //     await SubmitOnEnter(e);
-                    // }}
+                        onKeyDown={async (e: React.KeyboardEvent<HTMLElement>) => {
+                            await SubmitOnEnter(e);
+                        }}
                     > <Fieldset legend="Checkout" styles={sectionStyles} style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
                             <Fieldset legend="Confirm your delivery address" styles={sectionStyles}>
                                 <TextInput
@@ -214,7 +253,7 @@ function CheckoutForm({ offer }: Props) {
                                                     component="label"
                                                     p="md"
                                                     className="checkout-card"
-                                                    style={ checked ? radioStackStylesChecked : radioStackStyles}
+                                                    style={checked ? radioStackStylesChecked : radioStackStyles}
                                                 >
                                                     <Group justify="space-between" align="center">
                                                         <Group gap="sm">
@@ -244,7 +283,7 @@ function CheckoutForm({ offer }: Props) {
                                                     key={method.id}
                                                     component="label"
                                                     p="md"
-                                                    style={ checked ? radioStackStylesChecked : radioStackStyles}
+                                                    style={checked ? radioStackStylesChecked : radioStackStyles}
                                                 >
                                                     <Group justify="space-between" align="flex-start">
                                                         <Group align="flex-start">
@@ -269,7 +308,7 @@ function CheckoutForm({ offer }: Props) {
                                     title="Buy"
                                     fullWidth
                                     className="checkout-button"
-                                // onClick={Submit}
+                                    onClick={async () => await CreateOrder()}
                                 />
                             </Group>
                         </Fieldset>
@@ -278,7 +317,7 @@ function CheckoutForm({ offer }: Props) {
                         <Fieldset legend="The item you are purchasing" styles={sectionStyles} mt={rem(8)} mb={rem(8)} mr={rem(8)} style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
                             <SimpleGrid cols={2} style={{ alignItems: "stretch" }}>
                                 <Box ml={rem(4)} style={{ height: "100%" }}>
-                                    <Fieldset legend="Item information" style={{ height: "100%", display: "flex", flexDirection: "column", border:"none" }}>
+                                    <Fieldset legend="Item information" style={{ height: "100%", display: "flex", flexDirection: "column", border: "none" }}>
                                         <Text size="lg" fw={600} mb="xs">
                                             {data.offer?.tittle}
                                         </Text>
