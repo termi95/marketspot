@@ -1,158 +1,299 @@
-import { Box, Button, Container, Group, NumberInput, rem, SimpleGrid, Space, Text, Textarea, TextInput } from "@mantine/core";
+import { Box, Button, Container, Fieldset, Group, NumberInput, Radio, rem, SimpleGrid, Space, Stack, Text, Textarea, TextInput } from "@mantine/core";
 import Btn from "../../Components/Btn";
-import { IconPhoto, IconUpload, IconX } from "@tabler/icons-react";
+import { IconBuilding, IconPackage, IconPackages, IconPhone, IconPhoto, IconSparkles, IconTruck, IconUpload, IconWalk, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import UseAddingOferView from "./UseAddingOferView";
 import { openDeleteModal } from "../../Components/Modal";
 import GetCategoryForm from "../GetCategory";
 import CustomLoader from "../../Components/Loader";
+import { ICategory } from "../../Types/Category";
+import { Condytion, DeliveryType } from "../../Types/Offer";
 
 interface Props {
-    id?: string | undefined | null;
+  id?: string | undefined | null;
+}
+
+const radioStackStyles = {
+  cursor: "pointer",
+  borderRadius: rem(8),
+  border: "1px solid var(--mantine-color-gray-3)",
+  boxShadow: "none",
+  backgroundColor: "white",
+} as const;
+
+const radioStackStylesChecked = {
+  cursor: "pointer",
+  borderRadius: rem(8),
+  border: "1px solid var(--mantine-color-blue-5)",
+  boxShadow: "0 0 0 1px var(--mantine-color-blue-1)",
+  backgroundColor: "var(--mantine-color-blue-0)"
+} as const;
+
+const sectionStyles = {
+  legend: {
+    fontSize: rem(16),
+  },
+  root: {
+    textAlign: "start",
+    border: "none"
+  },
+} as const;
+const inputIconStyle = { width: rem(18), height: rem(18) };
+
+function AddOrUpdateOfferForm({ id }: Props) {
+  const {
+    setFiles,
+    GetPreview,
+    submit,
+    IsNullOrEmpty,
+    setData,
+    mainCategoryId,
+    data
+  } = UseAddingOferView({ id });
+  const { loading, title, price, category, deliveryType, description, condytion, pickupAddress } = data;
+  function setCategory(value: ICategory) {
+    setData(prev => ({ ...prev, category: value }));
   }
-  
-function AddOrUpdateOfferForm({ id }:Props) {
-    const {
-      setFiles,
-      setDescription,
-      setCategory,
-      setTitle,
-      GetPreview,
-      setPrice,
-      submit,
-      IsNullOrEmpty,
-      title,
-      category,
-      description,
-      mainCategoryId,
-      price,
-      loading
-    } = UseAddingOferView({id});  
-  
-    // to do check use-debounced-value aby sprawdzic czy poprawi to wydajnosc !opcjonalne!
-    if (loading) {
-      return <CustomLoader setBg={false} />;
-    }
-    const previews = GetPreview();
-    return (
-        <Container bg={"#f8f9fa"}>
-          <Space h="md" />
+
+  function formatPhone(input: string) {
+    const digits = input.replace(/\D/g, "");
+
+    if (digits.length === 0) return "";
+
+    let normalized = digits.startsWith("48") ? digits.slice(2) : digits;
+
+    normalized = normalized.slice(0, 9);
+
+    const part1 = normalized.slice(0, 3);
+    const part2 = normalized.slice(3, 6);
+    const part3 = normalized.slice(6, 9);
+
+    const formatted = [part1, part2, part3].filter(Boolean).join(" ");
+
+    return `+48 ${formatted}`.trim();
+  }
+
+  // to do check use-debounced-value aby sprawdzic czy poprawi to wydajnosc !opcjonalne!
+  if (loading) {
+    return <CustomLoader setBg={false} />;
+  }
+  const previews = GetPreview();
+  return (
+    <Container bg={"#f8f9fa"}>
+      <Space h="md" />
+      <TextInput
+        className="text-start"
+        label="Title"
+        placeholder="It is important to put meaning full title to your offer"
+        value={title}
+        onChange={(event) => setData(prev => ({ ...prev, title: event.currentTarget.value }))}
+      />
+      <Space h="md" />
+      <Box>
+        <NumberInput
+          className="text-start"
+          label="Price"
+          placeholder="How much would you like to receive"
+          min={0}
+          suffix=" PLN"
+          value={price}
+          onChange={(value) => setData(prev => ({ ...prev, price: value }))}
+        />
+      </Box>
+      <Space h="md" />
+      <Button
+        color={"var(--main-color)"}
+        variant={"outline"}
+        w={"100%"}
+        style={{
+          transition: "300ms",
+          height: rem(42),
+        }}
+        onClick={() => openDeleteModal(() => { return }, "Category picker", "", <GetCategoryForm GetCategory={setCategory} />, false)}
+      >
+        Chose your category
+      </Button>
+      <Space h="md" />
+      <Box>
+        <Text>Selected category:</Text>
+        <Text size="xl" fw={700}>{mainCategoryId !== category.id && category.name}</Text>
+      </Box>
+      <Space h="md" />
+      <Textarea
+        className="text-start"
+        label="Description"
+        placeholder="You offer description"
+        value={description}
+        onChange={(event) => setData(prev => ({ ...prev, description: event.currentTarget.value }))}
+      />
+      <Space h="md" />
+
+      <Fieldset legend="Select item condition" styles={sectionStyles}>
+        <Radio.Group
+          value={condytion === Condytion.New ? "New" : "Used"}
+          onChange={(val) => setData(prev => ({ ...prev, condytion: val === "New" ? Condytion.New : Condytion.Used }))}
+        >
+          <Stack gap="sm">
+            {["New", "Used"].map((item) => {
+              const Icon = item === "New" ? IconSparkles : IconPackage;
+              const Checked = item === condytion;
+              return (
+                <Box
+                  key={item} 
+                  component="label"
+                  p="md"
+                  className="checkout-card"
+                  style={Checked ? radioStackStylesChecked : radioStackStyles}
+                >
+                  <Group justify="space-between" align="center">
+                    <Group gap="sm">
+                      <Radio value={item} />
+                      <Group gap="xs">
+                        <Icon size={18} />
+                        <Text fw={600}>{item}</Text>
+                      </Group>
+                    </Group>
+                  </Group>
+                </Box>
+              );
+            })}
+          </Stack>
+        </Radio.Group>
+      </Fieldset>
+      <Space h="md" />
+
+      <Fieldset legend="Select will you send item" styles={sectionStyles}>
+        <Radio.Group
+          value={deliveryType}
+          onChange={(val) => setData(prev => ({ ...prev, deliveryType: val === "Shipping" ? DeliveryType.Shipping : DeliveryType.LocalPickup }))}
+        >
+          <Stack gap="sm">
+            {["Shipping", "LocalPickup"].map((item) => {
+              const Icon = item === "Shipping" ? IconTruck : IconWalk;
+              const Checked = item === deliveryType
+              return (
+                <Box
+                  key={item}
+                  component="label"
+                  p="md"
+                  className="checkout-card"
+                  style={Checked ? radioStackStylesChecked : radioStackStyles}
+                >
+                  <Group justify="space-between" align="center">
+                    <Group gap="sm">
+                      <Radio value={item} />
+                      <Group gap="xs">
+                        <Icon size={18} />
+                        <Text fw={600}>{item}</Text>
+                      </Group>
+                    </Group>
+                  </Group>
+                </Box>
+              );
+            })}
+          </Stack>
+        </Radio.Group>
+      </Fieldset>
+      {deliveryType === DeliveryType.LocalPickup &&
+        <Fieldset legend="Pickup address" styles={sectionStyles}>
           <TextInput
-            className="text-start"
-            label="Title"
-            placeholder="It is important to put meaning full title to your offer"
-            value={title}
-            onChange={(event) => setTitle(event.currentTarget.value)}
+            label="Street"
+            value={pickupAddress.street}
+            onChange={(e) => setData(prev => ({ ...prev, pickupAddress: { ...prev.pickupAddress, street: e.target.value } }))}
+            placeholder="Street"
+            mt="md"
+            leftSection={<IconPackages style={inputIconStyle} />}
           />
-          <Space h="md" />
-          <Box>
-          <NumberInput
-            className="text-start"
-            label="Price"
-            placeholder="How much would you like to receive"
-            min={0}
-            suffix=" PLN"
-            value={price}
-            onChange={setPrice}
+          <TextInput
+            label="City"
+            value={pickupAddress.city}
+            onChange={(e) => setData(prev => ({ ...prev, pickupAddress: { ...prev.pickupAddress, city: e.target.value } }))}
+            placeholder="City"
+            mt="md"
+            leftSection={<IconBuilding style={inputIconStyle} />}
+          />
+          <TextInput
+            label="Contact telephone"
+            value={pickupAddress.phone}
+            onChange={(e) => setData(prev => ({ ...prev, pickupAddress: { ...prev.pickupAddress, phone: formatPhone(e.target.value) } }))}
+            placeholder="+48 123 123 123"
+            mt="md"
+            leftSection={<IconPhone style={inputIconStyle} />}
+          />
+        </Fieldset>
+      }
+      <Space h="md" />
+
+      <Dropzone
+        onDrop={(files) => {
+          if (files.length <= 9) {
+            setFiles(files);
+          } else {
+            //add info for user that he add to many photo
+          }
+        }}
+        onReject={(files) => console.log("rejected files", files)}
+        maxSize={5 * 1024 ** 2}
+        accept={IMAGE_MIME_TYPE}
+      >
+        <Group
+          justify="center"
+          gap="xl"
+          mih={220}
+          style={{ pointerEvents: "none" }}
+        >
+          <Dropzone.Accept>
+            <IconUpload
+              style={{
+                width: rem(52),
+                height: rem(52),
+                color: "var(--mantine-color-blue-6)",
+              }}
+              stroke={1.5}
             />
-          </Box>
-          <Space h="md" />
-          <Button
-            color={"var(--main-color)"}
-            variant={"outline"}
-            w={"100%"}
-            style={{
-              transition: "300ms",
-              height: rem(42),
-            }}
-            onClick={() => openDeleteModal(()=>{return}, "Category picker", "", <GetCategoryForm GetCategory={setCategory}/>, false)}
-          >
-            Chose your category
-          </Button>
-          <Space h="md" />
-          <Box>
-          <Text>Selected category:</Text>
-            <Text size="xl" fw={700}>{mainCategoryId !== category.id && category.name}</Text>
-          </Box>
-          <Space h="md" />
-          <Textarea
-            className="text-start"
-            label="Description"
-            placeholder="You offer description"
-            value={description}
-            onChange={(event) => setDescription(event.currentTarget.value)}
-          />
-          <Space h="md" />
-          <Dropzone
-            onDrop={(files) => {
-              if (files.length <= 9) {
-                setFiles(files);
-              } else {
-                //add info for user that he add to many photo
-              }
-            }}
-            onReject={(files) => console.log("rejected files", files)}
-            maxSize={5 * 1024 ** 2}
-            accept={IMAGE_MIME_TYPE}
-          >
-            <Group
-              justify="center"
-              gap="xl"
-              mih={220}
-              style={{ pointerEvents: "none" }}
-            >
-              <Dropzone.Accept>
-                <IconUpload
-                  style={{
-                    width: rem(52),
-                    height: rem(52),
-                    color: "var(--mantine-color-blue-6)",
-                  }}
-                  stroke={1.5}
-                />
-              </Dropzone.Accept>
-              <Dropzone.Reject>
-                <IconX
-                  style={{
-                    width: rem(52),
-                    height: rem(52),
-                    color: "var(--mantine-color-red-6)",
-                  }}
-                  stroke={1.5}
-                />
-              </Dropzone.Reject>
-              <Dropzone.Idle>
-                <IconPhoto
-                  style={{
-                    width: rem(52),
-                    height: rem(52),
-                    color: "var(--mantine-color-dimmed)",
-                  }}
-                  stroke={1.5}
-                />
-              </Dropzone.Idle>
-  
-              <div>
-                <Text size="xl" inline>
-                  Drag images here or click to select files
-                </Text>
-                <Text size="sm" c="dimmed" inline mt={7}>
-                  Attach max 9 photos, each file should not exceed 5mb
-                </Text>
-              </div>
-            </Group>
-          </Dropzone>
-          <Space h="md" />
-          <SimpleGrid
-            cols={{ base: 1, sm: 4 }}
-            mt={previews.length > 0 ? "xl" : 0}
-          >
-            {previews}
-          </SimpleGrid>
-          <Space h="md" />
-          <Btn title={ IsNullOrEmpty(id) ? "Add" : "Update" } onClick={submit} fullWidth/>
-          <Space h="md" />
-        </Container>)
+          </Dropzone.Accept>
+          <Dropzone.Reject>
+            <IconX
+              style={{
+                width: rem(52),
+                height: rem(52),
+                color: "var(--mantine-color-red-6)",
+              }}
+              stroke={1.5}
+            />
+          </Dropzone.Reject>
+          <Dropzone.Idle>
+            <IconPhoto
+              style={{
+                width: rem(52),
+                height: rem(52),
+                color: "var(--mantine-color-dimmed)",
+              }}
+              stroke={1.5}
+            />
+          </Dropzone.Idle>
+
+          <div>
+            <Text size="xl" inline>
+              Drag images here or click to select files
+            </Text>
+            <Text size="sm" c="dimmed" inline mt={7}>
+              Attach max 9 photos, each file should not exceed 5mb
+            </Text>
+          </div>
+        </Group>
+      </Dropzone>
+      <Space h="md" />
+      <SimpleGrid
+        cols={{ base: 1, sm: 4 }}
+        mt={previews.length > 0 ? "xl" : 0}
+      >
+        {previews}
+      </SimpleGrid>
+      <Space h="md" />
+      <Btn title={IsNullOrEmpty(id) ? "Add" : "Update"} onClick={submit} fullWidth />
+      <Space h="md" />
+    </Container>)
 }
 
 export default AddOrUpdateOfferForm

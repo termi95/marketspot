@@ -4,6 +4,7 @@
     {
         public int Page { get; set; }
         public string SearchText { get; set; }
+        public int ItemPerPage { get; set; }
         public string SortBy { get; set; }
         public string CategoryId { get; set; }
         public decimal? MinPrice { get; set; }

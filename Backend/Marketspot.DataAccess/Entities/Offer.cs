@@ -1,8 +1,26 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Marketspot.DataAccess.Entities
 {
+    public enum DeliveryType
+    {
+        Shipping,
+        LocalPickup
+    }
+    public enum Condytion
+    {
+        New,
+        Used,
+    }
+    [Owned]
+    public class PickupAddress
+    {
+        public string Street { get; set; }
+        public string City { get; set; }
+        public string Phone { get; set; }
+    }
     public class Offer
     {
         [Key]
@@ -20,6 +38,9 @@ namespace Marketspot.DataAccess.Entities
         [NotNull, MinLength(1)]
         public List<string> Photos { get; set; }
         public string IconPhoto { get; set; }
+        public Condytion Condytion { get; set; }
+        public PickupAddress PickupAddress { get; set; }
+        public DeliveryType DeliveryType { get; set; }
         public DateTime CreationDate { get; set; } = DateTime.Now;
 
         public virtual User User { get; set; }

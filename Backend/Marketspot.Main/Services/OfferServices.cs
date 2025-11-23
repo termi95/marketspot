@@ -168,7 +168,7 @@ namespace Backend.Services
                 Guid.TryParse(idOfLoginUser, out loginUserId);
             }
 
-            int take = 2;
+            int take = dto.ItemPerPage;
             int skip = (dto.Page - 1) * take;
             try
             {
@@ -197,11 +197,17 @@ namespace Backend.Services
                     offers = _context.Offers
                         .FromSqlRaw(sql, p)
                         .Include(o => o.User)
-                        .Include(o => o.Likes.Where(l => l.UserId == loginUserId));
+                        .Include(o => o.Likes.Where(l => l.UserId == loginUserId))
+                        .Include(o => o.Likes)
+                        .Where(x => x.IsBought == false);
                 }
                 else
                 {
-                    offers = _context.Offers.Include(c => c.Likes.Where(x => x.UserId == loginUserId)).Include(o => o.User).AsQueryable();
+                    offers = _context.Offers
+                        .Include(c => c.Likes.Where(x => x.UserId == loginUserId))
+                        .Include(o => o.User).Where(x=> x.IsBought == false)
+                        .Include(o => o.Likes)
+                        .AsQueryable();
                 }
 
                 if (dto.MinPrice.HasValue)

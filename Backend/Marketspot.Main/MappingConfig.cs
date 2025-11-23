@@ -21,6 +21,7 @@ namespace Backend
                 .ForMember(dest => dest.LikeId, opt => opt.MapFrom(src => src.Likes.FirstOrDefault(x => x.OfferId == src.Id).Id))
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)))
                 .ForMember(dest => dest.IsLiked, opt => opt.MapFrom(src => src.Likes.Any()))
+                .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.Likes.Count()))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
             CreateMap<User, BasicUser>()
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));

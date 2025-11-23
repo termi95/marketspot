@@ -1,7 +1,6 @@
 import { FileWithPath } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
-import { ICategory } from "../../Types/Category";
-import { MainOfferView, OfferAddDto, OfferUpdateDto } from "../../Types/Offer";
+import { AddOfferState, Condytion, DeliveryType, MainOfferView, OfferAddDto, OfferUpdateDto } from "../../Types/Offer";
 import { INotyfication } from "../../Types/Notyfication";
 import { Api } from "../../Helpers/Api/Api";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +18,7 @@ const addNotification: INotyfication = {
   Title: "Adding",
   Message: "Adding offer.",
   SuccessMessage: "offer was added successfully.",
-};const updateNotification: INotyfication = {
+}; const updateNotification: INotyfication = {
   Title: "Update",
   Message: "Updating offer.",
   SuccessMessage: "offer was updated successfully.",
@@ -29,22 +28,35 @@ interface Props {
   id: string | undefined | null;
 }
 
+const initState: AddOfferState = {  
+  price: 0,
+  title: '',
+  description: '',
+  deliveryType: DeliveryType.Shipping,
+  condytion: Condytion.New,
+  photos: [],
+  categoryId: Helper.EmptyGuid,
+  category: {
+    id: mainCategoryId,
+    name: "Main Category",
+    parentId: mainCategoryId,
+  },
+  loading: false,
+  pickupAddress: {
+    city: "",
+    phone: "",
+    street: "",
+  }
+}
+
 function UseAddingOferView({ id }: Props) {
   const { PostRequest } = Api();
   const { IsNullOrEmpty } = GeneralHelper();
   const navigate = useNavigate();
+  const [data, setData] = useState<AddOfferState>(initState);
   const [files, setFiles] = useState<FileWithPath[]>([]);
-  const [title, setTitle] = useState<string>("");
   const [photos, setPhotos] = useState<string[]>([]);
-  const [price, setPrice] = useState<string | number>(0);
-  const [category, setCategory] = useState<ICategory>({
-    id: mainCategoryId,
-    name: "Main Category",
-    parentId: mainCategoryId,
-  });
-  const [description, setDescription] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-
+  const setLoading = (value: boolean) => setData(prev => ({ ...prev, loading: value }));
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -58,7 +70,7 @@ function UseAddingOferView({ id }: Props) {
 
   useEffect(() => {
     setPhotos([])
-  }, [files])  
+  }, [files])
 
   async function GetOffer(signal: AbortSignal) {
     try {
@@ -70,11 +82,17 @@ function UseAddingOferView({ id }: Props) {
         signal
       );
       if (!reqResult.isError && reqResult.result !== undefined) {
-        setTitle(reqResult.result.tittle);
-        setPrice(reqResult.result.price);
-        setDescription(reqResult.result.description);
-        setCategory(reqResult.result.category);
-        setPhotos(reqResult.result.photos);
+        const { tittle, category, price, description, photos } = reqResult.result;
+        if (tittle && category && price && description && photos) {
+          setData(prev => ({
+            ...prev,
+            title: tittle,
+            price: price,
+            description: description,
+            category: category,
+            photos: photos
+          }))
+        }
       }
     } catch (error) {
       /* empty */
@@ -133,11 +151,14 @@ function UseAddingOferView({ id }: Props) {
   async function Add() {
     const base64Img = await Promise.all(files.map((x) => getBase64(x)));
     const payload: OfferAddDto = {
-      description: description,
-      price: price as number,
-      tittle: title,
-      categoryId: category.id,
+      description: data.description,
+      price: data.price as number,
+      tittle: data.title,
+      categoryId: data.category.id,
       photos: base64Img,
+      condytion: data.condytion,
+      deliveryType: data.deliveryType,
+      pickupAddress: data.pickupAddress
     };
     const result = await PostRequest<string>(
       addEndpoint,
@@ -152,11 +173,14 @@ function UseAddingOferView({ id }: Props) {
   async function Update() {
     const payload: OfferUpdateDto = {
       id: id!,
-      description: description,
-      price: price as number,
-      tittle: title,
-      categoryId: category.id,
+      description: data.description,
+      price: data.price as number,
+      tittle: data.title,
+      categoryId: data.category.id,
       photos: await GetPhotosPayload(),
+      condytion: data.condytion,
+      deliveryType: data.deliveryType,
+      pickupAddress: data.pickupAddress
     };
     const result = await PostRequest<string>(
       updateEndpoint,
@@ -178,21 +202,14 @@ function UseAddingOferView({ id }: Props) {
 
   return {
     setFiles,
-    setDescription,
-    setCategory,
-    setTitle,
     removePhoto,
-    setPrice,
     submit,
     IsNullOrEmpty,
     GetPreview,
+    setData,
     files,
-    title,
-    category,
-    description,
     mainCategoryId,
-    price,
-    loading,
+    data,
   };
 }
 

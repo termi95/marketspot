@@ -7,6 +7,10 @@ export type OfferAddDto = {
   price: number;
   categoryId: string;
   photos: string[];
+  condytion: Condytion;
+  deliveryType: DeliveryType;
+  pickupAddress: OfferAddress;
+  
 };
 
 export type OfferUpdateDto = OfferAddDto & { id: string };
@@ -23,7 +27,36 @@ export type UserOffer = {
   category: ICategory;
 };
 
-export type CheckoutOffer = Omit<MainOfferView,"likeId" | "category">;
+export enum DeliveryType {
+  Shipping = "Shipping",
+  LocalPickup = "LocalPickup"
+}
+
+export enum Condytion {
+  New = "New",
+  Used = "Used"
+}
+
+export type AddOfferState = {
+  title: string;
+  description: string;
+  categoryId: string;
+  condytion: Condytion;
+  deliveryType: DeliveryType;
+  price: string | number;
+  category: ICategory;
+  loading: boolean;
+  photos: string[];
+  pickupAddress: OfferAddress;
+}
+
+export type OfferAddress = {
+        city: string,
+        phone: string,
+        street: string,
+}
+
+export type CheckoutOffer = Omit<MainOfferView, "likeId" | "category">;
 
 export enum PaymentMethod {
   Unknown = 0,
@@ -37,10 +70,10 @@ export enum PaymentMethod {
 export type DeliveryMethodId = "dpd" | "inpost" | "poczta" | "orlen";
 
 export type DeliveryMethod = {
-    id: DeliveryMethodId;
-    name: string;
-    description: string;
-    price: number;
+  id: DeliveryMethodId;
+  name: string;
+  description: string;
+  price: number;
 };
 
 
@@ -66,15 +99,17 @@ export type SimpleOfferList = {
   price: string;
   creationDate: string;
   isLiked: boolean;
+  likesCount: number;
 };
 
 export type SearchQuery = {
+  itemPerPage: number;
   searchText: string;
   page: number;
   sortBy: SortBy;
   categoryId: string;
-  minPrice: number | string | undefined;
-  maxPrice: number | string | undefined;
+  minPrice: number | undefined;
+  maxPrice: number | undefined;
 };
 
 export type SortBy = 'PriceDesc' | 'PriceAsc' | 'CreatedDateDesc' | 'CreatedDateAsc' | 'SearchTextDesc' | 'SearchTextAsc';

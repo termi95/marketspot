@@ -33,6 +33,24 @@ namespace Marketspot.Validator.Validator.Offer
                         context.AddFailure($"{x} is not in a valid GUID format.");
                     }
                 });
+            RuleFor(x => x.Condytion)
+                    .Cascade(CascadeMode.Stop).IsInEnum();
+            RuleFor(x => x.DeliveryType)
+                    .Cascade(CascadeMode.Stop).IsInEnum();
+            RuleFor(x => x.PickupAddress.Street)
+            .NotEmpty()
+            .When(x => x.DeliveryType == DeliveryType.LocalPickup)
+            .WithMessage("Street is required for local pickup.");
+
+            RuleFor(x => x.PickupAddress.City)
+                .NotEmpty()
+                .When(x => x.DeliveryType == DeliveryType.LocalPickup)
+                .WithMessage("City is required for local pickup.");
+
+            RuleFor(x => x.PickupAddress.Phone)
+                .NotEmpty()
+                .When(x => x.DeliveryType == DeliveryType.LocalPickup)
+                .WithMessage("Phone is required for local pickup.");
         }
     }
 }

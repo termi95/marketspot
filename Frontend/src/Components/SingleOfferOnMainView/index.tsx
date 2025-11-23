@@ -1,91 +1,78 @@
-import { Box, Flex, Image, rem, SimpleGrid, Text } from "@mantine/core";
+import { Card, Flex, Image, Text, Stack, Box } from "@mantine/core";
 import ActionHeartIcon from "../ActionHeartIcon";
 import { useNavigate } from "react-router-dom";
-
+import { SimpleOfferList } from "../../Types/Offer";
 interface Props {
-  Id: string;
-  UserId: string;
-  LikeId: string;
-  Icon: string;
-  Tittle: string;
-  Price: string;
-  AddedAt: string;
+  offer: SimpleOfferList;
 }
-
-function SingleOfferOnMainView({
-  Id,
-  UserId,
-  LikeId,
-  Icon,
-  Price,
-  Tittle,
-  AddedAt,
-}: Props) {
+function SingleOfferOnMainView({ offer }: Props) {
+  const { id, tittle, price, creationDate, userId, likeId, photo, likesCount } = offer;
   const navigate = useNavigate();
+  const openOffer = () => navigate(`/offer/${id}`);
+
   return (
-    <Flex
-      key={Id}
-      ml={rem(8)}
-      mr={rem(8)}
-      style={{ backgroundColor: "white" }}
-      w={"60%"}
+    <Card
+      withBorder
+      shadow="sm"
+      radius="md"
+      w="70%"
+      mx="auto"
+      mb="md"
+      p="sm"
+      style={{ cursor: "pointer" }}
+      onClick={openOffer}
     >
-      <Box>
+      <Flex justify="space-between" gap="md" align="center">
         <Image
-          src={Icon}
-          w={250}
-          width={200}
-          p={rem(8)}
-          className="pointer"
-          onClick={() => navigate(`/offer/${Id}`)}
+          src={photo}
+          width={180}
+          w={180}
+          height={130}
+          h={130}
+          fit="cover"
+          radius="md"
           loading="lazy"
+          alt={tittle}
+          style={{ flexShrink: 0 }}
+          onClick={() => navigate(`/offer/${id}`)}
         />
-      </Box>
-      <SimpleGrid cols={1} w={"100%"}>
-        <Box
-          w={"100%"}
-          h={"100%"}
-          mt={rem(4)}
-          className="pointer"
-          onClick={() => navigate(`/offer/${Id}`)}
-        >
-          <SimpleGrid cols={2} w={"100%"} h={"100%"}>
-            <Flex w={"100%"} mt={rem(4)}>
-              <Box ml={rem(4)}>
-                <Text size="xl">{Tittle}</Text>
-              </Box>
-            </Flex>
-            <Flex
-              w={"100%"}
-              mt={rem(4)}
-              align={"flex-start"}
-              justify={"flex-end"}
+
+        <Stack gap={"lg"} style={{ flex: 1 }}>
+          <Text size="lg" fw={600} lineClamp={1}>
+            {tittle}
+          </Text>
+          <Text size="xs" c="dimmed">
+            {creationDate}
+          </Text>
+        </Stack>
+
+        <Stack gap={8} align="flex-end" style={{ flexShrink: 0 }}>
+          <Text fw={700} size="lg">
+            {price} zł
+          </Text>
+          <Box
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <ActionHeartIcon id={id} likeId={likeId} userId={userId} />
+          </Box>
+          {likesCount > 0 && (
+            <Box
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             >
-              <Box mr={rem(8)}>
-                <Text size="xl">{Price} zł</Text>
-              </Box>
-            </Flex>
-          </SimpleGrid>
-        </Box>
-        <Box w={"100%"} h={"100%"} mb={rem(4)} p={rem(8)}>
-          <SimpleGrid cols={2} w={"100%"} h={"100%"}>
-            <Flex w={"100%"} mt={rem(4)} align={"flex-end"}>
-              <Box>{AddedAt}</Box>
-            </Flex>
-            <Flex
-              w={"100%"}
-              mt={rem(4)}
-              align={"flex-end"}
-              justify={"flex-end"}
-            >
-              <Box>
-                <ActionHeartIcon id={Id} likeId={LikeId} userId={UserId} />
-              </Box>
-            </Flex>
-          </SimpleGrid>
-        </Box>
-      </SimpleGrid>
-    </Flex>
+              <Text size="sm" c="dimmed">
+                {likesCount === 1
+                  ? "1 person likes this offer"
+                  : `${likesCount} people like this offer`}
+              </Text>
+            </Box>
+          )}
+        </Stack>
+      </Flex>
+    </Card>
   );
 }
 

@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
 using Marketspot.DataAccess.Entities;
 using Marketspot.Model;
-using Marketspot.Model.Category;
 using Marketspot.Model.Like;
 using Marketspot.Model.Offer;
-using Marketspot.Model.User;
 using Marketspot.Validator;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -66,7 +64,7 @@ namespace Backend.Services
                 response.SetStatusCode(HttpStatusCode.NotFound);
                 return response;
             }
-            
+
             _context.Likes.Remove(like);
 
             try

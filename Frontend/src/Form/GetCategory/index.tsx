@@ -7,7 +7,7 @@ import { closeAllModal } from "../../Components/Modal";
 import { ICategory } from "../../Types/Category";
 import Btn from "../../Components/Btn";
 interface Props {
-  GetCategory: React.Dispatch<React.SetStateAction<ICategory>>;
+  GetCategory: (category: ICategory) => void;
 }
 function GetCategoryForm({GetCategory}:Props) {
   const {

@@ -17,5 +17,6 @@ namespace Marketspot.Model.Offer
         public BasicUser User { get; set; }
         public BasicCategory Category { get; set; }
         public bool IsLiked { get; set; }
+        public int LikesCount { get; set; }
     }
 }

@@ -4,6 +4,7 @@ import SingleOfferOnMainView from "../../Components/SingleOfferOnMainView";
 import { Api } from "../../Helpers/Api/Api";
 import { SearchQuery, SimpleOfferList, SortBy } from "../../Types/Offer";
 import {
+  ActionIcon,
   Box,
   Breadcrumbs,
   Combobox,
@@ -15,8 +16,8 @@ import {
   Loader,
   NumberInput,
   rem,
+  Select,
   SimpleGrid,
-  Space,
   TextInput,
   Tooltip,
   useCombobox,
@@ -48,6 +49,7 @@ const defaultState: MainViewState = {
   categories: [{ id: Helper.EmptyGuid, name: "Main", parentId: Helper.EmptyGuid },],
   offers: [],
   searchQuery: {
+    itemPerPage: 2,
     page: 1,
     searchText: "",
     sortBy: "CreatedDateDesc",
@@ -57,6 +59,7 @@ const defaultState: MainViewState = {
   }
 }
 
+const iconSearch = <IconSearch style={{ width: rem(12), height: rem(12) }} stroke={1.5} />;
 
 function MainView() {
   const { PostRequest } = Api();
@@ -68,24 +71,33 @@ function MainView() {
   const setPrevPage = () => setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, page: Math.max(1, prev.searchQuery.page - 1) } }));
   const addCategory = (value: ICategory) => setData(prev => ({ ...prev, categories: [...prev.categories, value], searchQuery: { ...prev.searchQuery, categoryId: value.id, page: 1 } }));
   const getSortLabelByValue = (value: string) => sortOptions.find(x => x.value === value)?.label ?? '🆕 Newest first';
-  const setMinPrice = (value: number | string | undefined) => {
-    if (value != data.searchQuery.minPrice) {
-      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, minPrice: value } }));
+  const setMinPrice = (value: string) => {
+    const numberValue = value === '' ? undefined : Number.parseInt(value);
+    if (numberValue != data.searchQuery.minPrice) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, minPrice: numberValue } }));
     }
   }
-  const setMaxPrice = (value: number | string | undefined) => {
-    if (value != data.searchQuery.maxPrice) {
-      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, maxPrice: value } }));
+  const setMaxPrice = (value: string) => {
+    const numberValue = value === '' ? undefined : Number.parseInt(value);
+    if (numberValue != data.searchQuery.maxPrice) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, maxPrice: numberValue } }));
     }
   }
   const setSortBy = (value: SortBy) => {
     if (value != data.searchQuery.sortBy) {
-      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, sortBy: value } }));
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, sortBy: value, page: 1 } }));
     }
   }
   const setSearchText = (value: string) => {
     if (value != data.searchQuery.searchText) {
-      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, searchText: value } }));
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, searchText: value, page: 1 } }));
+    }
+  }
+  const setItemPerPage = (value: string | null) => {
+    if (!value) return;
+    const valueNumber = Number(value);
+    if (!isNaN(valueNumber) && valueNumber != data.searchQuery.itemPerPage) {
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, itemPerPage: valueNumber, page: 1 } }));
     }
   }
   const getBreadcrumbsHierarchy = (index: number) => {
@@ -109,7 +121,7 @@ function MainView() {
       ) {
         const items = reqResult.result;
         if (items && items.length > 0) {
-          setData(prev => ({ ...prev, offers: items, hasMore: true }));
+          setData(prev => ({ ...prev, offers: items }));
         }
         else if (items && items.length === 0 && data.searchQuery.page > 1) {
           setPrevPage();
@@ -129,18 +141,11 @@ function MainView() {
     const signal = controller.signal;
 
     GetOffers(signal);
-    
+
     return () => {
       controller.abort();
     };
-  }, [
-    data.searchQuery.page,
-    data.searchQuery.sortBy,
-    data.searchQuery.categoryId,
-    data.searchQuery.minPrice,
-    data.searchQuery.maxPrice,
-    data.searchQuery.searchText,
-  ]);
+  }, [data.searchQuery]);
 
   const items = data.categories.map((item) => {
     return (<Box
@@ -174,28 +179,62 @@ function MainView() {
     </Combobox.Option>
   ));
 
-  const paginationArrows = (
-    <Flex align={"center"} justify={"center"}>
-      <SimpleGrid cols={3} w={"80%"}>
-        <Flex align={"self-start"} justify={"start"}>
-          <h4>Page: {data.searchQuery.page}</h4>
-        </Flex>
-        <Flex align={"center"} justify={"center"}>
-          <Box>{data.searchQuery.page > 1 && (
-            <Tooltip label="Previous page" className="pointer" onClick={setPrevPage} >
-              <IconArrowLeft />
-            </Tooltip>)}
-          </Box>
-          <Space w="xl" />
-          <Box>
-            <Tooltip label="Next page" className="pointer" onClick={setNextPage}>
-              <IconArrowRight />
-            </Tooltip>
-          </Box>
-        </Flex>
-      </SimpleGrid>
-    </Flex>
-  )
+  const canGoNext = data.offers.length >= data.searchQuery.itemPerPage;
+  const pagination = (
+    <Group justify="space-between" align="center" mt="md" mb="md" w="80%" mx="auto">
+      <Group gap="xs">
+        <span>Items per page:</span>
+        <Select
+          data={["2", "5", "10", "50"]}
+          value={data.searchQuery.itemPerPage.toString()}
+          onChange={setItemPerPage}
+          w={80}
+        />
+      </Group>
+
+      <Group gap="xs">
+        {data.searchQuery.page > 1 &&
+          <Tooltip label="Previous page">
+            <ActionIcon
+              variant="light"
+              radius="xl"
+              size="lg"
+              disabled={data.searchQuery.page <= 1}
+              onClick={data.searchQuery.page > 1 ? setPrevPage : undefined}
+            >
+              <IconArrowLeft size={18} />
+            </ActionIcon>
+          </Tooltip>
+        }
+
+        <span>Page: {data.searchQuery.page}</span>
+
+        {canGoNext &&
+          <Tooltip label="Next page">
+            <ActionIcon
+              variant="light"
+              radius="xl"
+              size="lg"
+              disabled={!canGoNext}
+              onClick={canGoNext ? setNextPage : undefined}
+            >
+              <IconArrowRight size={25} />
+            </ActionIcon>
+          </Tooltip>
+        }
+      </Group>
+    </Group>
+  );
+
+  const loader = (<Flex align={"center"} justify={"center"} m={rem(12)}><Loader color="blue" /></Flex>);
+  const offers = data.offers.map((x) => {
+    return (
+      <Flex align={"center"} justify={"center"} key={x.id}>
+        <SingleOfferOnMainView offer={x}/>
+      </Flex>
+    )
+  })
+
   return (
     <MainPanel>
       <Flex align={"center"} justify={"center"}>
@@ -244,12 +283,11 @@ function MainView() {
             </Combobox>
           </Group>
           <TextInput
+            value={data.searchQuery.searchText}
             onBlur={(e) => setSearchText(e.target.value)}
-            leftSection={
-              <IconSearch
-                style={{ width: rem(12), height: rem(12) }}
-                stroke={1.5}
-              />} w={"100%"} placeholder="Search" />
+            leftSection={iconSearch}
+            w={"100%"}
+            placeholder="Search" />
           <SimpleGrid cols={2} w={"100%"}>
             <Flex align={"self-start"} justify={"start"}>
               <Breadcrumbs>{items}</Breadcrumbs>
@@ -258,28 +296,11 @@ function MainView() {
         </SimpleGrid>
       </Flex>
       <Divider my="sm" />
-      {paginationArrows}
+      {pagination}
       <SimpleGrid cols={1} w={"100%"}>
-        {data.offers.map((x) => {
-          return (
-            <Flex align={"center"} justify={"center"} key={x.id}>
-              <SingleOfferOnMainView
-                Id={x.id}
-                LikeId={x.likeId}
-                Tittle={x.tittle}
-                Price={x.price}
-                AddedAt={x.creationDate}
-                Icon={x.photo}
-                UserId={x.userId}
-              />
-            </Flex>
-          )
-        })}
-        <Flex align={"center"} justify={"center"} m={rem(12)}>
-          {data.loading && <Loader color="blue" />}
-        </Flex>
+        {data.loading ? loader : offers}
       </SimpleGrid>
-      {paginationArrows}
+      {pagination}
     </MainPanel>
   );
 }
