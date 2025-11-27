@@ -43,6 +43,7 @@ services:
         PGADMIN_CONFIG_SERVER_MODE: "False"
     volumes:
       - ./servers.json:/pgadmin4/servers.json
+      - ./pgadmin-storage:/var/lib/pgadmin/storage- ./pgadmin-storage:/var/lib/pgadmin/storage
 
   
   # frontend:
