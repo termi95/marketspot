@@ -9,11 +9,9 @@ namespace Marketspot.Validator.Validator.Offer
         {
             RuleFor(x => x.Tittle)
                 .Cascade(CascadeMode.Stop)
-                .MaximumLength(128)
                 .MinimumLength(3);
             RuleFor(x => x.Description)
-                .Cascade(CascadeMode.Stop)
-                .MaximumLength(512);
+                .Cascade(CascadeMode.Stop);
             RuleFor(x => x.Price)
                 .Cascade(CascadeMode.Stop)
                 .GreaterThanOrEqualTo(0);
@@ -37,20 +35,24 @@ namespace Marketspot.Validator.Validator.Offer
                     .Cascade(CascadeMode.Stop).IsInEnum();
             RuleFor(x => x.DeliveryType)
                     .Cascade(CascadeMode.Stop).IsInEnum();
+
             RuleFor(x => x.PickupAddress.Street)
+            .NotNull()
             .NotEmpty()
             .When(x => x.DeliveryType == DeliveryType.LocalPickup)
             .WithMessage("Street is required for local pickup.");
 
             RuleFor(x => x.PickupAddress.City)
-                .NotEmpty()
-                .When(x => x.DeliveryType == DeliveryType.LocalPickup)
-                .WithMessage("City is required for local pickup.");
+            .NotNull()
+            .NotEmpty()
+            .When(x => x.DeliveryType == DeliveryType.LocalPickup)
+            .WithMessage("City is required for local pickup.");
 
             RuleFor(x => x.PickupAddress.Phone)
-                .NotEmpty()
-                .When(x => x.DeliveryType == DeliveryType.LocalPickup)
-                .WithMessage("Phone is required for local pickup.");
+            .NotNull()
+            .NotEmpty()
+            .When(x => x.DeliveryType == DeliveryType.LocalPickup)
+            .WithMessage("Phone is required for local pickup.");
         }
     }
 }

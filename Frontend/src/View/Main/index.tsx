@@ -56,6 +56,8 @@ const defaultState: MainViewState = {
     categoryId: Helper.EmptyGuid.toString(),
     maxPrice: undefined,
     minPrice: undefined,
+    deliveryType: undefined,
+    condytion: undefined,
   }
 }
 

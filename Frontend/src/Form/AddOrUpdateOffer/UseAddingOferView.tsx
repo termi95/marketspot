@@ -1,6 +1,6 @@
 import { FileWithPath } from "@mantine/dropzone";
 import { useEffect, useState } from "react";
-import { AddOfferState, Condytion, DeliveryType, MainOfferView, OfferAddDto, OfferUpdateDto } from "../../Types/Offer";
+import { AddOfferState, Condytion, CondytionToNumber, DeliveryType, DeliveryTypeToNumber, GetOfferUpdateDto, NumberToCondytion, NumberToDeliveryType, OfferAddDto, OfferUpdateDto } from "../../Types/Offer";
 import { INotyfication } from "../../Types/Notyfication";
 import { Api } from "../../Helpers/Api/Api";
 import { useNavigate } from "react-router-dom";
@@ -60,7 +60,7 @@ function UseAddingOferView({ id }: Props) {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    if (IsNullOrEmpty(id)) {
+    if (!IsNullOrEmpty(id)) {
       GetOffer(signal);
     }
     return () => {
@@ -75,23 +75,27 @@ function UseAddingOferView({ id }: Props) {
   async function GetOffer(signal: AbortSignal) {
     try {
       setLoading(true);
-      const reqResult = await PostRequest<MainOfferView>(
+      const reqResult = await PostRequest<GetOfferUpdateDto>(
         GetUserOffersEndpoint,
         { id },
         undefined,
         signal
       );
       if (!reqResult.isError && reqResult.result !== undefined) {
-        const { tittle, category, price, description, photos } = reqResult.result;
-        if (tittle && category && price && description && photos) {
+        const { tittle, category, price, description, photos, condytion, deliveryType, pickupAddress } = reqResult.result;
+        if (tittle && category && price && description && photos && !isNaN(condytion) && !isNaN(deliveryType) && pickupAddress) {
           setData(prev => ({
             ...prev,
             title: tittle,
             price: price,
             description: description,
             category: category,
-            photos: photos
+            photos: photos,
+            condytion: NumberToCondytion[condytion],
+            deliveryType: NumberToDeliveryType[deliveryType],
+            pickupAddress: {...pickupAddress }
           }))
+          setPhotos(photos);
         }
       }
     } catch (error) {
@@ -156,8 +160,8 @@ function UseAddingOferView({ id }: Props) {
       tittle: data.title,
       categoryId: data.category.id,
       photos: base64Img,
-      condytion: data.condytion,
-      deliveryType: data.deliveryType,
+      condytion: CondytionToNumber[data.condytion],
+      deliveryType: DeliveryTypeToNumber[data.deliveryType],
       pickupAddress: data.pickupAddress
     };
     const result = await PostRequest<string>(
@@ -178,8 +182,8 @@ function UseAddingOferView({ id }: Props) {
       tittle: data.title,
       categoryId: data.category.id,
       photos: await GetPhotosPayload(),
-      condytion: data.condytion,
-      deliveryType: data.deliveryType,
+      condytion: CondytionToNumber[data.condytion],
+      deliveryType: DeliveryTypeToNumber[data.deliveryType],
       pickupAddress: data.pickupAddress
     };
     const result = await PostRequest<string>(

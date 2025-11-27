@@ -13,7 +13,21 @@ namespace Backend
         {
             CreateMap<RegisterUserDto, User>();
             CreateMap<UpsertAddressDto, Category>();
-            CreateMap<AddOfferDto, Offer>();
+            CreateMap<Marketspot.Model.Offer.PickupAddress, Marketspot.DataAccess.Entities.PickupAddress>();
+            CreateMap<Marketspot.DataAccess.Entities.PickupAddress, Marketspot.Model.Offer.PickupAddress>();
+            CreateMap<AddOfferDto, Offer>()
+                .ForMember(d => d.Id, opt => opt.Ignore())
+                .ForMember(d => d.User, opt => opt.Ignore())
+                .ForMember(d => d.Category, opt => opt.Ignore())
+                .ForMember(d => d.Likes, opt => opt.Ignore())
+                .ForMember(d => d.IconPhoto, opt => opt.MapFrom(s => s.Photos.FirstOrDefault()));
+            CreateMap<UpdateOfferDto, Offer>()
+                .IncludeBase<AddOfferDto, Offer>()
+                .ForMember(d => d.Id, opt => opt.Ignore())
+                .ForMember(d => d.User, opt => opt.Ignore())
+                .ForMember(d => d.Category, opt => opt.Ignore())
+                .ForMember(d => d.Likes, opt => opt.Ignore())
+                .ForMember(d => d.CreationDate, opt => opt.Ignore());
             CreateMap<Offer, GetOfferByIdResult>()
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));
             CreateMap<Offer, GetUserOffers>()

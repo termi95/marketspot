@@ -86,7 +86,7 @@ function AddOrUpdateOfferForm({ id }: Props) {
         label="Title"
         placeholder="It is important to put meaning full title to your offer"
         value={title}
-        onChange={(event) => setData(prev => ({ ...prev, title: event.currentTarget.value }))}
+        onChange={(e) => setData(prev => ({ ...prev, title: e.target.value }))}
       />
       <Space h="md" />
       <Box>
@@ -124,7 +124,8 @@ function AddOrUpdateOfferForm({ id }: Props) {
         label="Description"
         placeholder="You offer description"
         value={description}
-        onChange={(event) => setData(prev => ({ ...prev, description: event.currentTarget.value }))}
+        autosize
+        onChange={(e) => setData(prev => ({ ...prev, description: e.target.value }))}
       />
       <Space h="md" />
 
@@ -232,7 +233,7 @@ function AddOrUpdateOfferForm({ id }: Props) {
             //add info for user that he add to many photo
           }
         }}
-        onReject={(files) => console.log("rejected files", files)}
+        onReject={() => {}}
         maxSize={5 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
       >

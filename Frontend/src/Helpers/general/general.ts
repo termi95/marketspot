@@ -4,13 +4,14 @@ import { setIsLogin, setUserRole } from "../../State/User/userSlice";
 
 function GeneralHelper() {
     const dispatch = useDispatch();
-    const { isTokenExpired, GetUserRole } = Api();
+    const { isTokenExpired, GetUserRole, RemoveToken } = Api();
     function isLogin() {
         if (!isTokenExpired()) {
           dispatch(setIsLogin(true));
           dispatch(setUserRole(GetUserRole()));
         } else {
           dispatch(setIsLogin(false));
+          RemoveToken();
         }
       }
       function IsNullOrEmpty(value:string | null | undefined):boolean {

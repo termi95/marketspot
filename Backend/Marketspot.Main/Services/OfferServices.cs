@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Net;
+using Condytion = Marketspot.Model.Offer.Condytion;
+using DeliveryType = Marketspot.Model.Offer.DeliveryType;
+using EntityDeliveryType = Marketspot.DataAccess.Entities.DeliveryType;
+using EntityCondytion = Marketspot.DataAccess.Entities.Condytion;
 
 namespace Backend.Services
 {
@@ -26,7 +30,6 @@ namespace Backend.Services
             Offer offer = _mapper.Map<Offer>(dto);
             offer.User = _context.Users.Find(Guid.Parse(userId));
             offer.Category = _context.Categories.Find(Guid.Parse(dto.CategoryId));
-            offer.IconPhoto = offer.Photos[0];
 
             if (offer.User is null || offer.Category is null)
             {
@@ -59,20 +62,24 @@ namespace Backend.Services
                 return response;
             }
 
-            Offer offer = await _context.Offers.SingleOrDefaultAsync(x => x.Id == Guid.Parse(dto.Id) && x.User.Id == Guid.Parse(userId));
+            Guid offerId = Guid.Parse(dto.Id);
+            Guid userGuid = Guid.Parse(userId);
+
+            Offer offer = await _context.Offers.Include(o => o.Category).SingleOrDefaultAsync(x => x.Id == offerId && x.User.Id == userGuid);
 
             if (!ValidatorHelper.CheckIfExists(offer, response))
             {
                 return response;
             }
-            Category category = await _context.Categories.SingleOrDefaultAsync(x => x.Id == Guid.Parse(dto.CategoryId));
+            _mapper.Map(dto, offer);
 
-            offer.Tittle = dto.Tittle;
-            offer.Description = dto.Description;
-            offer.Price = dto.Price;
-            offer.Photos = dto.Photos;
-            offer.IconPhoto = offer.Photos[0];
-            offer.Category = category is null ? offer.Category : category;
+            Guid categoryId = Guid.Parse(dto.CategoryId);
+            Category category = await _context.Categories.SingleOrDefaultAsync(x => x.Id == categoryId);
+
+            if (category != null)
+            {
+                offer.Category = category;
+            }
 
             try
             {
@@ -213,6 +220,23 @@ namespace Backend.Services
                 if (dto.MinPrice.HasValue)
                 {
                     offers = offers.Where(p => p.Price >= dto.MinPrice.Value);
+                }
+
+                if (dto.MaxPrice.HasValue)
+                {
+                    offers = offers.Where(p => p.Price <= dto.MaxPrice.Value);
+                }
+
+                if (dto.DeliveryType is DeliveryType deliveryType)
+                {
+                    var value = (EntityDeliveryType)(int)deliveryType;
+                    offers = offers.Where(p => p.DeliveryType == value);
+                }
+
+                if (dto.Condytion is Condytion condytion)
+                {
+                    var value = (EntityCondytion)(int)condytion;
+                    offers = offers.Where(p => p.Condytion == value);
                 }
 
                 if (dto.MaxPrice.HasValue)

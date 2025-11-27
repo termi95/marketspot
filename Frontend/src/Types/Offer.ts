@@ -1,41 +1,60 @@
 import { ICategory } from "./Category";
 import { BasicUserInfo } from "./User";
 
-export type OfferAddDto = {
-  tittle: string;
-  description: string;
-  price: number;
-  categoryId: string;
-  photos: string[];
-  condytion: Condytion;
-  deliveryType: DeliveryType;
-  pickupAddress: OfferAddress;
-  
-};
-
-export type OfferUpdateDto = OfferAddDto & { id: string };
-
-export type UserOffer = {
+type Offer = {
   id: string;
-  likeId: string;
   tittle: string;
-  creationDate: string;
   description: string;
   price: number;
+  isBought: boolean;
+  condytion: number;
+  deliveryType: number;
+  creationDate: string;
+  likeId: string;
+  photos: string[];
   photo: string;
   user: BasicUserInfo;
   category: ICategory;
+  pickupAddress: OfferAddress;
+}
+
+export type SimpleOfferList = Omit<Offer, "photos" | "category" | "pickupAddress"> & {
+
+  userId: string;
+  isLiked: boolean;
+  likesCount: number;
 };
+
+export type GetOfferUpdateDto = Omit<Offer, "user" | "likeId" | "creationDate" | "isBought" | "photo">;
+export type OfferUpdateDto = Omit<Offer, "user" | "likeId" | "creationDate" | "isBought" | "photo" | "category"> & { categoryId: string };
+export type OfferAddDto = Omit<Offer,"id" | "isBought" | "user" | "likeId" | "creationDate" | "photo" | "category"> & {categoryId: string;};
+export type UserOffer = Omit<Offer,"photos" | "isBought" | "pickupAddress" | "deliveryType" | "condytion">;
 
 export enum DeliveryType {
   Shipping = "Shipping",
   LocalPickup = "LocalPickup"
 }
+export const NumberToDeliveryType: Record<number, DeliveryType> = {
+  0: DeliveryType.Shipping,
+  1: DeliveryType.LocalPickup,
+};
+export const DeliveryTypeToNumber: Record<DeliveryType, number> = {
+  [DeliveryType.Shipping]: 0,
+  [DeliveryType.LocalPickup]: 1,
+};
 
 export enum Condytion {
   New = "New",
   Used = "Used"
 }
+export const NumberToCondytion: Record<number, Condytion> = {
+  0: Condytion.New,
+  1: Condytion.Used,
+};
+export const CondytionToNumber: Record<Condytion, number> = {
+  [Condytion.New]: 0,
+  [Condytion.Used]: 1,
+};
 
 export type AddOfferState = {
   title: string;
@@ -51,9 +70,9 @@ export type AddOfferState = {
 }
 
 export type OfferAddress = {
-        city: string,
-        phone: string,
-        street: string,
+  city: string,
+  phone: string,
+  street: string,
 }
 
 export type CheckoutOffer = Omit<MainOfferView, "likeId" | "category">;
@@ -88,19 +107,10 @@ export type MainOfferView = {
   user: BasicUserInfo;
   category: ICategory;
   isBought: boolean;
+  condytion: number;
+  deliveryType: number;
 };
 
-export type SimpleOfferList = {
-  id: string;
-  userId: string;
-  likeId: string;
-  photo: string;
-  tittle: string;
-  price: string;
-  creationDate: string;
-  isLiked: boolean;
-  likesCount: number;
-};
 
 export type SearchQuery = {
   itemPerPage: number;
@@ -110,6 +120,8 @@ export type SearchQuery = {
   categoryId: string;
   minPrice: number | undefined;
   maxPrice: number | undefined;
+  deliveryType: number | undefined;
+  condytion: number | undefined;
 };
 
 export type SortBy = 'PriceDesc' | 'PriceAsc' | 'CreatedDateDesc' | 'CreatedDateAsc' | 'SearchTextDesc' | 'SearchTextAsc';

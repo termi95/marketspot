@@ -16,5 +16,8 @@ namespace Marketspot.Model.Offer
         public BasicUser User { get; set; }
         public BasicCategory Category { get; set; }
         public bool IsBought { get; set; }
+        public Condytion Condytion { get; set; }
+        public PickupAddress PickupAddress { get; set; }
+        public DeliveryType DeliveryType { get; set; }
     }
 }

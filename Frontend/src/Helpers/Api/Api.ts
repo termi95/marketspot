@@ -141,6 +141,10 @@ export function Api() {
       const parts: string[] = token.split(".");
       const payload = JSON.parse(atob(parts[1]));
       const id = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+      if (isTokenExpired()) {
+        RemoveToken()
+        return '';
+      }
       return id;
     } else {
       return undefined;

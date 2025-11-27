@@ -8,13 +8,14 @@ import OrderSection from "./orderSection";
 import { useEffect, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
 import { MainOfferView } from "../../Types/Offer";
+import EditSection from "./EditSection";
 
 const GetUserOffersEndpoint = "Offer/Get-by-id";
 function Offer() {
   const { id } = useParams<{ id: string }>();
 
   const border = { borderColor: "red", padding: 0 };
-  const { PostRequest } = Api();
+  const { PostRequest, GetUserId } = Api();
   const [offer, setOffer] = useState<MainOfferView>();
   async function GetOffer(signal: AbortSignal) {
     try {
@@ -45,7 +46,6 @@ function Offer() {
   if (offer === undefined) {
     return;
   }
-
   return (
     <>
       <ReturnBtn />
@@ -73,6 +73,11 @@ function Offer() {
                 {!offer.isBought &&
                   <Grid.Col span={{ base: 12 }}>
                     <OrderSection offer={offer} />
+                  </Grid.Col>
+                }
+                {GetUserId() === offer.user.id &&
+                  <Grid.Col span={{ base: 12 }}>
+                    <EditSection id={offer.id} />
                   </Grid.Col>
                 }
               </Grid>
