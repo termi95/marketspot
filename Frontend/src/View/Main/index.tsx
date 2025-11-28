@@ -5,6 +5,7 @@ import { Api } from "../../Helpers/Api/Api";
 import { SearchQuery, SimpleOfferList, SortBy } from "../../Types/Offer";
 import {
   ActionIcon,
+  Autocomplete,
   Box,
   Breadcrumbs,
   Combobox,
@@ -14,10 +15,11 @@ import {
   Input,
   InputBase,
   Loader,
-  NumberInput,
+  MultiSelect,
   rem,
   Select,
   SimpleGrid,
+  Text,
   TextInput,
   Tooltip,
   useCombobox,
@@ -44,6 +46,18 @@ const sortOptions: { label: string; value: string }[] = [
   { label: '🔎 Alfabetycznie A → Z', value: 'SearchTextAsc' },
 ];
 
+const conditionOptions = [
+  { value: "0", label: "New" },
+  { value: "1", label: "Used" },
+];
+
+const deliveryTypeOptions = [
+  { value: "0", label: "Shipping" },
+  { value: "1", label: "Local pickup" },
+];
+
+const basePriceOptions = ["50", "100", "150", "250", "350", "500", "700", "1000", "1500", "2500"];
+
 const defaultState: MainViewState = {
   loading: false,
   categories: [{ id: Helper.EmptyGuid, name: "Main", parentId: Helper.EmptyGuid },],
@@ -56,8 +70,8 @@ const defaultState: MainViewState = {
     categoryId: Helper.EmptyGuid.toString(),
     maxPrice: undefined,
     minPrice: undefined,
-    deliveryType: undefined,
-    condytion: undefined,
+    deliveryType: [],
+    condytion: [],
   }
 }
 
@@ -76,15 +90,16 @@ function MainView() {
   const setMinPrice = (value: string) => {
     const numberValue = value === '' ? undefined : Number.parseInt(value);
     if (numberValue != data.searchQuery.minPrice) {
-      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, minPrice: numberValue } }));
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, minPrice: numberValue, page: 1 } }));
     }
-  }
+  };
+
   const setMaxPrice = (value: string) => {
     const numberValue = value === '' ? undefined : Number.parseInt(value);
     if (numberValue != data.searchQuery.maxPrice) {
-      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, maxPrice: numberValue } }));
+      setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, maxPrice: numberValue, page: 1 } }));
     }
-  }
+  };
   const setSortBy = (value: SortBy) => {
     if (value != data.searchQuery.sortBy) {
       setData(prev => ({ ...prev, searchQuery: { ...prev.searchQuery, sortBy: value, page: 1 } }));
@@ -106,6 +121,33 @@ function MainView() {
     const copy = [...data.categories];
     const keep = index + 1;
     return copy.slice(0, keep);
+  }
+  const setConditions = (values: number[]) => {
+    setData(prev => ({
+      ...prev,
+      searchQuery: {
+        ...prev.searchQuery,
+        condytion: values,
+        page: 1,
+      },
+    }));
+  };
+
+  const setDeliveryTypes = (values: number[]) => {
+    setData(prev => ({
+      ...prev,
+      searchQuery: {
+        ...prev.searchQuery,
+        deliveryType: values,
+        page: 1,
+      },
+    }));
+  };
+
+  const clearFilters = () => {
+    if (JSON.stringify(data.searchQuery) !== JSON.stringify(defaultState.searchQuery)) {
+      setData(prev => ({ ...prev, searchQuery: { ...defaultState.searchQuery } }))
+    }
   }
 
   async function GetOffers(signal: AbortSignal) {
@@ -142,9 +184,12 @@ function MainView() {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    GetOffers(signal);
+    const timeoutId = setTimeout(() => {
+      GetOffers(signal);
+    }, 300);
 
     return () => {
+      clearTimeout(timeoutId);
       controller.abort();
     };
   }, [data.searchQuery]);
@@ -232,7 +277,7 @@ function MainView() {
   const offers = data.offers.map((x) => {
     return (
       <Flex align={"center"} justify={"center"} key={x.id}>
-        <SingleOfferOnMainView offer={x}/>
+        <SingleOfferOnMainView offer={x} />
       </Flex>
     )
   })
@@ -242,22 +287,46 @@ function MainView() {
       <Flex align={"center"} justify={"center"}>
         <SimpleGrid cols={1} w={"80%"}>
           <CategoryPicker key={`${data.searchQuery.categoryId}-${data.categories.length}`} getLastPickCategoryId={addCategory} id={data.searchQuery.categoryId} />
-          <Group align="center" gap={"xs"} grow>
-            <NumberInput
+          <Group className="text-start" align="center" gap={"xs"} grow>
+            <Autocomplete
               label="Price from"
-              value={data.searchQuery.minPrice}
-              onBlur={(e) => setMinPrice(e.target.value)}
-              min={0}
-              decimalSeparator="."
-              hideControls
-            />
-            <NumberInput
+              data={basePriceOptions}
+              placeholder="From"
+              clearable
+              value={data.searchQuery.minPrice != null ? data.searchQuery.minPrice.toString() : ""}
+              onChange={(val) => setMinPrice(val)}
+            /><Autocomplete
               label="Price to"
-              value={data.searchQuery.maxPrice}
-              onBlur={(e) => setMaxPrice(e.target.value)}
-              min={0}
-              decimalSeparator="."
-              hideControls
+              data={basePriceOptions}
+              placeholder="To"
+              clearable
+              value={data.searchQuery.maxPrice != null ? data.searchQuery.maxPrice.toString() : ""}
+              onChange={(val) => setMaxPrice(val)}
+            />
+            <MultiSelect
+              label="Condition"
+              data={conditionOptions}
+              value={(data.searchQuery.condytion ?? []).map(x => x.toString())}
+              onChange={(values) => {
+                const nums = values.map(v => Number(v));
+                setConditions(nums);
+              }}
+              clearable
+              searchable
+              placeholder="Select condition"
+            />
+
+            <MultiSelect
+              label="Delivery type"
+              data={deliveryTypeOptions}
+              value={(data.searchQuery.deliveryType ?? []).map(x => x.toString())}
+              onChange={(values) => {
+                const nums = values.map(v => Number(v));
+                setDeliveryTypes(nums);
+              }}
+              clearable
+              searchable
+              placeholder="Select delivery type"
             />
             <Combobox
               store={combobox}
@@ -286,13 +355,14 @@ function MainView() {
           </Group>
           <TextInput
             value={data.searchQuery.searchText}
-            onBlur={(e) => setSearchText(e.target.value)}
+            onChange={(e) => setSearchText(e.target.value)}
             leftSection={iconSearch}
             w={"100%"}
             placeholder="Search" />
-          <SimpleGrid cols={2} w={"100%"}>
-            <Flex align={"self-start"} justify={"start"}>
+          <SimpleGrid cols={1} w={"100%"}>
+            <Flex align={"self-start"} justify={"space-between"} w={"100%"}>
               <Breadcrumbs>{items}</Breadcrumbs>
+              <Text size="sm" c="dimmed" className="pointer" onClick={clearFilters}>Clear filters</Text>
             </Flex>
           </SimpleGrid>
         </SimpleGrid>

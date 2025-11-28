@@ -227,16 +227,14 @@ namespace Backend.Services
                     offers = offers.Where(p => p.Price <= dto.MaxPrice.Value);
                 }
 
-                if (dto.DeliveryType is DeliveryType deliveryType)
+                if (dto.DeliveryType.Count != 0)
                 {
-                    var value = (EntityDeliveryType)(int)deliveryType;
-                    offers = offers.Where(p => p.DeliveryType == value);
+                    offers = offers.Where(p => dto.DeliveryType.Contains((int)p.DeliveryType));
                 }
 
-                if (dto.Condytion is Condytion condytion)
+                if (dto.Condytion.Count != 0)
                 {
-                    var value = (EntityCondytion)(int)condytion;
-                    offers = offers.Where(p => p.Condytion == value);
+                    offers = offers.Where(p => dto.Condytion.Contains((int)p.Condytion));
                 }
 
                 if (dto.MaxPrice.HasValue)

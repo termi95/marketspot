@@ -9,7 +9,7 @@
         public string CategoryId { get; set; }
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
-        public DeliveryType? DeliveryType { get; set; }
-        public Condytion? Condytion { get; set; }
+        public List<int> DeliveryType { get; set; }
+        public List<int> Condytion { get; set; }
     }
 }

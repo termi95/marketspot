@@ -120,8 +120,8 @@ export type SearchQuery = {
   categoryId: string;
   minPrice: number | undefined;
   maxPrice: number | undefined;
-  deliveryType: number | undefined;
-  condytion: number | undefined;
+  deliveryType: number[];
+  condytion: number[];    
 };
 
 export type SortBy = 'PriceDesc' | 'PriceAsc' | 'CreatedDateDesc' | 'CreatedDateAsc' | 'SearchTextDesc' | 'SearchTextAsc';
