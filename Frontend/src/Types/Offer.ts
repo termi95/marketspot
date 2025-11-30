@@ -96,20 +96,7 @@ export type DeliveryMethod = {
 };
 
 
-export type MainOfferView = {
-  id: string;
-  likeId: string;
-  tittle: string;
-  creationDate: string;
-  description: string;
-  price: number;
-  photos: string[];
-  user: BasicUserInfo;
-  category: ICategory;
-  isBought: boolean;
-  condytion: number;
-  deliveryType: number;
-};
+export type MainOfferView = Offer;
 
 
 export type SearchQuery = {

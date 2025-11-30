@@ -1,15 +1,18 @@
 ﻿using Marketspot.DataAccess.Entities;
 using Marketspot.Model;
+using Marketspot.Model.Address;
 using Marketspot.Model.Category;
 using Marketspot.Validator;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Backend.Services
 {
-    public class AddressServices(UserDbContext context)
+    public class AddressServices(UserDbContext context, IPasswordHasher<User> passwordHasher)
     {
         private readonly UserDbContext _context = context;
+        private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;
         public async Task<ApiResponse> Upsert(UpsertAddressDto dto, string userId)
         {
             var response = new ApiResponse();
@@ -77,11 +80,29 @@ namespace Backend.Services
             }
         }
 
-        public async Task<ApiResponse> GettAddress(string userId)
+        public async Task<ApiResponse> GetAddress(string userId)
         {
             var response = new ApiResponse();
 
-            response.Result = await _context.Addresses.FirstOrDefaultAsync(x => x.UserId == Guid.Parse(userId));
+            response.Result = await _context.Addresses.Where(x => x.UserId == Guid.Parse(userId)).AsNoTracking().ToListAsync();
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
+        }
+
+        public async Task<ApiResponse> DeleteAddress(DeleteAddressDto dto, string userId)
+        {
+            var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+                return response;
+
+            var address = await _context.Addresses.FirstOrDefaultAsync(x => x.UserId == Guid.Parse(userId) && x.Id == Guid.Parse(dto.Id));
+
+            if (!ValidatorHelper.CheckIfExists(address,response))
+                return response;
+
+            _context.Remove(address);
+            await context.SaveChangesAsync();
+
             response.SetStatusCode(HttpStatusCode.OK);
             return response;
         }

@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Text, Title } from "@mantine/core";
+import { Box, Card, Container, Divider, Grid, Stack, Text, Title } from "@mantine/core";
 import { useParams } from "react-router-dom";
 import CardsCarousel from "../CardsCarousel";
 import { UserInfoAction } from "./userInfoAction";
@@ -7,14 +7,14 @@ import ReturnBtn from "../ReturnBtn";
 import OrderSection from "./orderSection";
 import { useEffect, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
-import { MainOfferView } from "../../Types/Offer";
+import { DeliveryType, DeliveryTypeToNumber, MainOfferView } from "../../Types/Offer";
 import EditSection from "./EditSection";
+import PuckupSection from "./PickupSection";
 
 const GetUserOffersEndpoint = "Offer/Get-by-id";
 function Offer() {
   const { id } = useParams<{ id: string }>();
 
-  const border = { borderColor: "red", padding: 0 };
   const { PostRequest, GetUserId } = Api();
   const [offer, setOffer] = useState<MainOfferView>();
   async function GetOffer(signal: AbortSignal) {
@@ -49,53 +49,71 @@ function Offer() {
   return (
     <>
       <ReturnBtn />
-      <Box style={border} mt={"md"} mb={"md"}>
-        <TitleOfer
-          date={offer.creationDate}
-          tittle={offer.tittle}
-          likeId={offer.likeId}
-          offerId={offer.id}
-          isBought={offer.isBought}
-        />
-        <Divider my="md" />
-        <Grid>
-          <Grid.Col span={{ base: 12, md: 9 }}>
-            <CardsCarousel images={offer.photos} />
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 3 }}>
-            <Box style={border} h={"100%"}>
-              <Grid>
-                <Grid.Col span={{ base: 12 }}>
-                  <Box>
-                    <UserInfoAction user={offer.user} />
-                  </Box>
-                </Grid.Col>
-                {!offer.isBought &&
-                  <Grid.Col span={{ base: 12 }}>
+      <Container fluid px="md">
+        <Box mt={"md"} mb={"md"}>
+          <TitleOfer
+            date={offer.creationDate}
+            tittle={offer.tittle}
+            likeId={offer.likeId}
+            offerId={offer.id}
+            isBought={offer.isBought}
+          />
+          <Divider my="sm" />
+          <Grid>
+            <Grid.Col span={{ base: 12, md: 9 }}>
+              <CardsCarousel images={offer.photos} />
+            </Grid.Col><Grid.Col span={{ base: 12, md: 3 }}>
+              <Box h={"100%"}>
+                <Stack gap="md">
+                  <UserInfoAction user={offer.user} />
+
+                  {!offer.isBought && (
                     <OrderSection offer={offer} />
-                  </Grid.Col>
-                }
-                {GetUserId() === offer.user.id &&
-                  <Grid.Col span={{ base: 12 }}>
+                  )}
+
+                  {offer.deliveryType === DeliveryTypeToNumber[DeliveryType.LocalPickup] && (
+                    <PuckupSection address={offer.pickupAddress} />
+                  )}
+
+                  {GetUserId() === offer.user.id && (
                     <EditSection id={offer.id} />
-                  </Grid.Col>
-                }
-              </Grid>
-            </Box>
-          </Grid.Col>
-        </Grid>
-        <Divider my="md" />
-        <Box className="text-start">
-          <label>
-            <Title order={3} m={"md"}>
-              Description:
+                  )}
+                </Stack>
+              </Box>
+            </Grid.Col>
+
+          </Grid>
+          <Divider my="xl" />
+
+          <Card
+            withBorder
+            shadow="sm"
+            radius="md"
+            p="lg"
+            mt="lg"
+            mb="xl"
+            style={{ backgroundColor: "var(--mantine-color-white)" }}
+          >
+            <Title order={3} mb="md" ta="left">
+              Description
             </Title>
-            <Text m={"md"}>
+
+            <Divider mb="md" />
+
+            <Text
+              size="md"
+              ta="justify"
+              style={{
+                lineHeight: 1.6,
+                maxWidth: "100%",
+              }}
+            >
               {offer.description}
             </Text>
-          </label>
+          </Card>
+
         </Box>
-      </Box>
+      </Container>
     </>
   );
 }

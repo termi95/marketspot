@@ -3,7 +3,7 @@ using Marketspot.Model.Category;
 
 namespace Marketspot.Validator.Validator.Address
 {
-    internal class UpsertAddressValidator : AbstractValidator<UpsertAddressDto>
+    public class UpsertAddressValidator : AbstractValidator<UpsertAddressDto>
     {
         public UpsertAddressValidator()
         {

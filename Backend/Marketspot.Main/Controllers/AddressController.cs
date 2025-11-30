@@ -1,5 +1,6 @@
 ﻿using Backend.Services;
 using Marketspot.Model;
+using Marketspot.Model.Address;
 using Marketspot.Model.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,18 @@ namespace Backend.Controllers
         }
 
         [HttpPost, Authorize, Route("get"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
-        public async Task<ActionResult> GettAddress()
+        public async Task<ActionResult> GetAddress()
         {
             string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var response = await _addressServices.GettAddress(userId);
+            var response = await _addressServices.GetAddress(userId);
+            return StatusCode(response.GetStatusCode(), response);
+        }
+
+        [HttpPost, Authorize, Route("delete"), ProducesResponseType<ApiResponse>(StatusCodes.Status200OK)]
+        public async Task<ActionResult> DeleteAddress([FromBody] DeleteAddressDto dto)
+        {
+            string userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var response = await _addressServices.DeleteAddress(dto, userId);
             return StatusCode(response.GetStatusCode(), response);
         }
     }

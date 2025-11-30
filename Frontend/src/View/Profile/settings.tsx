@@ -1,13 +1,13 @@
 import { Container } from "@mantine/core";
 import PersonalInformation from "../../Form/PersonalInformation/personalInformation";
 import SettingsChangePassword from "../../Form/SettingChangePassword";
-import AdressDetails from "../../Form/AdressDetails/AdressDetails";
+import AddressesManager from "../../Components/AddressesManager/AddressesManager";
 
 function Settings() {
   return (
     <Container miw={"100%"} mt={"md"}>
       <PersonalInformation />
-      <AdressDetails />
+      <AddressesManager />
       <SettingsChangePassword />
     </Container>
   );

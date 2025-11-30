@@ -7,10 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Net;
-using Condytion = Marketspot.Model.Offer.Condytion;
-using DeliveryType = Marketspot.Model.Offer.DeliveryType;
-using EntityDeliveryType = Marketspot.DataAccess.Entities.DeliveryType;
-using EntityCondytion = Marketspot.DataAccess.Entities.Condytion;
 
 namespace Backend.Services
 {
@@ -69,6 +65,11 @@ namespace Backend.Services
 
             if (!ValidatorHelper.CheckIfExists(offer, response))
             {
+                return response;
+            }
+            if (offer.IsBought)
+            {
+                response.ErrorsMessages.Add("You can't edit offer that is bought.");
                 return response;
             }
             _mapper.Map(dto, offer);

@@ -1,11 +1,11 @@
-import { AspectRatio, Image } from "@mantine/core";
+import { AspectRatio, Image, Card, rem } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 
 interface Props {
-  images: string[]
+  images: string[];
 }
 
-function CardsCarousel({images}:Props) {
+function CardsCarousel({ images }: Props) {
   function convertBase64ToBlob(base64Image: string) {
     const parts = base64Image.split(";base64,");
     const imageType = parts[0].split(":")[1];
@@ -16,6 +16,11 @@ function CardsCarousel({images}:Props) {
     }
     return new Blob([uInt8Array], { type: imageType });
   }
+
+  if (!images || images.length === 0) {
+    return null;
+  }
+
   const slides = images.map((item, index) => (
     <Carousel.Slide key={index}>
       <AspectRatio ratio={16 / 9}>
@@ -30,19 +35,41 @@ function CardsCarousel({images}:Props) {
   ));
 
   return (
-    <Carousel
-      height={400}
-      // slideSize="33.333333%"
-      emblaOptions={{
-        loop: true,
-        dragFree: false,
-        align: 'center'
-      }}
-      // slidesToScroll={mobile ? 1 : 2}
-      withIndicators
+    <Card
+      withBorder
+      shadow="sm"
+      radius="md"
+      p="md"
+      style={{ backgroundColor: "var(--mantine-color-white)" }}
     >
-      {slides}
-    </Carousel>
+      <Carousel
+        height={400}
+        emblaOptions={{
+          loop: true,
+          dragFree: false,
+          align: "center",
+        }}
+        withIndicators
+        controlSize={32}
+        controlsOffset="xs"
+        styles={{
+          control: {
+            backgroundColor: "var(--mantine-color-white)",
+            boxShadow: "var(--mantine-shadow-sm)",
+            borderRadius: "50%",
+            "&:hover": {
+              transform: "scale(1.05)",
+            },
+          },
+          indicator: {
+            width: rem(8),
+            height: rem(8),
+          },
+        }}
+      >
+        {slides}
+      </Carousel>
+    </Card>
   );
 }
 

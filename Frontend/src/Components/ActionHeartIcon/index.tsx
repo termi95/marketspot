@@ -5,7 +5,7 @@ import { Api } from "../../Helpers/Api/Api";
 import { Helper } from "../../Types/Helper";
 import { useState } from "react";
 interface Props {
-  action?: () => void;
+  action?: (newLikeId: string) => void;
   likeId: string;
   id: string;
   userId?: string;
@@ -16,18 +16,18 @@ function ActionHeartIcon({ action, likeId, id, userId }: Props) {
   const getColor = () => (likeId != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = () => (heartColor != "red" ? "red" : "white");
   const [heartColor, setColor] = useState<string>(getColor());
-
+  const isYourId = userId === GetUserId(); 
   async function handleLike() {
     if (isTokenExpired()) return;
     setColor(InvertColor());
-    await HandleLikes(likeId, id);
-    if (action) action();
+    const newLikeId = await HandleLikes(likeId, id);
+    if (action) action(newLikeId);
   }
   function setDisable() {
     if (isTokenExpired()) {
       return true;
     }
-    if (userId === GetUserId()) {
+    if (isYourId) {
       return true;
     }
     return false;
@@ -37,7 +37,7 @@ function ActionHeartIcon({ action, likeId, id, userId }: Props) {
     if (isTokenExpired()) {
       return "You have to be login to like offerts.";
     }
-    if (userId === GetUserId()) {
+    if (isYourId) {
       return "You are not able to like your own offer.";
     }
     return "Like";
@@ -46,11 +46,12 @@ function ActionHeartIcon({ action, likeId, id, userId }: Props) {
     <ActionIcon
       id={id}
       size={42}
-      variant="transparent"
+      radius="xl"
+      variant="subtle"
       color="red"
       aria-label="Remove like"
       onClick={async () => await handleLike()}
-      style={{ backgroundColor: "transparent" }}
+      style={ isYourId ? { backgroundColor: "transparent" } : {}}
       disabled={setDisable()}
     >
       <Tooltip label={setLabel()}>

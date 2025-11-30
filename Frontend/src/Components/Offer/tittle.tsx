@@ -1,4 +1,4 @@
-import { Box, Flex, Popover, rem, Text, Title } from "@mantine/core";
+import { ActionIcon, Box, Flex, Popover, rem, Text, Title, Tooltip } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { Helper } from "../../Types/Helper";
 import ApiAction from "./apiAction";
@@ -13,12 +13,12 @@ interface Props {
   isBought?: boolean;
 }
 
-function TitleOfer({ date, tittle, likeId, offerId, isBought}: Props) {
+function TitleOfer({ date, tittle, likeId, offerId, isBought }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
   const { isTokenExpired } = Api();
   const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = (color: string) => (color != "red" ? "red" : "white");
-  const [heartColor, setColor] = useState<{ id: string; color: string }>({id: likeId, color: getColor(likeId)});
+  const [heartColor, setColor] = useState<{ id: string; color: string }>({ id: likeId, color: getColor(likeId) });
   const { HandleLikes } = ApiAction();
 
   async function handleLike() {
@@ -34,22 +34,56 @@ function TitleOfer({ date, tittle, likeId, offerId, isBought}: Props) {
     <Box>
       <Flex m={"md"} align={"start"} direction={"column"}>
         <Flex align={"center"}>
-          <Title order={2}>{tittle}</Title>
-          { !isBought && <Popover width={200} trapFocus  opened={opened} position="bottom" offset={0} disabled={!isTokenExpired()} onChange={setOpened}>
-            <Popover.Target>
-              <IconHeart
-                color="var(--mantine-color-gray-9)"
-                fill={heartColor.color}
-                className="pointer"
-                style={{ marginLeft: rem(12) }}
-                onClick={handleLike}
-              />
-            </Popover.Target>
-            <Popover.Dropdown>
-              <Text size="xs">You have to be login to like offerts.</Text>
-            </Popover.Dropdown>
-          </Popover>}          
+          <Title
+            order={2}
+            style={{
+              whiteSpace: "normal",
+              wordBreak: "break-word",
+            }}
+          >
+            {tittle}
+          </Title>
+
+          {!isBought && (
+            <Popover
+              width={220}
+              trapFocus
+              opened={opened}
+              position="bottom"
+              offset={4}
+              disabled={!isTokenExpired()}
+              onChange={setOpened}
+            >
+              <Popover.Target>
+                <Tooltip
+                  label={
+                    heartColor.color === "red"
+                      ? "Remove from favourites"
+                      : "Add to favourites"
+                  }
+                ><ActionIcon
+                  size={36}
+                  radius="xl"
+                  variant="subtle"
+                  color={heartColor.color === "red" ? "red" : "gray"}
+                  ml={rem(12)}
+                  onClick={handleLike}
+                >
+                    <IconHeart
+                      size={20}
+                      fill={heartColor.color}
+                    />
+                  </ActionIcon>
+
+                </Tooltip>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size="xs">You have to be logged in to like offers.</Text>
+              </Popover.Dropdown>
+            </Popover>
+          )}
         </Flex>
+
         <Text c="dimmed" fz="sm">
           Offer added: {date}
         </Text>
