@@ -1,10 +1,10 @@
-import { Box, Fieldset, Group, Image, Radio, rem, SimpleGrid, Stack, Text, Textarea, TextInput } from "@mantine/core";
+import { Box, Divider, Fieldset, Group, Image, Radio, rem, Select, SimpleGrid, Stack, Text, Textarea, TextInput } from "@mantine/core";
 import Btn from "../../Components/Btn";
 import { useEffect, useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
 import { CheckoutOffer, DeliveryMethod, DeliveryMethodId } from "../../Types/Offer";
 import { Address } from "../../Types/Address";
-import { IconBarcode, IconBrandPaypal, IconBuilding, IconBuildingBank, IconCash, IconCreditCard, IconLabel, IconPackages, IconPhone } from "@tabler/icons-react";
+import { IconBarcode, IconBrandPaypal, IconBuilding, IconBuildingBank, IconCash, IconCreditCard, IconLabel, IconMapPin, IconPackages, IconPhone } from "@tabler/icons-react";
 import { Order } from "../../Types/Order";
 import { useNavigate } from "react-router-dom";
 import { INotyfication } from "../../Types/Notyfication";
@@ -15,7 +15,9 @@ interface Props {
 
 type CheckoutState = {
     offer: CheckoutOffer | undefined;
-    address: Address | undefined;
+    addresses: Address[];
+    address: Address | null;
+    selectedAddressId: string;
     deliveryMethodId: DeliveryMethodId | null;
     paymentMethod: PaymentMethodId | null;
 }
@@ -32,6 +34,8 @@ const initState: CheckoutState = {
         country: "",
         phone: ""
     },
+    addresses: [],
+    selectedAddressId: "",
     deliveryMethodId: "inpost",
     paymentMethod: "card"
 }
@@ -123,9 +127,9 @@ const GetUserOffersEndpoint = "Address/get";
 const CreateOrderEndpoint = "Order/create-order";
 
 const OrderNotification: INotyfication = {
-  Title: "Order",
-  Message: "Creating Order.",
-  SuccessMessage: "Your purchase was successful."
+    Title: "Order",
+    Message: "Creating Order.",
+    SuccessMessage: "Your purchase was successful."
 };
 function CheckoutForm({ offer }: Props) {
     const navigate = useNavigate();
@@ -135,14 +139,22 @@ function CheckoutForm({ offer }: Props) {
     const setPaymentMethod = (id: PaymentMethodId) => setData((prev) => ({ ...prev, paymentMethod: id }));
     async function GetAddress(signal: AbortSignal) {
         try {
-            const reqResult = await PostRequest<Address>(
+            const reqResult = await PostRequest<Address[]>(
                 GetUserOffersEndpoint,
                 {},
-                OrderNotification,
+                undefined,
                 signal
             );
             if (!reqResult.isError && reqResult.result !== undefined) {
-                setData(prev => ({ ...prev, address: { ...reqResult.result! } }));
+                const hasData = reqResult.result!.length > 1;
+                setData(prev => (
+                    {
+                        ...prev,
+                        addresses: [...reqResult.result!],
+                        address: hasData ? reqResult.result![0] : initState.address,
+                        selectedAddressId: hasData ? reqResult.result![0].id : initState.selectedAddressId,
+                    }
+                ));
             }
         } catch (error) {
             /* empty */
@@ -155,7 +167,7 @@ function CheckoutForm({ offer }: Props) {
                 const reqResult = await PostRequest<Address>(
                     CreateOrderEndpoint,
                     payloady,
-                    undefined,
+                    OrderNotification,
                     signal
                 );
                 if (!reqResult.isError && reqResult.result !== undefined) {
@@ -166,6 +178,14 @@ function CheckoutForm({ offer }: Props) {
             }
         }
     }
+    const handleSelectChange = (value: string | null) => {
+        if (!value) return;
+
+        setData(prev => ({ ...prev, selectedAddressId: value }));
+
+        const found = data.addresses.find((a) => a.id === value);
+        setData(prev => ({ ...prev, address: (found ?? initState.address) }));;
+    };
 
     async function SubmitOnEnter(
         e: React.KeyboardEvent<HTMLElement>
@@ -187,6 +207,13 @@ function CheckoutForm({ offer }: Props) {
         };
     }, []);
 
+    const selectData = [
+        ...data.addresses.map((a) => ({
+            value: a.id,
+            label: a.name || `${a.city} ${a.street}` || "(No name)",
+        })),
+    ];
+
     return (
         <>
             <Box
@@ -205,7 +232,19 @@ function CheckoutForm({ offer }: Props) {
                             await SubmitOnEnter(e);
                         }}
                     > <Fieldset legend="Checkout" styles={sectionStyles} style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
-                            <Fieldset legend="Confirm your delivery address" styles={sectionStyles}>
+
+                            <Select
+                                label="Choose address"
+                                data={selectData}
+                                value={data.selectedAddressId}
+                                onChange={handleSelectChange}
+                                mb="md"
+                                pl={20}
+                                pr={20}
+                                leftSection={<IconMapPin size={16} style={inputIconStyle} />}
+                            />
+                            <Divider my="sm" label="Your delivery address" labelPosition="center" />
+                            <Fieldset styles={sectionStyles}>
                                 <TextInput
                                     label="Address details Name"
                                     value={data.address?.name}

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Backend.Helper;
 using Marketspot.DataAccess.Entities;
 using Marketspot.Model;
 using Marketspot.Model.Offer;
@@ -6,6 +7,7 @@ using Marketspot.Validator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+using Org.BouncyCastle.Utilities.Net;
 using System.Net;
 
 namespace Backend.Services
@@ -149,7 +151,7 @@ namespace Backend.Services
                     .Include(o => o.User)
                     .Include(c => c.Category)
                     .Include(c => c.Likes.Where(x => x.UserId == Guid.Parse(idOfLoginUser)))
-                    .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null)
+                    .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null && !x.IsBought)
                     .ToListAsync();
 
                 response.SetStatusCode(HttpStatusCode.OK);
@@ -371,6 +373,51 @@ namespace Backend.Services
             response.Result = _mapper.Map<List<GetUserOffers>>(offers);
             response.SetStatusCode(HttpStatusCode.OK);
             return response;
+        }
+
+        public async Task<ApiResponse> GetSoldOffers(string userId)
+        {
+            var response = new ApiResponse();
+
+            List<Offer> offers = await _context.Orders.AsNoTracking().Include(i => i.Offer).Where(x => x.SellerId == Guid.Parse(userId) && x.Offer.IsBought == true).Select(x => x.Offer).ToListAsync();
+            response.Result = _mapper.Map<List<GetUserOffers>>(offers);
+            response.SetStatusCode(HttpStatusCode.OK);
+            return response;
+        }
+
+        public async Task<ApiResponse> MarkAsBought(GetOfferByIdDto dto, string userId)
+        {
+            var response = new ApiResponse();
+            if (!await ValidatorHelper.ValidateDto(dto, response))
+                return response;
+
+            Offer offer = await _context.Offers.SingleOrDefaultAsync(x => x.User.Id == Guid.Parse(userId) && x.Id == Guid.Parse(dto.Id));
+
+            if (!ValidatorHelper.CheckIfExists(offer, response))
+                return response;
+
+            offer.IsBought = true;
+            Order order = new Order()
+            {
+                BuyerId = Guid.Empty,
+                SellerId = offer.User.Id,
+                OfferId = offer.Id,
+                PaymentMethod = PaymentMethod.Unknown,
+                DeliveryMethodIdDeliveryMethod = DeliveryMethod.Unknown,
+                MarkAsBought = true
+            };
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                response.SetStatusCode(HttpStatusCode.OK);
+                return response;
+            }
+            catch (Exception e)
+            {
+                response.ErrorsMessages.Add(e.Message);
+                return response;
+            }
         }
     }
 }

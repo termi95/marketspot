@@ -51,7 +51,7 @@ function ActionHeartIcon({ action, likeId, id, userId }: Props) {
       color="red"
       aria-label="Remove like"
       onClick={async () => await handleLike()}
-      style={ isYourId ? { backgroundColor: "transparent" } : {}}
+      style={ isYourId || isTokenExpired() ? { backgroundColor: "transparent" } : {}}
       disabled={setDisable()}
     >
       <Tooltip label={setLabel()}>

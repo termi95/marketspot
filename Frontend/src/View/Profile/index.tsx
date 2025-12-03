@@ -1,11 +1,12 @@
 import { rem, Tabs } from "@mantine/core";
 import MainPanel from "../../Components/MainPanel";
-import { IconBasket, IconPhoto, IconReportMoney, IconSettings } from "@tabler/icons-react";
+import { IconBasket, IconPhoto, IconPigMoney, IconReportMoney, IconSettings } from "@tabler/icons-react";
 import Settings from "./settings";
 import MyOffer from "./myOffer";
 import { useNavigate, useParams } from "react-router-dom";
 import Likes from "./Likes";
 import Bought from "./bought";
+import Sold from "./sold";
 
 function ProfileView() {
   const iconStyle = { width: rem(22), height: rem(22) };
@@ -25,6 +26,9 @@ function ProfileView() {
         <Tabs.Tab value="Bought" leftSection={<IconBasket style={iconStyle} />}>
           Bought
         </Tabs.Tab>
+        <Tabs.Tab value="Sold" leftSection={<IconPigMoney style={iconStyle} />}>
+          Sold
+        </Tabs.Tab>
         <Tabs.Tab value="settings" leftSection={<IconSettings style={iconStyle} />}>
           Settings
         </Tabs.Tab>
@@ -40,6 +44,10 @@ function ProfileView() {
 
       <Tabs.Panel value="Bought">
         <Bought/>
+      </Tabs.Panel>
+      
+      <Tabs.Panel value="Sold">
+        <Sold/>
       </Tabs.Panel>
 
       <Tabs.Panel value="settings">

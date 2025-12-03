@@ -15,6 +15,7 @@ namespace Marketspot.DataAccess.Entities
     }
     public enum DeliveryMethod
     {
+        Unknown = 0,
         Dpd,
         Inpost,
         Poczta,
@@ -24,10 +25,10 @@ namespace Marketspot.DataAccess.Entities
     [Owned]
     public class ShippingAddressValue
     {
-        public string Street { get; set; }
-        public string City { get; set; }
+        public string Street { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
         public string Country { get; set; } = "PL";
-        public string Phone { get; set; }
+        public string Phone { get; set; } = string.Empty;
         public ShippingAddressValue(Address address)
         {
             Street = address.Street;
@@ -53,6 +54,8 @@ namespace Marketspot.DataAccess.Entities
         public Guid SellerId { get; set; }
         [NotNull]
         public Guid OfferId { get; set; }
+        [NotNull]
+        public bool MarkAsBought { get; set; } = false;
         [NotNull] 
         public ShippingAddressValue ShippingAddress { get; set; }
 

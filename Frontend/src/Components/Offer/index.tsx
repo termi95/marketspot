@@ -46,6 +46,10 @@ function Offer() {
   if (offer === undefined) {
     return;
   }
+
+  const showOrderSection = !offer.isBought && offer.deliveryType !== DeliveryTypeToNumber[DeliveryType.LocalPickup];
+  const showEditSection = GetUserId() === offer.user.id && !offer.isBought;
+  const showDeliverySection = offer.deliveryType === DeliveryTypeToNumber[DeliveryType.LocalPickup];
   return (
     <>
       <ReturnBtn />
@@ -67,15 +71,15 @@ function Offer() {
                 <Stack gap="md">
                   <UserInfoAction user={offer.user} />
 
-                  {!offer.isBought && (
+                  {showOrderSection && (
                     <OrderSection offer={offer} />
                   )}
 
-                  {offer.deliveryType === DeliveryTypeToNumber[DeliveryType.LocalPickup] && (
+                  {showDeliverySection && (
                     <PuckupSection address={offer.pickupAddress} />
                   )}
 
-                  {GetUserId() === offer.user.id && (
+                  {showEditSection && (
                     <EditSection id={offer.id} />
                   )}
                 </Stack>

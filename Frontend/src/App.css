@@ -27,6 +27,7 @@ a {
   color: #128797;
   text-decoration: none;
 }
+
 a:visited {
   color: #128797;
   text-decoration: none;
@@ -43,6 +44,7 @@ a:visited {
 .text-start {
   text-align: start;
 }
+
 .checkout-card {
   transition:
     transform 120ms ease,
@@ -55,6 +57,7 @@ a:visited {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
 .checkout-button {
   transition:
     transform 120ms ease,
@@ -66,4 +69,3 @@ a:visited {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
-

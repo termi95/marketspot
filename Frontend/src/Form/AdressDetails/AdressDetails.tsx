@@ -32,7 +32,7 @@ type AdressDetailsProps = {
   address: Address | null;
   onAddressChange: (address: Address) => void;
   onSaved?: (address: Address) => void;
-  onDeleted?: (addressId: string) => void; // 👈 tylko id, bez hasła
+  onDeleted?: (addressId: string) => void;
 };
 
 const styles = { width: rem(18), height: rem(18) };

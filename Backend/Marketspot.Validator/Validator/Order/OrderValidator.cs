@@ -14,6 +14,7 @@ namespace Marketspot.Validator.Validator.Order
     }
     public enum DeliveryMethod
     {
+        Unknown = 0,
         Dpd,
         Inpost,
         Poczta,
