@@ -10,6 +10,7 @@ import { Api } from "../../Helpers/Api/Api";
 import { DeliveryType, DeliveryTypeToNumber, MainOfferView } from "../../Types/Offer";
 import EditSection from "./EditSection";
 import PuckupSection from "./PickupSection";
+import MarkAsBoughtSection from "./MarkAsBoughtSection";
 
 const GetUserOffersEndpoint = "Offer/Get-by-id";
 function Offer() {
@@ -80,7 +81,10 @@ function Offer() {
                   )}
 
                   {showEditSection && (
+                    <>
                     <EditSection id={offer.id} />
+                    <MarkAsBoughtSection id={offer.id} tittle={offer.tittle} />
+                    </>
                   )}
                 </Stack>
               </Box>

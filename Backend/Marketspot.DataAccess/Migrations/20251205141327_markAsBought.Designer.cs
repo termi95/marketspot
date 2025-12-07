@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Marketspot.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Marketspot.DataAccess.Migrations
 {
     [DbContext(typeof(UserDbContext))]
-    partial class UserDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251205141327_markAsBought")]
+    partial class markAsBought
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,7 +172,7 @@ namespace Marketspot.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("BuyerId")
+                    b.Property<Guid>("BuyerId")
                         .HasColumnType("uuid");
 
                     b.Property<int>("DeliveryMethodIdDeliveryMethod")
@@ -247,8 +250,8 @@ namespace Marketspot.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("40e2b9ea-5de8-4fcf-bc08-ad1d818c43fd"),
-                            CreationDate = new DateTime(2025, 12, 5, 15, 45, 5, 294, DateTimeKind.Local).AddTicks(5535),
+                            Id = new Guid("2ed5a4ff-ac97-4cd7-ab21-71e9e3a1cde8"),
+                            CreationDate = new DateTime(2025, 12, 5, 15, 13, 27, 12, DateTimeKind.Local).AddTicks(1481),
                             Email = "admin@admin.pl",
                             Name = "admin",
                             Password = "AQAAAAIAAYagAAAAEFMvOOAzL4k+idqThNAhbif3uTKHFGYjJVUukDKgnRyC/rHbd8+eRrCr5xOMKFksXA==",
@@ -332,7 +335,9 @@ namespace Marketspot.DataAccess.Migrations
                 {
                     b.HasOne("Marketspot.DataAccess.Entities.User", "Buyer")
                         .WithMany()
-                        .HasForeignKey("BuyerId");
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Marketspot.DataAccess.Entities.Offer", "Offer")
                         .WithMany()

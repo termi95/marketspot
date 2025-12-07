@@ -18,7 +18,7 @@ function EditSection({ id }: Props) {
       }}
     >
       <Flex align={"center"} pb={"sm"}>
-        <Title order={4}>You can always edit your offer </Title>
+        <Title order={4}>You can always edit your offer</Title>
       </Flex>
       <Btn title="Edit" fullWidth onClick={() => navigate(`/offer/update/${id}`)}/>
     </Box>

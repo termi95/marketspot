@@ -207,14 +207,12 @@ namespace Backend.Services
                     offers = _context.Offers
                         .FromSqlRaw(sql, p)
                         .Include(o => o.User)
-                        .Include(o => o.Likes.Where(l => l.UserId == loginUserId))
                         .Include(o => o.Likes)
                         .Where(x => x.IsBought == false);
                 }
                 else
                 {
                     offers = _context.Offers
-                        .Include(c => c.Likes.Where(x => x.UserId == loginUserId))
                         .Include(o => o.User).Where(x=> x.IsBought == false)
                         .Include(o => o.Likes)
                         .AsQueryable();
@@ -258,7 +256,7 @@ namespace Backend.Services
                     .Skip(skip)
                     .Take(take)
                     .ToListAsync();
-                response.Result = _mapper.Map<List<GetUserOffers>>(result);
+                response.Result = _mapper.Map<List<GetUserOffers>>(result, opt => opt.Items["LoginUserId"] = loginUserId);
                 return response;
             }
             catch (Exception e)
@@ -391,21 +389,22 @@ namespace Backend.Services
             if (!await ValidatorHelper.ValidateDto(dto, response))
                 return response;
 
-            Offer offer = await _context.Offers.SingleOrDefaultAsync(x => x.User.Id == Guid.Parse(userId) && x.Id == Guid.Parse(dto.Id));
+            Guid userGuid = Guid.Parse(userId);
+            Offer offer = await _context.Offers.SingleOrDefaultAsync(x => x.User.Id == userGuid && x.Id == Guid.Parse(dto.Id) && !x.IsBought);
 
             if (!ValidatorHelper.CheckIfExists(offer, response))
                 return response;
 
             offer.IsBought = true;
-            Order order = new Order()
+            _context.Orders.Add(new Order()
             {
-                BuyerId = Guid.Empty,
-                SellerId = offer.User.Id,
+                BuyerId = null,
+                SellerId = userGuid,
                 OfferId = offer.Id,
                 PaymentMethod = PaymentMethod.Unknown,
                 DeliveryMethodIdDeliveryMethod = DeliveryMethod.Unknown,
                 MarkAsBought = true
-            };
+            });
 
             try
             {

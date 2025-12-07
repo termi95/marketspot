@@ -48,8 +48,7 @@ namespace Marketspot.DataAccess.Entities
         [NotNull]
         public PaymentMethod PaymentMethod { get; set; }
         public DeliveryMethod DeliveryMethodIdDeliveryMethod { get; set; }
-        [NotNull]
-        public Guid BuyerId { get; set; }
+        public Guid? BuyerId { get; set; }
         [NotNull]
         public Guid SellerId { get; set; }
         [NotNull]
