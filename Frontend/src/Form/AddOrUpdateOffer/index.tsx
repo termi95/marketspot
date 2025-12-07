@@ -324,11 +324,13 @@ function AddOrUpdateOfferForm({ id }: Props) {
                   mah={200}
                   fit="cover"
                   alt="Offer image"
+                  style={{ cursor: "pointer" }}
                 />
                 <ActionIcon
                   variant="filled"
                   radius="xl"
                   size="sm"
+                  color="red"
                   style={{ position: "absolute", top: 8, right: 8 }}
                   onClick={() => handleRemove(index)}
                 >
@@ -343,7 +345,8 @@ function AddOrUpdateOfferForm({ id }: Props) {
       <Space h="md" />
       <Btn title={IsNullOrEmpty(id) ? "Add" : "Update"} onClick={submit} fullWidth />
       <Space h="md" />
-    </Container>)
+    </Container>
+    )
 }
 
 export default AddOrUpdateOfferForm
