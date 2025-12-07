@@ -1,4 +1,4 @@
-import { Box, Button, Container, Fieldset, Group, NumberInput, Radio, rem, SimpleGrid, Space, Stack, Text, Textarea, TextInput } from "@mantine/core";
+import { ActionIcon, Box, Button, Container, Fieldset, Group, Image, NumberInput, Radio, rem, SimpleGrid, Space, Stack, Text, Textarea, TextInput } from "@mantine/core";
 import Btn from "../../Components/Btn";
 import { IconBuilding, IconPackage, IconPackages, IconPhone, IconPhoto, IconSparkles, IconTruck, IconUpload, IconWalk, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
@@ -43,12 +43,19 @@ const inputIconStyle = { width: rem(18), height: rem(18) };
 function AddOrUpdateOfferForm({ id }: Props) {
   const {
     setFiles,
-    GetPreview,
     submit,
     IsNullOrEmpty,
     setData,
+    handleDragEnd,
+    handleDragEnter,
+    handleDragStart,
+    handleRemove,
     mainCategoryId,
-    data
+    data,
+    photos,
+    files,
+    useExistingPhotos,
+    draggedIndex
   } = UseAddingOferView({ id });
   const { loading, title, price, category, deliveryType, description, condytion, pickupAddress } = data;
   function setCategory(value: ICategory) {
@@ -77,7 +84,6 @@ function AddOrUpdateOfferForm({ id }: Props) {
   if (loading) {
     return <CustomLoader setBg={false} />;
   }
-  const previews = GetPreview();
   return (
     <Container bg={"#f8f9fa"}>
       <Space h="md" />
@@ -140,7 +146,7 @@ function AddOrUpdateOfferForm({ id }: Props) {
               const Checked = item === condytion;
               return (
                 <Box
-                  key={item} 
+                  key={item}
                   component="label"
                   p="md"
                   className="checkout-card"
@@ -226,14 +232,16 @@ function AddOrUpdateOfferForm({ id }: Props) {
       <Space h="md" />
 
       <Dropzone
-        onDrop={(files) => {
-          if (files.length <= 9) {
-            setFiles(files);
-          } else {
-            //add info for user that he add to many photo
-          }
+        onDrop={(newFiles) => {
+          setFiles((prev) => {
+            const merged = [...prev, ...newFiles];
+            if (merged.length > 9) {
+              return merged.slice(0, 9);
+            }
+            return merged;
+          });
         }}
-        onReject={() => {}}
+        onReject={() => { }}
         maxSize={5 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
       >
@@ -284,13 +292,54 @@ function AddOrUpdateOfferForm({ id }: Props) {
           </div>
         </Group>
       </Dropzone>
-      <Space h="md" />
-      <SimpleGrid
+      <Space h="md" /><SimpleGrid
         cols={{ base: 1, sm: 4 }}
-        mt={previews.length > 0 ? "xl" : 0}
+        mt={(useExistingPhotos ? photos.length : files.length) > 0 ? "xl" : 0}
       >
-        {previews}
+        {(useExistingPhotos ? photos : files).map((item, index) => {
+          const src = useExistingPhotos
+            ? (item as string)
+            : URL.createObjectURL(item as File);
+
+          return (
+            <Box
+              key={useExistingPhotos ? src : `${(item as File).name}-${index}`}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragEnter={(e) => {
+                e.preventDefault();
+                handleDragEnter(index);
+              }}
+              onDragOver={(e) => e.preventDefault()}
+              onDragEnd={handleDragEnd}
+              style={{
+                cursor: "grab",
+                opacity: draggedIndex === index ? 0.7 : 1,
+              }}
+            >
+              <Box pos="relative">
+                <Image
+                  src={src}
+                  radius="md"
+                  mah={200}
+                  fit="cover"
+                  alt="Offer image"
+                />
+                <ActionIcon
+                  variant="filled"
+                  radius="xl"
+                  size="sm"
+                  style={{ position: "absolute", top: 8, right: 8 }}
+                  onClick={() => handleRemove(index)}
+                >
+                  <IconX size={14} />
+                </ActionIcon>
+              </Box>
+            </Box>
+          );
+        })}
       </SimpleGrid>
+
       <Space h="md" />
       <Btn title={IsNullOrEmpty(id) ? "Add" : "Update"} onClick={submit} fullWidth />
       <Space h="md" />

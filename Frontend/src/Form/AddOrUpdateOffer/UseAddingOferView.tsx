@@ -6,8 +6,6 @@ import { Api } from "../../Helpers/Api/Api";
 import { useNavigate } from "react-router-dom";
 import { Helper } from "../../Types/Helper";
 import GeneralHelper from "../../Helpers/general/general";
-import ImageOfferAdding from "../../Components/ImageOfferAdding";
-import { Image, rem } from "@mantine/core";
 
 const mainCategoryId = Helper.EmptyGuid;
 
@@ -28,7 +26,7 @@ interface Props {
   id: string | undefined | null;
 }
 
-const initState: AddOfferState = {  
+const initState: AddOfferState = {
   price: 0,
   title: '',
   description: '',
@@ -57,6 +55,46 @@ function UseAddingOferView({ id }: Props) {
   const [files, setFiles] = useState<FileWithPath[]>([]);
   const [photos, setPhotos] = useState<string[]>([]);
   const setLoading = (value: boolean) => setData(prev => ({ ...prev, loading: value }));
+
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  const useExistingPhotos = photos.length > 0 && files.length === 0;
+
+  function reorderArray<T>(list: T[], from: number, to: number): T[] {
+    const updated = [...list];
+    const [moved] = updated.splice(from, 1);
+    updated.splice(to, 0, moved);
+    return updated;
+  }
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnter = (index: number) => {
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    if (useExistingPhotos) {
+      setPhotos((prev) => reorderArray(prev, draggedIndex, index));
+    } else {
+      setFiles((prev) => reorderArray(prev, draggedIndex, index));
+    }
+
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  const handleRemove = (index: number) => {
+    if (useExistingPhotos) {
+      setPhotos((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      setFiles((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -93,7 +131,7 @@ function UseAddingOferView({ id }: Props) {
             photos: photos,
             condytion: NumberToCondytion[condytion],
             deliveryType: NumberToDeliveryType[deliveryType],
-            pickupAddress: {...pickupAddress }
+            pickupAddress: { ...pickupAddress }
           }))
           setPhotos(photos);
         }
@@ -106,34 +144,13 @@ function UseAddingOferView({ id }: Props) {
   }
 
   function removePhoto(index: number) {
-    setFiles([...files.slice(0, index), ...files.slice(index + 1)]);
-  }
-
-  function GetPreview() {
-    let preview;
     if (photos.length <= 0) {
-      preview = files.map((file, index) => {
-        return (
-          <ImageOfferAdding
-            key={file.name}
-            imageUrl={URL.createObjectURL(file)}
-            index={index}
-            fileName={file.name}
-            removePhoto={removePhoto}
-          />
-        );
-      });
+      setFiles((prev) => prev.filter((_, i) => i !== index));
     } else {
-      preview = photos.map((photo, index) => {
-        return (
-          <Image key={index} src={photo} mb={rem(10)} alt="Offert images" />
-        );
-      });
+      setPhotos((prev) => prev.filter((_, i) => i !== index));
     }
-
-    return preview;
   }
-
+  
   const getBase64 = (file: Blob): Promise<string> => {
     return new Promise((resolve) => {
       let baseURL = "";
@@ -209,11 +226,18 @@ function UseAddingOferView({ id }: Props) {
     removePhoto,
     submit,
     IsNullOrEmpty,
-    GetPreview,
     setData,
+    setPhotos,
+    handleDragStart, 
+    handleDragEnter,
+    handleDragEnd,
+    handleRemove,
+    photos,
     files,
     mainCategoryId,
     data,
+    useExistingPhotos,
+    draggedIndex,
   };
 }
 
