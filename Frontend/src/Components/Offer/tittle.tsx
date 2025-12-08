@@ -10,17 +10,22 @@ interface Props {
   tittle: string;
   likeId: string;
   offerId: string;
+  userId: string;
   isBought?: boolean;
 }
 
-function TitleOfer({ date, tittle, likeId, offerId, isBought }: Props) {
+function TitleOfer({ date, tittle, likeId, offerId, isBought, userId }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
-  const { isTokenExpired } = Api();
+  const { isTokenExpired,GetUserId } = Api();
+  const isYourId = userId === GetUserId(); 
   const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = (color: string) => (color != "red" ? "red" : "white");
   const [heartColor, setColor] = useState<{ id: string; color: string }>({ id: likeId, color: getColor(likeId) });
   const { HandleLikes } = ApiAction();
 
+  const labelText = heartColor.color === "red"
+                      ? "Remove from favourites"
+                      : "Add to favourites"
   async function handleLike() {
     if (isTokenExpired()) {
       setOpened(true);
@@ -44,7 +49,7 @@ function TitleOfer({ date, tittle, likeId, offerId, isBought }: Props) {
             {tittle}
           </Title>
 
-          {!isBought && (
+          {(!isBought && !isYourId) && (
             <Popover
               width={220}
               trapFocus
@@ -55,13 +60,7 @@ function TitleOfer({ date, tittle, likeId, offerId, isBought }: Props) {
               onChange={setOpened}
             >
               <Popover.Target>
-                <Tooltip
-                  label={
-                    heartColor.color === "red"
-                      ? "Remove from favourites"
-                      : "Add to favourites"
-                  }
-                ><ActionIcon
+                <Tooltip label={labelText}><ActionIcon
                   size={36}
                   radius="xl"
                   variant="subtle"

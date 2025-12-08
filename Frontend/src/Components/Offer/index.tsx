@@ -62,6 +62,7 @@ function Offer() {
             likeId={offer.likeId}
             offerId={offer.id}
             isBought={offer.isBought}
+            userId={offer.user.id}
           />
           <Divider my="sm" />
           <Grid>
