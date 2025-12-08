@@ -10,11 +10,12 @@ function Logo() {
     <>
       <Group className="pointer" onClick={() => navigate("/")}>
         <Image src={logo} alt="Market spot logo" h={rem(80)} w={rem(80)} />
+        {!isMobile &&
         <Box>
-          <Text size={rem(isMobile ? 16 : 24)} fw={900} className="text-white">
+          <Text size={rem(24)} fw={900} className="text-white">
             Market Spot
           </Text>
-        </Box>
+        </Box>}
       </Group>
     </>
   );

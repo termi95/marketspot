@@ -28,6 +28,7 @@ import { Helper } from "../../Types/Helper";
 import CategoryPicker from "../../Form/CategoryPicker";
 import { ICategory } from "../../Types/Category";
 import { IconArrowLeft, IconArrowNarrowDown, IconArrowRight, IconSearch } from "@tabler/icons-react";
+import { useMediaQuery } from "@mantine/hooks";
 
 const GetUserOffersEndpoint = "Offer/get-recent";
 
@@ -78,6 +79,7 @@ const defaultState: MainViewState = {
 const iconSearch = <IconSearch style={{ width: rem(12), height: rem(12) }} stroke={1.5} />;
 
 function MainView() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { PostRequest } = Api();
   const [data, setData] = useState<MainViewState>(defaultState);
   const startLoading = () => setData(prev => ({ ...prev, loading: true }));
@@ -228,9 +230,18 @@ function MainView() {
 
   const canGoNext = data.offers.length >= data.searchQuery.itemPerPage;
   const pagination = (
-    <Group justify="space-between" align="center" mt="md" mb="md" w="80%" mx="auto">
+    <Group
+      justify={isMobile ? "center" : "space-between"}
+      align="center"
+      mt="md"
+      mb="md"
+      w={isMobile ? "100%" : "80%"}
+      mx="auto"
+      wrap="wrap"
+      gap="xs"
+    >
       <Group gap="xs">
-        <span>Items per page:</span>
+        <Text size={isMobile ? "xs" : "sm"}>Items per page:</Text>
         <Select
           data={["2", "5", "10", "50"]}
           value={data.searchQuery.itemPerPage.toString()}
@@ -240,7 +251,7 @@ function MainView() {
       </Group>
 
       <Group gap="xs">
-        {data.searchQuery.page > 1 &&
+        {data.searchQuery.page > 1 && (
           <Tooltip label="Previous page">
             <ActionIcon
               variant="light"
@@ -252,11 +263,11 @@ function MainView() {
               <IconArrowLeft size={18} />
             </ActionIcon>
           </Tooltip>
-        }
+        )}
 
-        <span>Page: {data.searchQuery.page}</span>
+        <Text size={isMobile ? "xs" : "sm"}>Page: {data.searchQuery.page}</Text>
 
-        {canGoNext &&
+        {canGoNext && (
           <Tooltip label="Next page">
             <ActionIcon
               variant="light"
@@ -268,10 +279,11 @@ function MainView() {
               <IconArrowRight size={25} />
             </ActionIcon>
           </Tooltip>
-        }
+        )}
       </Group>
     </Group>
   );
+
 
   const loader = (<Flex align={"center"} justify={"center"} m={rem(12)}><Loader color="blue" /></Flex>);
   const offers = data.offers.map((x) => {
@@ -285,90 +297,131 @@ function MainView() {
   return (
     <MainPanel>
       <Flex align={"center"} justify={"center"}>
-        <SimpleGrid cols={1} w={"80%"}>
-          <CategoryPicker key={`${data.searchQuery.categoryId}-${data.categories.length}`} getLastPickCategoryId={addCategory} id={data.searchQuery.categoryId} />
-          <Group className="text-start" align="center" gap={"xs"} grow>
-            <Autocomplete
-              label="Price from"
-              data={basePriceOptions}
-              placeholder="From"
-              clearable
-              value={data.searchQuery.minPrice != null ? data.searchQuery.minPrice.toString() : ""}
-              onChange={(val) => setMinPrice(val)}
-            /><Autocomplete
-              label="Price to"
-              data={basePriceOptions}
-              placeholder="To"
-              clearable
-              value={data.searchQuery.maxPrice != null ? data.searchQuery.maxPrice.toString() : ""}
-              onChange={(val) => setMaxPrice(val)}
-            />
-            <MultiSelect
-              label="Condition"
-              data={conditionOptions}
-              value={(data.searchQuery.condytion ?? []).map(x => x.toString())}
-              onChange={(values) => {
-                const nums = values.map(v => Number(v));
-                setConditions(nums);
-              }}
-              clearable
-              searchable
-              placeholder="Select condition"
+        <SimpleGrid cols={1} w={isMobile ? "100%" : "80%"} px={isMobile ? "md" : 0}>
+          <Box
+            p={isMobile ? "sm" : "md"}
+            mt="sm"
+            style={{
+              backgroundColor: "white",
+              borderRadius: rem(8),
+              boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
+            }}
+          >
+            <CategoryPicker
+              key={`${data.searchQuery.categoryId}-${data.categories.length}`}
+              getLastPickCategoryId={addCategory}
+              id={data.searchQuery.categoryId}
             />
 
-            <MultiSelect
-              label="Delivery type"
-              data={deliveryTypeOptions}
-              value={(data.searchQuery.deliveryType ?? []).map(x => x.toString())}
-              onChange={(values) => {
-                const nums = values.map(v => Number(v));
-                setDeliveryTypes(nums);
-              }}
-              clearable
-              searchable
-              placeholder="Select delivery type"
-            />
-            <Combobox
-              store={combobox}
-              onOptionSubmit={(val) => {
-                setSortBy(val as SortBy);
-                combobox.closeDropdown();
-              }}
+            <Group
+              className="text-start"
+              align="stretch"
+              gap="sm"
+              grow={!isMobile}
+              justify="flex-start"
+              style={{ flexDirection: isMobile ? "column" : "row" }}
+              mt="sm"
             >
-              <Combobox.Target>
-                <InputBase
-                  label="Sort by"
-                  component="button"
-                  type="button"
-                  pointer
-                  rightSection={<IconArrowNarrowDown />}
-                  rightSectionPointerEvents="none"
-                  onClick={() => combobox.toggleDropdown()}
+              <Autocomplete
+                label="Price from"
+                data={basePriceOptions}
+                placeholder="From"
+                clearable
+                value={data.searchQuery.minPrice != null ? data.searchQuery.minPrice.toString() : ""}
+                onChange={(val) => setMinPrice(val)}
+              /><Autocomplete
+                label="Price to"
+                data={basePriceOptions}
+                placeholder="To"
+                clearable
+                value={data.searchQuery.maxPrice != null ? data.searchQuery.maxPrice.toString() : ""}
+                onChange={(val) => setMaxPrice(val)}
+              />
+              <MultiSelect
+                label="Condition"
+                data={conditionOptions}
+                value={(data.searchQuery.condytion ?? []).map(x => x.toString())}
+                onChange={(values) => {
+                  const nums = values.map(v => Number(v));
+                  setConditions(nums);
+                }}
+                clearable
+                searchable
+                placeholder="Select condition"
+              />
+
+              <MultiSelect
+                label="Delivery type"
+                data={deliveryTypeOptions}
+                value={(data.searchQuery.deliveryType ?? []).map(x => x.toString())}
+                onChange={(values) => {
+                  const nums = values.map(v => Number(v));
+                  setDeliveryTypes(nums);
+                }}
+                clearable
+                searchable
+                placeholder="Select delivery type"
+              />
+              <Combobox
+                store={combobox}
+                onOptionSubmit={(val) => {
+                  setSortBy(val as SortBy);
+                  combobox.closeDropdown();
+                }}
+              >
+                <Combobox.Target>
+                  <InputBase
+                    label="Sort by"
+                    component="button"
+                    type="button"
+                    pointer
+                    rightSection={<IconArrowNarrowDown />}
+                    rightSectionPointerEvents="none"
+                    onClick={() => combobox.toggleDropdown()}
+                  >
+                    {getSortLabelByValue(data.searchQuery.sortBy) || <Input.Placeholder>Sort by</Input.Placeholder>}
+                  </InputBase>
+                </Combobox.Target>
+                <Combobox.Dropdown>
+                  <Combobox.Options>{options}</Combobox.Options>
+                </Combobox.Dropdown>
+              </Combobox>
+            </Group>
+            <TextInput
+              value={data.searchQuery.searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              leftSection={iconSearch}
+              w={"100%"}
+              placeholder="Search"
+              mt="xs"
+              size="md"
+               />
+            <SimpleGrid cols={1} w="100%">
+              <Flex
+                align={isMobile ? "stretch" : "center"}
+                justify="space-between"
+                w="100%"
+                direction={isMobile ? "column" : "row"}
+                gap={isMobile ? "xs" : 0}
+                mt="xs"
+              >
+                <Breadcrumbs>{items}</Breadcrumbs>
+                <Text
+                  size="sm"
+                  c="dimmed"
+                  className="pointer"
+                  onClick={clearFilters}
+                  style={{ textAlign: isMobile ? "left" : "right" }}
                 >
-                  {getSortLabelByValue(data.searchQuery.sortBy) || <Input.Placeholder>Sort by</Input.Placeholder>}
-                </InputBase>
-              </Combobox.Target>
-              <Combobox.Dropdown>
-                <Combobox.Options>{options}</Combobox.Options>
-              </Combobox.Dropdown>
-            </Combobox>
-          </Group>
-          <TextInput
-            value={data.searchQuery.searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            leftSection={iconSearch}
-            w={"100%"}
-            placeholder="Search" />
-          <SimpleGrid cols={1} w={"100%"}>
-            <Flex align={"self-start"} justify={"space-between"} w={"100%"}>
-              <Breadcrumbs>{items}</Breadcrumbs>
-              <Text size="sm" c="dimmed" className="pointer" onClick={clearFilters}>Clear filters</Text>
-            </Flex>
-          </SimpleGrid>
+                  Clear filters
+                </Text>
+              </Flex>
+            </SimpleGrid>
+          </Box>
         </SimpleGrid>
       </Flex>
       <Divider my="sm" />
-      {pagination}
+      {!isMobile && pagination}
       <SimpleGrid cols={1} w={"100%"}>
         {data.loading ? loader : offers}
       </SimpleGrid>
