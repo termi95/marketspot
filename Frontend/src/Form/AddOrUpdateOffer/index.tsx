@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Button, Container, Fieldset, Group, Image, NumberInput, Radio, rem, SimpleGrid, Space, Stack, Text, Textarea, TextInput } from "@mantine/core";
+import { ActionIcon, Box, Button, Container, Fieldset, Group, Image, NumberInput, Radio, rem, SimpleGrid, Space, Stack, Text, TextInput } from "@mantine/core";
 import Btn from "../../Components/Btn";
 import { IconBuilding, IconPackage, IconPackages, IconPhone, IconPhoto, IconSparkles, IconTruck, IconUpload, IconWalk, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
@@ -8,7 +8,11 @@ import GetCategoryForm from "../GetCategory";
 import CustomLoader from "../../Components/Loader";
 import { ICategory } from "../../Types/Category";
 import { Condytion, DeliveryType } from "../../Types/Offer";
-
+import { RichTextEditor } from "@mantine/tiptap";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import { useEffect } from "react";
 interface Props {
   id?: string | undefined | null;
 }
@@ -79,7 +83,22 @@ function AddOrUpdateOfferForm({ id }: Props) {
 
     return `+48 ${formatted}`.trim();
   }
-
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Link.configure({ openOnClick: false }),
+    ],
+    content: description,
+    onUpdate: ({ editor }) => {
+      setData(prev => ({ ...prev, description: editor.getHTML() }))
+    }
+  },
+  );
+  useEffect(() => {
+    if (editor && description) {
+      editor.commands.setContent(description);
+    }
+  }, [editor, description]);
   // to do check use-debounced-value aby sprawdzic czy poprawi to wydajnosc !opcjonalne!
   if (loading) {
     return <CustomLoader setBg={false} />;
@@ -125,14 +144,33 @@ function AddOrUpdateOfferForm({ id }: Props) {
         <Text size="xl" fw={700}>{mainCategoryId !== category.id && category.name}</Text>
       </Box>
       <Space h="md" />
-      <Textarea
-        className="text-start"
-        label="Description"
-        placeholder="You offer description"
-        value={description}
-        autosize
-        onChange={(e) => setData(prev => ({ ...prev, description: e.target.value }))}
-      />
+      <RichTextEditor editor={editor} style={{ width: "100%" }}>
+        <RichTextEditor.Toolbar sticky stickyOffset={60}>
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.Bold />
+            <RichTextEditor.Italic />
+            <RichTextEditor.Underline />
+            <RichTextEditor.Strikethrough />
+          </RichTextEditor.ControlsGroup>
+
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.H1 />
+            <RichTextEditor.H2 />
+            <RichTextEditor.H3 />
+          </RichTextEditor.ControlsGroup>
+
+          <RichTextEditor.ControlsGroup>
+            <RichTextEditor.BulletList />
+            <RichTextEditor.OrderedList />
+            <RichTextEditor.Blockquote />
+          </RichTextEditor.ControlsGroup>
+
+          <RichTextEditor.Link />
+          <RichTextEditor.Unlink />
+        </RichTextEditor.Toolbar>
+
+        <RichTextEditor.Content />
+      </RichTextEditor>
       <Space h="md" />
 
       <Fieldset legend="Select item condition" styles={sectionStyles}>
@@ -346,7 +384,7 @@ function AddOrUpdateOfferForm({ id }: Props) {
       <Btn title={IsNullOrEmpty(id) ? "Add" : "Update"} onClick={submit} fullWidth />
       <Space h="md" />
     </Container>
-    )
+  )
 }
 
 export default AddOrUpdateOfferForm

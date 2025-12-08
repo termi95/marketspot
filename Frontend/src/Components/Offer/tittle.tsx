@@ -4,20 +4,17 @@ import { Helper } from "../../Types/Helper";
 import ApiAction from "./apiAction";
 import { useState } from "react";
 import { Api } from "../../Helpers/Api/Api";
+import { MainOfferView } from "../../Types/Offer";
 
 interface Props {
-  date: string;
-  tittle: string;
-  likeId: string;
-  offerId: string;
-  userId: string;
-  isBought?: boolean;
+  offer: MainOfferView;
 }
 
-function TitleOfer({ date, tittle, likeId, offerId, isBought, userId }: Props) {
+function TitleOfer({ offer }: Props) {
   const [opened, setOpened] = useState<boolean>(false);
+  const {user, likeId, id:offerId, tittle,isBought,creationDate} = offer;
   const { isTokenExpired,GetUserId } = Api();
-  const isYourId = userId === GetUserId(); 
+  const isYourId = user.id === GetUserId(); 
   const getColor = (id: string) => (id != Helper.EmptyGuid ? "red" : "white");
   const InvertColor = (color: string) => (color != "red" ? "red" : "white");
   const [heartColor, setColor] = useState<{ id: string; color: string }>({ id: likeId, color: getColor(likeId) });
@@ -84,7 +81,7 @@ function TitleOfer({ date, tittle, likeId, offerId, isBought, userId }: Props) {
         </Flex>
 
         <Text c="dimmed" fz="sm">
-          Offer added: {date}
+          Offer added: {creationDate}
         </Text>
       </Flex>
     </Box>

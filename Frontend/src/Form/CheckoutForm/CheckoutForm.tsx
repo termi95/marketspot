@@ -8,6 +8,7 @@ import { IconBarcode, IconBrandPaypal, IconBuilding, IconBuildingBank, IconCash,
 import { Order } from "../../Types/Order";
 import { useNavigate } from "react-router-dom";
 import { INotyfication } from "../../Types/Notyfication";
+import DOMPurify from "dompurify";
 
 interface Props {
     offer: CheckoutOffer;
@@ -370,12 +371,16 @@ function CheckoutForm({ offer }: Props) {
                                         <Text size="md" fw={800} mb={4}>
                                             Description:
                                         </Text>
-                                        <Textarea
-                                            value={data.offer?.description}
-                                            onFocus={(e) => e.target.blur()}
-                                            readOnly
-                                            autosize
-                                            variant="unstyled"
+                                        <Box
+                                            style={{
+                                                lineHeight: 1.6,
+                                                maxWidth: "100%",
+                                                textAlign: "justify",
+                                                fontSize: "16px",
+                                            }}
+                                            dangerouslySetInnerHTML={{
+                                                __html: DOMPurify.sanitize(offer.description),
+                                            }}
                                         />
                                     </Fieldset>
                                 </Box>
