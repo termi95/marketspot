@@ -3,16 +3,18 @@ using Marketspot.Model;
 using Marketspot.Model.Address;
 using Marketspot.Model.Category;
 using Marketspot.Validator;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace Backend.Services
 {
-    public class AddressServices(UserDbContext context, IPasswordHasher<User> passwordHasher)
+    public class AddressServices
     {
-        private readonly UserDbContext _context = context;
-        private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;
+        private readonly UserDbContext _context;
+        public AddressServices(UserDbContext context)
+        {
+            _context = context;
+        }
         public async Task<ApiResponse> Upsert(UpsertAddressDto dto, string userId)
         {
             var response = new ApiResponse();
@@ -101,7 +103,7 @@ namespace Backend.Services
                 return response;
 
             _context.Remove(address);
-            await context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             response.SetStatusCode(HttpStatusCode.OK);
             return response;

@@ -14,7 +14,7 @@ namespace Marketspot.DataAccess.Migrations
 {
     [DbContext(typeof(UserDbContext))]
     [Migration("20240616171003_offer-price")]
-    partial class offerprice
+    partial class Offerprice
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Marketspot.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class offerprice : Migration
+    public partial class Offerprice : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
