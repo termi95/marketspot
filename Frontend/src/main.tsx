@@ -7,9 +7,15 @@ import { Provider } from "react-redux";
 import { store } from "./State/store.ts";
 import { Notifications } from "@mantine/notifications";
 import { ModalsProvider } from "@mantine/modals";
+import '@fontsource/inter/300.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+
 
 const theme = createTheme({
-  fontFamily: "Ubuntu",
+  fontFamily: "Inter, sans-serif",
   fontSizes: {
     xs: "0.6rem",
     sm: "0.75rem",

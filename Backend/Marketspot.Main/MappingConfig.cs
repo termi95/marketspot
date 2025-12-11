@@ -32,9 +32,9 @@ namespace Backend
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)));
             CreateMap<Offer, GetUserOffers>()
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.IconPhoto))
-                .ForMember(dest => dest.LikeId, opt => opt.MapFrom((src, dest, destMember, ctx) => src.Likes.FirstOrDefault(x => x.UserId == (Guid)ctx.Items["LoginUserId"])?.Id))
+                .ForMember(dest => dest.LikeId, opt => opt.MapFrom((src, dest, destMember, ctx) => src.Likes?.FirstOrDefault(x => x.UserId == (Guid)ctx.Items["LoginUserId"])?.Id))
                 .ForMember(dest => dest.CreationDate, opt => opt.MapFrom(src => DateOnly.FromDateTime(src.CreationDate)))
-                .ForMember(dest => dest.IsLiked, opt => opt.MapFrom((src, dest, destMember, ctx) => src.Likes.Any(x => x.UserId == (Guid)ctx.Items["LoginUserId"])))
+                .ForMember(dest => dest.IsLiked, opt => opt.MapFrom((src, dest, destMember, ctx) => src.Likes != null && src.Likes.Any(x => x.UserId == (Guid)ctx.Items["LoginUserId"])))
                 .ForMember(dest => dest.LikesCount, opt => opt.MapFrom(src => src.Likes.Count()))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
             CreateMap<User, BasicUser>()
