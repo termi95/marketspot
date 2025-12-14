@@ -58,12 +58,8 @@ namespace Backend.Services
 
             Like like = await _context.Likes.FirstOrDefaultAsync(x => x.Id == Guid.Parse(dto.Id) && x.UserId == Guid.Parse(userId));
 
-            if (like is null)
-            {
-                response.ErrorsMessages.Add("Like not found for that user.");
-                response.SetStatusCode(HttpStatusCode.NotFound);
+            if (!ValidatorHelper.CheckIfExists(like,response, "Like not found for that user."))
                 return response;
-            }
 
             _context.Likes.Remove(like);
 
