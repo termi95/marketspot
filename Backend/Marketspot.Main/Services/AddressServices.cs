@@ -78,7 +78,6 @@ namespace Backend.Services
                     response.ErrorsMessages.Add(ex.InnerException is not null ? ex.InnerException.Message : ex.Message);
                     return response;
                 }
-
             }
         }
 
