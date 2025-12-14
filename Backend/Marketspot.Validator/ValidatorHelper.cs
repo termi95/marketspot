@@ -25,6 +25,7 @@ namespace Marketspot.Validator
                 {
                     var errors = (result.GetType().GetProperty("Errors").GetValue(result) as IEnumerable<object>);
                     response.ErrorsMessages.AddRange(errors.Select(x => x.ToString()));
+                    response.MarkValidationError();
                     validResult = false;
                 }
             }
@@ -35,12 +36,19 @@ namespace Marketspot.Validator
             }
             return validResult;
         }
-        public static bool CheckIfExists<T>(T item, ApiResponse response)
+        public static bool CheckIfExists<T>(T item, ApiResponse response, string errorMessage = "")
         {
             if (item is null)
             {
                 response.SetStatusCode(HttpStatusCode.NotFound);
-                response.ErrorsMessages.Add($"{typeof(T).Name} was not found.");
+                if (string.IsNullOrEmpty(errorMessage))
+                {
+                    response.ErrorsMessages.Add($"{typeof(T).Name} was not found.");                    
+                }
+                else
+                {
+                    response.ErrorsMessages.Add(errorMessage);
+                }
                 return false;
             }
             return true;

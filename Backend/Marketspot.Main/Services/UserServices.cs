@@ -58,20 +58,20 @@ namespace backend.Services
         public async Task<ApiResponse> Login(LoginUserDto dto)
         {
             var response = new ApiResponse();
+            string userErrorMessage = "User not found or Password was incorrect.";
             if (!await ValidatorHelper.ValidateDto(dto, response))
             {
                 return response;
             }
 
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user is null)
-            {
-                response.ErrorsMessages.Add("User not found or Password was incorrect.");
+
+            if (!ValidatorHelper.CheckIfExists(user, response, userErrorMessage))
                 return response;
-            }
+
             if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
             {
-                response.ErrorsMessages.Add("Password was incorrect.");
+                response.ErrorsMessages.Add(userErrorMessage);
                 return response;
             }
             var claims = new List<Claim>()
@@ -109,16 +109,13 @@ namespace backend.Services
         {
             var response = new ApiResponse();
             if (!await ValidatorHelper.ValidateDto(dto, response))
-            {
                 return response;
-            }
 
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if (user is null)
-            {
-                response.ErrorsMessages.Add("User not found.");
+
+            if (!ValidatorHelper.CheckIfExists(user,response))
                 return response;
-            }
+
             user.PasswordChangeToken = Guid.NewGuid();
             user.PasswordAllowTimeToChange = DateTime.Now.AddHours(2);
 
@@ -146,17 +143,18 @@ namespace backend.Services
             {
                 return response;
             }
-            User user = null;
 
-            try
+            if (!Guid.TryParse(dto.PasswordChangeToken, out var token))
             {
-                user = await _context.Users.FindAsync(dto.PasswordChangeToken);
+                response.ErrorsMessages.Add("Invalid password change token.");
+                return response;
             }
-            catch { }
 
-            if (user is null || user.PasswordAllowTimeToChange > DateTime.Now)
+            User user = user = await _context.Users.SingleOrDefaultAsync(x=> x.PasswordChangeToken == token);
+
+            if (user is null || DateTime.Now > user.PasswordAllowTimeToChange)
             {
-                response.ErrorsMessages.Add("User not found or time to change password expire.");
+                response.ErrorsMessages.Add("User not found or password change token expired.");
                 return response;
             }
             user.Password = _passwordHasher.HashPassword(user, dto.Password);
@@ -182,11 +180,8 @@ namespace backend.Services
 
             user = await _context.Users.Where(x => x.Id == Guid.Parse(userId)).SingleOrDefaultAsync();
 
-            if (user is null)
-            {
-                response.ErrorsMessages.Add("User not found.");
+            if (!ValidatorHelper.CheckIfExists(user,response))
                 return response;
-            }
 
             response.Result = _mapper.Map<BasicUser>(user);
             response.SetStatusCode(HttpStatusCode.OK);
@@ -231,10 +226,10 @@ namespace backend.Services
             return response;
         }
 
-
         public async Task<ApiResponse> UpdateSettingsPersonalInformation(string userId, SettingsPersonalInformationDto dto)
         {
-            var response = new ApiResponse();
+            string userErrorMessage = "User not found or Password was incorrect.";
+            ApiResponse response = new ApiResponse();
             User user = null;
 
             if (!await ValidatorHelper.ValidateDto(dto, response))
@@ -242,17 +237,21 @@ namespace backend.Services
                 return response;
             }
 
-            user = await _context.Users.Where(x => x.Id == Guid.Parse(userId)).SingleOrDefaultAsync();
-
-            if (user is null)
+            if (!Guid.TryParse(userId, out Guid userGuid))
             {
-                response.ErrorsMessages.Add("User not found.");
+                response.ErrorsMessages.Add("Invalid user id.");
                 return response;
             }
 
+            user = await _context.Users.SingleOrDefaultAsync(x => x.Id == userGuid);
+
+
+            if (!ValidatorHelper.CheckIfExists(user, response, userErrorMessage))
+                return response;
+
             if (_passwordHasher.VerifyHashedPassword(user, user.Password, dto.Password) is PasswordVerificationResult.Failed)
             {
-                response.ErrorsMessages.Add("Password was incorrect.");
+                response.ErrorsMessages.Add(userErrorMessage);
                 return response;
             }
 
