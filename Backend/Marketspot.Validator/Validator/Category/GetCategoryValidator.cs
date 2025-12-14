@@ -8,18 +8,9 @@ namespace Marketspot.Validator.Validator.Category
         public GetCategoryValidator()
         {
             RuleFor(x => x.ParentId)
-                    .Cascade(CascadeMode.Stop)
-                    .Custom((x, context) =>
-                    {
-                        if (string.IsNullOrEmpty(x))
-                        {
-                            context.AddFailure("Id cannot be null or empty.");
-                        }
-                        else if (!Guid.TryParse(x, out Guid value))
-                        {
-                            context.AddFailure($"{x} is not in a valid GUID format.");
-                        }
-                    });
+                .Cascade(CascadeMode.Stop)
+                .Must(x => string.IsNullOrEmpty(x) || Guid.TryParse(x, out _))
+                .WithMessage("ParentId must be a valid GUID format.");
         }
     }
 }

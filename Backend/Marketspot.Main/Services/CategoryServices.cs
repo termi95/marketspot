@@ -107,21 +107,23 @@ namespace Backend.Services
             return response;
         }
 
-        private async Task<User> GetUserById(string userId)
-        {
-            return await _context.Users.FindAsync(Guid.Parse(userId));
-        }
-
         private async Task<bool> IsAuthorized(string userId, ApiResponse response)
         {
-            var user = await GetUserById(userId);
-            bool isAuth = user is not null && user.Roles != UserEnum.UserRoles.Admin;
-            if (isAuth)
+            if (!Guid.TryParse(userId, out var userGuid))
+            {
+                response.SetStatusCode(HttpStatusCode.Unauthorized);
+                response.ErrorsMessages.Add("You are unauthorized to do this action.");
+                return true;
+            }
+
+            User user = await _context.Users.FindAsync(userGuid);
+            var unauthorized = user is null || user.Roles != UserEnum.UserRoles.Admin;
+            if (unauthorized)
             {
                 response.SetStatusCode(HttpStatusCode.Unauthorized);
                 response.ErrorsMessages.Add("You are unauthorized to do this action.");
             }
-            return isAuth;
+            return unauthorized;
         }
     }
 }

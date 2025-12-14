@@ -13,6 +13,7 @@ namespace Backend
         {
             CreateMap<RegisterUserDto, User>();
             CreateMap<UpsertAddressDto, Category>();
+            CreateMap<AddCategoryDto, Category>();
             CreateMap<Marketspot.Model.Offer.PickupAddress, Marketspot.DataAccess.Entities.PickupAddress>();
             CreateMap<Marketspot.DataAccess.Entities.PickupAddress, Marketspot.Model.Offer.PickupAddress>();
             CreateMap<AddOfferDto, Offer>()
