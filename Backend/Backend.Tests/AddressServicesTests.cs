@@ -1,16 +1,9 @@
-﻿using AutoMapper;
-using Backend.Services;
+﻿using Backend.Services;
 using Marketspot.DataAccess.Entities;
 using Marketspot.Model.Address;
 using Marketspot.Model.Category;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Backend.Tests
 {
@@ -23,17 +16,6 @@ namespace Backend.Tests
                 .Options;
 
             return new UserDbContext(options);
-        }
-
-        private IMapper CreateMapper()
-        {
-            var loggerFactory = LoggerFactory.Create(builder => { });
-            MapperConfiguration config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingConfig>();
-            }, loggerFactory);
-
-            return config.CreateMapper();
         }
         [Fact]
         public async Task Upsert_ShouldReturnValidationError_WhenDtoIsInvalid()

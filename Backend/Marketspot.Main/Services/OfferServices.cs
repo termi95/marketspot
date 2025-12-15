@@ -154,8 +154,12 @@ namespace Backend.Services
                     .Where(x => x.User.Id == Guid.Parse(Id) && x.SoftDeletedDate == null && !x.IsBought)
                     .ToListAsync();
 
-                response.SetStatusCode(HttpStatusCode.OK);
-                response.Result = _mapper.Map<List<GetUserOffers>>(offers);
+                response.SetStatusCode(HttpStatusCode.OK); 
+                Guid loginUserGuid = Guid.Empty;
+                Guid.TryParse(idOfLoginUser, out loginUserGuid);
+
+                response.Result = _mapper.Map<List<GetUserOffers>>(offers, opt => opt.Items["LoginUserId"] = loginUserGuid);
+
                 return response;
             }
             catch (Exception e)
