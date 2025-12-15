@@ -21,22 +21,19 @@ namespace Backend.Services
             Guid guidUserId = Guid.Empty;
             if (!Guid.TryParse(userId,out guidUserId))
             {
-                response.ErrorsMessages.Add("User not found");
+                response.SetStatusCode(HttpStatusCode.NotFound);
+                response.ErrorsMessages.Add("User was not found");
                 return response;
             }
 
             Offer offer = await _context.Offers.Include(o=>o.User).FirstOrDefaultAsync(x=>x.Id == Guid.Parse(dto.OfferId) && x.User.Id != guidUserId && x.IsBought == false);
-            if (offer is null)
-            {
-                response.ErrorsMessages.Add("Offer not found");
+            if (!ValidatorHelper.CheckIfExists(offer,response))
                 return response;
-            }
+
             Address address = await _context.Addresses.FirstOrDefaultAsync(x => x.UserId == guidUserId && x.Id == Guid.Parse(dto.AddressId));
-            if (address is null)
-            {
-                response.ErrorsMessages.Add("Address not found");
+            if (!ValidatorHelper.CheckIfExists(address, response))
                 return response;
-            }
+
             Order order = new Order()
             {
                 BuyerId = guidUserId,
